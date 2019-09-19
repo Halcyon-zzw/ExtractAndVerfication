@@ -7,7 +7,11 @@ import util.FileUtil;
 import util.StringsUtilCustomize;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collector;
+import java.util.stream.Collectors;
 
 /**
  * 常规数据处理,
@@ -63,6 +67,8 @@ public class GeneralCsvDeal implements DealFileWay {
     public List<String> extractedValue(String csvPath) {
         List<String> resultList = new ArrayList<>();
 
+        HashMap<String, List<String>> tempResultMap = new HashMap<>();
+
         //获取csvRead
         CsvReader csvReader = FileUtil.getCsvReader(csvPath);
         System.out.println("开始处理...");
@@ -103,10 +109,14 @@ public class GeneralCsvDeal implements DealFileWay {
 
                 //提取一行数据
                 String rowValue = rowValueProcess.extractRowValue(new String[]{label}, title, content);
-                resultList.add(rowValue);
+
+                if (null == tempResultMap.get(label)) {
+                    tempResultMap.put(label, new ArrayList<String>());
+                }
+                tempResultMap.get(label).add(rowValue);
 
                 //提醒
-                remind(resultList, 10000);
+//                remind(resultList, 10000);
 
             }
         } catch (Exception e) {
@@ -119,8 +129,20 @@ public class GeneralCsvDeal implements DealFileWay {
         System.out.println("处理完毕!");
         //提取情况,输出提取数据的情况。label: number
         List<String> extractSituation = countControl.getExtract();
-        System.out.println("----------提取情况------------");
+        System.out.println("----------数据量情况------------");
         extractSituation.forEach(System.out::println);
+        System.out.println("----------过滤数据量少的情况------------");
+        extractSituation = countControl.filterLess(tempResultMap, 400);
+        extractSituation.forEach(System.out::println);
+
+//        List<String> resultList = tempResultMap.entrySet().stream()
+//                .map(a -> {return a.getValue();})
+//                .collect(Collectors.toList());
+        //TODO 改用流操作
+        for (Map.Entry<String, List<String>> temp : tempResultMap.entrySet()) {
+            resultList.addAll(temp.getValue());
+        }
+
         System.out.println("----数据量：" + resultList.size());
         return resultList;
     }

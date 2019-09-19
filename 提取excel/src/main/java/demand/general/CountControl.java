@@ -84,21 +84,30 @@ public class CountControl {
     }
 
     /**
+     * 过滤数据量少的数据
      *
-     * @param lessCount
+     * @param tempResultMap 存储label，label+acticle的map
+     * @param lessCount 过滤的数据量
      * @return
      */
-    public List<String> filterLess(int lessCount) {
-        //controlMap转成List<LabelAndCount>对象后对label排序，后转成List<String>对象
-        List<LabelAndCount> resultList = controlMap.entrySet().stream().filter(temp->{
-            return temp.getValue() < lessCount;
-        }).map(temp -> {
-            return new LabelAndCount(Integer.valueOf(temp.getKey()), temp.getValue());
-        }).sorted(Comparator.comparing(LabelAndCount::getLabel))
-                .collect(Collectors.toList());
+    public List<String> filterLess(HashMap<String, List<String>> tempResultMap, int lessCount) {
+        //过滤数量少的数据，并将结果返回成原来的map中
+//        tempResultMap = tempResultMap.entrySet().stream()
+//                .filter(tempResult -> tempResult.getValue().size() > lessCount)
+//                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (a, b) -> a, HashMap::new));
 
-        List<String> resultStrings = resultList.stream()
-                .filter(labelAndCount-> labelAndCount.getCount() > lessCount)
+        //TODO 改用流
+        for (Map.Entry<String, List<String>> temp : tempResultMap.entrySet()) {
+            if (temp.getValue().size() < lessCount) {
+                tempResultMap.put(temp.getKey(), new ArrayList<String>());
+            }
+        }
+
+        //controlMap转成List<LabelAndCount>对象后对label排序，后转成List<String>对象
+        List<String> resultStrings = controlMap.entrySet().stream()
+                .filter(temp -> temp.getValue() >= lessCount)
+                .map(temp -> new LabelAndCount(Integer.valueOf(temp.getKey()), temp.getValue()))
+                .sorted(Comparator.comparing(LabelAndCount::getLabel))
                 .map(LabelAndCount::toString)
                 .collect(Collectors.toList());
 
