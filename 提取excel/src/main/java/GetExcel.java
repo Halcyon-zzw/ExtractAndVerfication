@@ -1,21 +1,22 @@
 import config.ApplicationProperties;
 import config.ExcelProperties;
+import create.CreateFileWay;
 import create.impl.CreateExcelFile;
 import create.impl.CreateFileProportion;
-import create.CreateFileWay;
-import deal.*;
-import demand.column.ColumnCsvDeal;
-import demand.column.ColumnCsvExtract;
-import demand.general.GeneralCsvDeal;
-import demand.event_classify_2.EventClassifyCsvDeal;
-import demand.emotion_and_grade.EmotionAndGradeCsvDeal;
+import deal.AbstractDealFileWay;
+import deal.DealFileWay;
 import deal.impl.FileNameDeal;
 import deal.impl.LyricExcelDeal;
+import delete.column.ColumnCsvDeal;
+import delete.column.ColumnCsvExtract;
+import demand.emotion_and_grade.EmotionAndGradeCsvDeal;
+import demand.event_classify_2.EventClassifyCsvDeal;
 import demand.event_classify_2.EventClassigySupplementCsvDeal;
+import demand.general.GeneralCsvDeal;
 import model.ExcelMessage;
-import pool.*;
+import pool.DealFile;
 
-import java.io.*;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -35,7 +36,6 @@ public class GetExcel {
     private static int[] proportions = aps.getCreateFileProporttionProperties().getProportions();
 
     private static String[] paths = aps.getCreateFileProporttionProperties().getPaths();
-
 
 
     public static void main(String[] args) throws IOException {
@@ -65,6 +65,7 @@ public class GetExcel {
 
     /**
      * 从补充数据中提取数据
+     *
      * @throws IOException
      */
     public static void extractClassifySupplement() throws IOException {
@@ -95,8 +96,6 @@ public class GetExcel {
      */
     private static void dealGeneralDemo() throws IOException {
         //待汇总文件路径
-//        String summariedPath = aps.getSummaryPath();
-
         String path = aps.getPrimaryProperties().getPath();
 
         Object labelHeader = aps.getPrimaryProperties().getLabel();
@@ -130,6 +129,7 @@ public class GetExcel {
 
     /**
      * 处理舆情excel数据
+     *
      * @throws IOException
      */
     public static void dealLyricExcelDemo() throws IOException {
@@ -148,7 +148,6 @@ public class GetExcel {
     }
 
 
-
     /**
      * 提取分类数据
      */
@@ -164,9 +163,9 @@ public class GetExcel {
     }
 
 
-
     /**
      * 提取目录下的文件名，并将其生成文件
+     *
      * @throws IOException
      */
     public static void createFileByFileName() throws IOException {
