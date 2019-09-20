@@ -3,6 +3,7 @@ package util;
 import com.csvreader.CsvReader;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.formula.functions.T;
+import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
@@ -55,6 +56,15 @@ public class FileUtil {
             System.out.println("找不到指定的文件, " + excelPath);
         }
         return wb;
+    }
+
+    public static Sheet getSheet(String excelPath, int sheetIndex) {
+        Workbook workbook = getWorkbook(excelPath);
+        if (null == workbook) {
+            System.out.println("工作铺创建失败！");
+            return null;
+        }
+        return workbook.getSheetAt(sheetIndex);
     }
 
 
