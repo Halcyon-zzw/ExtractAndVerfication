@@ -10,8 +10,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collector;
-import java.util.stream.Collectors;
 
 /**
  * 常规数据处理,
@@ -95,7 +93,7 @@ public class GeneralCsvDeal implements DealFileWay {
 
 
                 //是否为空
-                if (StringsUtilCustomize.isEnpty(label, title, content)) {
+                if (StringsUtilCustomize.isEmpty(label, title, content)) {
                     continue;
                 }
 

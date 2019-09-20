@@ -28,7 +28,7 @@ public class StringsUtilCustomize {
      * @param args 需要检测的列
      * @return 列为null 返回true；否则返回false
      */
-    public static boolean isEnpty(String... args) {
+    public static boolean isEmpty(String... args) {
         for (String column : args) {
             if (StringUtils.isEmpty(column)) {
                 return true;

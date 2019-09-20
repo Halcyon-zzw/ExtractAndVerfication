@@ -2,10 +2,9 @@ package demand.general;
 
 import config.ApplicationProperties;
 import deal.DealFileWay;
-import model.News;
+import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
-import org.apache.poi.ss.usermodel.Workbook;
 import util.FileUtil;
 import util.StringsUtilCustomize;
 
@@ -43,6 +42,7 @@ public class GeneralDealExcel implements DealFileWay {
         this.titleHeader = titleHeader;
         this.contentHeader = contentHeader;
     }
+
     @Override
     public List<String> extractedValue(String path) {
         List<String> resultList = new ArrayList<>();
@@ -63,15 +63,21 @@ public class GeneralDealExcel implements DealFileWay {
         for (int rowIndex = firstRowIndex; rowIndex <= lastRowIndex; rowIndex++) {
             //获得该行数据
             Row row = sheet.getRow(rowIndex);
+            if (null == row) {
+                continue;
+            }
 
             //从文件中获取值
-            String label = row.getCell(labelHeader).toString().split("\\.")[0];
-            String title = row.getCell(titleHeader).toString();
-            String content = row.getCell(contentHeader).toString();
+            Cell labelCell = row.getCell(labelHeader);
+            Cell titleCell = row.getCell(titleHeader);
+            Cell countCell = row.getCell(contentHeader);
+            String label = labelCell == null ? null : labelCell.toString().split("\\.")[0];
+            String title = titleCell == null ? null : titleCell.toString();
+            String content = countCell == null ? null : countCell.toString();
 
 
             //是否为空
-            if (StringsUtilCustomize.isEnpty(label, title, content)) {
+            if (StringsUtilCustomize.isEmpty(label, title, content)) {
                 continue;
             }
 

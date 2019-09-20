@@ -73,8 +73,10 @@ public class GetExcel {
         int titleHeader = aps.getEventExcelProperties().getTitle();
         int contentHeader = aps.getEventExcelProperties().getContent();
 
-        DealFileWay dealCsvWay = new GeneralDealExcel(labelHeader, titleHeader, contentHeader);
-        List<String> result = dealCsvWay.extractedValue(path);
+        DealFileWay dealFileWay = new GeneralDealExcel(labelHeader, titleHeader, contentHeader);
+        DealFile dealFile = new DealFile(dealFileWay);
+
+        List<String> result = dealFile.dealFile(path);
     }
 
 
