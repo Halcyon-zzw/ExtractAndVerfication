@@ -1,6 +1,7 @@
 package demand.general;
 
 import config.ApplicationProperties;
+import deal.DealFileWay;
 import model.News;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
@@ -20,7 +21,7 @@ import java.util.Map;
  * @Date: 2019/9/20 9:34
  * @Version: 1.0
  */
-public class GeneralDealExcel implements GeneralDeal {
+public class GeneralDealExcel implements DealFileWay {
     private final ApplicationProperties aps = new ApplicationProperties();
 
     /**
@@ -64,7 +65,7 @@ public class GeneralDealExcel implements GeneralDeal {
             Row row = sheet.getRow(rowIndex);
 
             //从文件中获取值
-            String label = row.getCell(labelHeader).toString();
+            String label = row.getCell(labelHeader).toString().split("\\.")[0];
             String title = row.getCell(titleHeader).toString();
             String content = row.getCell(contentHeader).toString();
 

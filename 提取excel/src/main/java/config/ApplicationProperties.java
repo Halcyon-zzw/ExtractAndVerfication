@@ -23,6 +23,7 @@ public class ApplicationProperties {
     private final EmotionAndGradeProperties emotionAndGradeProperties = new EmotionAndGradeProperties();
     private final CreateFileProporttionProperties createFileProporttionProperties = new CreateFileProporttionProperties();
     private final ColumnProperties columnProperties = new ColumnProperties();
+    private final EventExcelProperties eventExcelProperties = new EventExcelProperties();
     /**
      * 待汇总路径
      */
@@ -110,6 +111,17 @@ public class ApplicationProperties {
                 super.haveHeader = false;
             }
         }
+    }
+
+    @Data
+    public class EventExcelProperties {
+        private String path = "E:\\下载\\钉钉文件\\工作资料\\债券舆情语料\\事件分类\\舆情事件分类语料提供-20180910\\102001-事件分类-资质风险.xlsx";
+        private int dataCount = 3000;
+        private int labelNumber = 1;
+        private int label = 1;
+        private int title = 2;
+        private int content = 3;
+        private boolean haveHeader = true;
     }
 
     /**

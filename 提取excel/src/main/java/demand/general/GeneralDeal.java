@@ -3,7 +3,7 @@ package demand.general;
 import java.util.List;
 
 /**
- * TODO
+ * TODO 修改成抽象类
  *
  * @Author: zhuzw
  * @Date: 2019/9/20 9:33

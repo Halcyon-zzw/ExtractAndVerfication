@@ -13,6 +13,8 @@ import demand.emotion_and_grade.EmotionAndGradeCsvDeal;
 import demand.event_classify_2.EventClassifyCsvDeal;
 import demand.event_classify_2.EventClassigySupplementCsvDeal;
 import demand.general.GeneralCsvDeal;
+import demand.general.GeneralDeal;
+import demand.general.GeneralDealExcel;
 import model.ExcelMessage;
 import pool.DealFile;
 
@@ -44,7 +46,7 @@ public class GetExcel {
 //        dealEmotionAndGradeCsvDemo();
 
         //提取舆情情感（3类）数据
-        dealGeneralDemo();
+//        dealGeneralDemo();
 
 //        dealLyricExcelDemo();
 
@@ -60,6 +62,19 @@ public class GetExcel {
         //提取补充事件分类数据
 //        extractClassifySupplement();
 
+        generalExcelDemo();
+    }
+
+    private static void generalExcelDemo() throws IOException {
+        //待汇总文件路径
+        String path = aps.getEventExcelProperties().getPath();
+
+        int labelHeader = aps.getEventExcelProperties().getLabel();
+        int titleHeader = aps.getEventExcelProperties().getTitle();
+        int contentHeader = aps.getEventExcelProperties().getContent();
+
+        DealFileWay dealCsvWay = new GeneralDealExcel(labelHeader, titleHeader, contentHeader);
+        List<String> result = dealCsvWay.extractedValue(path);
     }
 
 
