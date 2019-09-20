@@ -63,6 +63,7 @@ public class LyricExcelDealConditional implements DealFileWayConditional {
      */
     private static News extractRowValue(Row row) {
         News news = new News();
+
         //设置news属性
         //获取结果为xxxx.0形式，剔除 .0
         news.setId(row.getCell(1).toString().split("\\.")[0]);
