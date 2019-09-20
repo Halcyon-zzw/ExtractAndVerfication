@@ -3,7 +3,7 @@ package demand.emotion_and_grade;
 
 import com.csvreader.CsvReader;
 import deal.DealFileWay;
-import delete.EmotionCsvProcess;
+import delete.emotion.EmotionCsvProcess;
 import extract.*;
 
 import process.ColumnProcess;

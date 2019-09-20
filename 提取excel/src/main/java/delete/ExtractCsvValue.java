@@ -1,4 +1,4 @@
-package extract;
+package delete;
 
 import com.csvreader.CsvReader;
 import util.StringsUtilCustomize;

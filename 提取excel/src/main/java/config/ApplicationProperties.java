@@ -120,8 +120,8 @@ public class ApplicationProperties {
         private int dataCount = 3000;
         private int labelNumber = 1;
         private int label = 1;
-        private int title = 2;
-        private int content = 3;
+        private int title = 3;
+        private int content = 4;
         private boolean haveHeader = true;
     }
 

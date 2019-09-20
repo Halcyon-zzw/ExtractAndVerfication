@@ -2,25 +2,18 @@ package demand.event_classify_2;
 
 import com.csvreader.CsvReader;
 import config.ApplicationProperties;
-import deal.AbstractDealFileWay;
 import deal.DealFileWay;
 import deal.DealFileWayConditional;
 import deal.DealFileWayConfitionalModify;
 import deal.impl.AllClassifyExcelDeal;
 import deal.impl.LyricExcelDealConditional;
 import demand.event_classify.EventClassifyCsvDealOriginal;
-import extract.AbstractExtractCsvValue;
-import extract.ExtractCsvValue;
-import org.springframework.beans.factory.annotation.Autowired;
-import pool.DealFile;
-import pool.DealFileModify;
+import delete.ExtractCsvValue;
 import process.ColumnProcess;
 import process.ColumnProcessCsv;
 import process.impl.ContentCsvProcess;
-import process.impl.TitleCsvProcess;
 import util.FileUtil;
 
-import javax.validation.valueextraction.ExtractedValue;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;

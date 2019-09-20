@@ -1,4 +1,4 @@
-package deal.impl;
+package delete;
 
 import deal.DealFileWay;
 import model.News;

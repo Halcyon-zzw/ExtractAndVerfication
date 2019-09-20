@@ -191,7 +191,7 @@ public class EventClassifyCsvDeal implements DealFileWay {
     }
 
     /**
-     * 从fileName文件中添加count条数据到事件分类列表中
+     * 从fileName(excel)文件中添加count条数据到事件分类列表中
      * @param secondaryEventHashMap
      * @param fileKey 文件名映射键(key)
      * @param count 数据量

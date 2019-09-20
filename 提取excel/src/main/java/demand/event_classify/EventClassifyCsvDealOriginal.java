@@ -1,10 +1,8 @@
 package demand.event_classify;
 
 import com.csvreader.CsvReader;
-import deal.DealFileWay;
-import deal.DealFileWayConditional;
 import deal.DealFileWayConfitionalModify;
-import extract.ExtractCsvValue;
+import delete.ExtractCsvValue;
 import process.ColumnProcessCsv;
 import util.FileUtil;
 
