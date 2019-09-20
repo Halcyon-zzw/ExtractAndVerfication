@@ -17,7 +17,7 @@ import org.springframework.context.annotation.Configuration;
 @Data
 public class ApplicationProperties {
 
-    private final PrimaryProperties primaryProperties = new EmotionProperties();
+    private final PrimaryProperties primaryProperties = new EventProperties();
     private final EventClassifyProperties eventClassifyProperties = new EventClassifyProperties();
     private final EmotionProperties emotionProperties = new EmotionProperties();
     private final EmotionAndGradeProperties emotionAndGradeProperties = new EmotionAndGradeProperties();
@@ -42,6 +42,7 @@ public class ApplicationProperties {
     public class PrimaryProperties {
 
         protected int dataCount = 10000;
+        protected int lessCount = 200;
         protected int labelNumber;
 
         protected String path;
