@@ -39,7 +39,7 @@ public class CountControl {
      * 操作状态
      *
      * @param label 控制的key
-     * @param count 数量
+     * @param count 数量, 为-1时，表示提取所有数据
      * @param categoryNum 分类数量
      * @return 1、数据量不够，继续操作
      *          0、该分类数据量够，跳过操作
@@ -49,6 +49,10 @@ public class CountControl {
        if (null == controlMap.get(label)) {
            //初始化
            controlMap.put(label, 0);
+       }
+       if (-1 == count) {
+           controlMap.put(label, controlMap.get(label) + 1);
+           return 1;
        }
         //-1、所有数据够
         int toolNum = 0;
