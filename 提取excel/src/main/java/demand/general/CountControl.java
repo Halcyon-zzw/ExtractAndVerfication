@@ -96,9 +96,9 @@ public class CountControl {
      */
     public List<String> filterLess(HashMap<String, List<String>> tempResultMap, int lessCount) {
         //过滤数量少的数据，并将结果返回成原来的map中
-//        tempResultMap = tempResultMap.entrySet().stream()
-//                .filter(tempResult -> tempResult.getValue().size() > lessCount)
-//                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (a, b) -> a, HashMap::new));
+        tempResultMap = tempResultMap.entrySet().stream()
+                .filter(tempResult -> tempResult.getValue().size() > lessCount)
+                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (a, b) -> a, HashMap::new));
 
         //TODO 改用流
         for (Map.Entry<String, List<String>> temp : tempResultMap.entrySet()) {

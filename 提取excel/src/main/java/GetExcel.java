@@ -45,7 +45,7 @@ public class GetExcel {
 //        dealEmotionAndGradeCsvDemo();
 
         //提取舆情情感（3类）数据
-//        dealGeneralDemo();
+        dealGeneralDemo();
 
 //        dealLyricExcelDemo();
 
@@ -61,7 +61,7 @@ public class GetExcel {
         //提取补充事件分类数据
 //        extractClassifySupplement();
 
-        generalExcelDemo();
+//        generalExcelDemo();
     }
 
     private static void generalExcelDemo() throws IOException {
