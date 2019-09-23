@@ -1,7 +1,11 @@
 package deal;
 
+import demand.general.CountControl;
+
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * 处理文件方式接口
@@ -32,4 +36,34 @@ public interface DealFileWay {
      * @throws IOException
      */
     List<String> extractedValue(String path) throws IOException;
+
+    /**
+     * 数据提取情况
+     */
+    default void dataSituation(CountControl countControl, HashMap<String, List<String>> tempResultMap) {
+        System.out.println("处理完毕!");
+        //提取情况,输出提取数据的情况。label: number
+        List<String> extractSituation = countControl.getExtract();
+        System.out.println("----------数据量情况------------");
+        extractSituation.forEach(System.out::println);
+        System.out.println("----------过滤数据量少的情况------------");
+        extractSituation = countControl.filterLess(tempResultMap, 400);
+        extractSituation.forEach(System.out::println);
+
+
+
+
+    }
+
+    default List<String> addData(List<String> resultList, HashMap<String, List<String>> tempResultMap) {
+        //        List<String> resultList = tempResultMap.entrySet().stream()
+//                .map(a -> {return a.getValue();})
+//                .collect(Collectors.toList());
+        //TODO 改用流操作
+        for (Map.Entry<String, List<String>> temp : tempResultMap.entrySet()) {
+            resultList.addAll(temp.getValue());
+        }
+        System.out.println("----数据量：" + resultList.size());
+        return resultList;
+    }
 }

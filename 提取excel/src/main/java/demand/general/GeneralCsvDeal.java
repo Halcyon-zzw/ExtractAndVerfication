@@ -3,9 +3,11 @@ package demand.general;
 import com.csvreader.CsvReader;
 import config.ApplicationProperties;
 import deal.DealFileWay;
+import pool.DealFile;
 import util.FileUtil;
 import util.StringsUtilCustomize;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -114,7 +116,7 @@ public class GeneralCsvDeal implements DealFileWay {
                 tempResultMap.get(label).add(rowValue);
 
                 //提醒
-//                remind(resultList, 10000);
+//                remind(tempResultMap, 10000);
 
             }
         } catch (Exception e) {
@@ -124,24 +126,11 @@ public class GeneralCsvDeal implements DealFileWay {
                 csvReader.close();
             }
         }
-        System.out.println("处理完毕!");
-        //提取情况,输出提取数据的情况。label: number
-        List<String> extractSituation = countControl.getExtract();
-        System.out.println("----------数据量情况------------");
-        extractSituation.forEach(System.out::println);
-        System.out.println("----------过滤数据量少的情况------------");
-        extractSituation = countControl.filterLess(tempResultMap, 400);
-        extractSituation.forEach(System.out::println);
 
-//        List<String> resultList = tempResultMap.entrySet().stream()
-//                .map(a -> {return a.getValue();})
-//                .collect(Collectors.toList());
-        //TODO 改用流操作
-        for (Map.Entry<String, List<String>> temp : tempResultMap.entrySet()) {
-            resultList.addAll(temp.getValue());
-        }
-
-        System.out.println("----数据量：" + resultList.size());
+        //数据提取情况
+        dataSituation(countControl, tempResultMap);
+        //添加数据
+        resultList = addData(resultList, tempResultMap);
         return resultList;
     }
 
@@ -151,7 +140,8 @@ public class GeneralCsvDeal implements DealFileWay {
      * @param resultList
      * @param count      提醒步长
      */
-    private void remind(List<String> resultList, int count) {
+    private void remind(HashMap<String, List<String>> resultList, int count) {
+
         if (0 == resultList.size() % count) {
             System.out.println("已处理：" + (remindCount += count));
         }
