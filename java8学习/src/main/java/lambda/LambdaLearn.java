@@ -83,6 +83,7 @@ public class LambdaLearn {
      */
     public static void streamOperation() {
         //去重
+        System.out.println("-----------------去重-----------------");
         List<Integer> numbers = Arrays.asList(3, 2, 2, 3, 7, 3, 5);
 
         List<Integer> distinctNumbers = numbers.stream().distinct().collect(Collectors.toList());
@@ -90,6 +91,7 @@ public class LambdaLearn {
         distinctNumbers.forEach(System.out::println);
 
         //求和
+        System.out.println("-----------------求和-----------------");
         int numbersSum = numbers.stream().mapToInt(Integer::intValue).sum();
         System.out.println("nums总和：" + numbersSum);
 
@@ -98,16 +100,27 @@ public class LambdaLearn {
         System.out.println("指定数量的nums和：" + numbersStrSum);
 
         //排序
+        System.out.println("-----------------排序-----------------");
         List<Integer> numbersSort = numbers.stream().sorted(Comparator.comparing(Integer::intValue)).collect(Collectors.toList());
         System.out.println("排序后的数据...");
         numbersSort.forEach(System.out::println);
 
         //filter,获取空字符串的数量
+        System.out.println("-----------------过滤-----------------");
         List<String> strings = Arrays.asList("abc", "", "bc", "efg", "abcd","", "jkl");
         int count = (int)strings.stream().filter(string -> string.isEmpty()).count();
         System.out.println("空字符串的数量：" + count);
 
         //TODO Contractors.toMap
+
+
+        //统计
+        System.out.println("-----------------统计-----------------");
+        IntSummaryStatistics statistics = numbers.stream().mapToInt(x -> x).summaryStatistics();
+        System.out.println("数量：" + statistics.getCount());
+        System.out.println("最大值：" + statistics.getMax());
+        System.out.println("和：" + statistics.getSum());
+        System.out.println("平均值：" + statistics.getAverage());
 
 
 
