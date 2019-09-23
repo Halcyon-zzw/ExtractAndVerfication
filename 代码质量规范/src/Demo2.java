@@ -15,11 +15,10 @@ public class Demo2 {
 
     /**
      * 大于100的三位数，求100到 该变量之间满足如下要求的数字之和：
-     *
+     * <p>
      * 个位数不为7
      * 十位数不为5
      * 百位数 != 3
-     *
      */
     public static void demo() throws Exception {
         //输入对象
@@ -43,9 +42,8 @@ public class Demo2 {
             int geWei = i % 100;
 
 
-
             //判断
-            if(geWei != 7 && shiWei != 5 && baiWei != 3) {
+            if (geWei != 7 && shiWei != 5 && baiWei != 3) {
                 result += i;
             }
 
@@ -56,11 +54,12 @@ public class Demo2 {
 
 
     public static void mapSort(Map<String, String> map) {
-        List<Map.Entry<String,String>> list = new ArrayList<Map.Entry<String,String>>(map.entrySet());
-//        Collections.sort(list,new Comparator<Map.Entry<String,String>>() {
+        List<Map.Entry<String, String>> list = new ArrayList<Map.Entry<String, String>>(map.entrySet());
+        Collections.sort(list, (m1, m2) -> m1.getValue().compareTo(m2.getValue()));
+
+//        Collections.sort(list, new Comparator<Map.Entry<String, String>>() {
 //            //升序排序
-//            public int compare(Entry<String, String> o1,
-//                               Entry<String, String> o2) {
+//            public int compare(Map.Entry<String, String> o1, Map.Entry<String, String> o2) {
 //                return o1.getValue().compareTo(o2.getValue());
 //            }
 //
