@@ -10,10 +10,11 @@ import delete.LyricExcelDeal;
 import delete.column.ColumnCsvDeal;
 import delete.column.ColumnCsvExtract;
 import demand.emotion_and_grade.EmotionAndGradeCsvDeal;
+import demand.emotion_and_grade.EmotionAndGradeDeal;
 import demand.event_classify_2.EventClassifyCsvDeal;
 import demand.event_classify_2.EventClassigySupplementCsvDeal;
 import demand.general.GeneralCsvDeal;
-import demand.general.GeneralDealExcel;
+import demand.general.excel.GeneralDealExcel;
 import model.ExcelMessage;
 import pool.DealFile;
 
@@ -45,7 +46,7 @@ public class GetExcel {
 //        dealEmotionAndGradeCsvDemo();
 
         //提取舆情情感（3类）数据
-        dealGeneralDemo();
+//        dealGeneralDemo();
 
 //        dealLyricExcelDemo();
 
@@ -62,8 +63,36 @@ public class GetExcel {
 //        extractClassifySupplement();
 
 //        generalExcelDemo();
+
+        //提取grade and emotion 仅标题
+        gradeAndEnotionTitle();
     }
 
+    /**
+     * 提取grade and emotion 仅标题
+     */
+    private static void gradeAndEnotionTitle() throws IOException {
+        //待汇总文件路径
+        String path = aps.getEmotionAndGradeProperties().getPath();
+
+        Object labelHeader_1 = aps.getEmotionAndGradeProperties().getLabel_1();
+        Object labelHeader_2 = aps.getEmotionAndGradeProperties().getLabel_2();
+        Object[] labelHeaders = {labelHeader_1, labelHeader_2};
+        Object titleHeader = aps.getEmotionAndGradeProperties().getTitle();
+
+
+        DealFileWay dealFileWay = new EmotionAndGradeDeal(labelHeaders, titleHeader);
+        DealFile dealFile = new DealFile(dealFileWay);
+        List<String> result = dealFile.dealFile(path);
+        //生成文件
+        CreateFileWay createFileWay = new CreateFileProportion(proportions, paths);
+        createFileWay.createFile(result);
+    }
+
+    /**
+     * 常规提取excel
+     * @throws IOException
+     */
     private static void generalExcelDemo() throws IOException {
         //待汇总文件路径
         String path = aps.getEventExcelProperties().getPath();

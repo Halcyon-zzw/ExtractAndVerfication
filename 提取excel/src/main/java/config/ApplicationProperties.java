@@ -80,7 +80,7 @@ public class ApplicationProperties {
         public EmotionProperties() {
 
             super.path = "E:\\文件\\工作\\AI\\bert\\舆情语料.csv";
-            super.dataCount = 300;
+            super.dataCount = 3000;
             super.labelNumber = 3;
             super.label = "舆情情感";
             super.haveHeader = true;
@@ -156,8 +156,20 @@ public class ApplicationProperties {
      * 情感&等级处理 相关属性
      */
     @Data
-    public static class EmotionAndGradeProperties {
+    public class EmotionAndGradeProperties extends PrimaryProperties{
         private final int DATA_COUNT = 13000;
+        Object label_1;
+        Object label_2;
+        public EmotionAndGradeProperties() {
+
+            super.path = "E:\\文件\\工作\\AI\\bert\\舆情语料.csv";
+            super.dataCount = 13000;
+            super.labelNumber = 7;
+            label_1 = "舆情情感";
+            label_2 = "舆情情感等级";
+
+            super.haveHeader = true;
+        }
     }
 
 
@@ -183,6 +195,7 @@ public class ApplicationProperties {
         private String basePath = "E:\\下载\\钉钉文件\\工作资料\\create\\";
         /**
          * 具体的数据类型
+         * TODO： 生成不同的文件需要修改
          */
 //        private String type = "舆情情感";
 //        private String type = "情感_等级_test";
@@ -190,7 +203,8 @@ public class ApplicationProperties {
 //        private String type = "事件二级分类";
 //        private String type = "栏目分类\\new";
 //        private String type = "事件二级分类_补充";
-        private String type = "栏目分类_测试";
+//        private String type = "栏目分类_测试";
+        private String type = "情感and等级_标题";
 
 
         /**
