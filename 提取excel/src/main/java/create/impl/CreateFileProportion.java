@@ -44,7 +44,7 @@ public class CreateFileProportion implements CreateFileWay {
             System.out.println("总数据量为0!");
             return;
         }
-        System.out.println("开始输出...");
+        System.out.println("开始生成文件...");
         //随机打乱
         Collections.shuffle(result);
 
@@ -80,5 +80,6 @@ public class CreateFileProportion implements CreateFileWay {
         for (int i = 0; i < resultList.size(); i++) {
             FileUtil.createFile(resultList.get(i), paths[i]);
         }
+        System.out.println("生成文件完成。");
     }
 }

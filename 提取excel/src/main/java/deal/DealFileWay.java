@@ -37,8 +37,11 @@ public interface DealFileWay {
      */
     List<String> extractedValue(String path) throws IOException;
 
+
     /**
      * 数据提取情况
+     * @param countControl 数量控制对象
+     * @param tempResultMap 数据提取map
      */
     default void dataSituation(CountControl countControl, HashMap<String, List<String>> tempResultMap) {
         System.out.println("处理完毕!");
@@ -50,11 +53,14 @@ public interface DealFileWay {
         extractSituation = countControl.filterLess(tempResultMap, 400);
         extractSituation.forEach(System.out::println);
 
-
-
-
     }
 
+    /**
+     * 从数据存储map中提取数据
+     * @param resultList 结果列表
+     * @param tempResultMap 数据提取map
+     * @return
+     */
     default List<String> addData(List<String> resultList, HashMap<String, List<String>> tempResultMap) {
         //        List<String> resultList = tempResultMap.entrySet().stream()
 //                .map(a -> {return a.getValue();})

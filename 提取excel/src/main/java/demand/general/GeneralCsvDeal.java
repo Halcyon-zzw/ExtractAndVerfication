@@ -35,7 +35,7 @@ public class GeneralCsvDeal implements DealFileWay {
     /**
      * 行数据处理
      */
-    private RowValueProcess rowValueProcess = new RowValueProcess();
+    private RowValueProcess rowValueProcess;
 
     /**
      * 数量控制
@@ -108,6 +108,7 @@ public class GeneralCsvDeal implements DealFileWay {
                 }
 
                 //提取一行数据
+
                 String rowValue = rowValueProcess.extractRowValue(new String[]{label}, title, content);
 
                 if (null == tempResultMap.get(label)) {
