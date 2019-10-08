@@ -10,7 +10,7 @@ import delete.LyricExcelDeal;
 import delete.column.ColumnCsvDeal;
 import delete.column.ColumnCsvExtract;
 import demand.emotion_and_grade.EmotionAndGradeCsvDeal;
-import demand.emotion_and_grade.EmotionAndGradeDeal;
+import demand.emotion_and_grade_improve.EmotionAndGradeDeal;
 import demand.event_classify_2.EventClassifyCsvDeal;
 import demand.event_classify_2.EventClassigySupplementCsvDeal;
 import demand.general.GeneralCsvDeal;
