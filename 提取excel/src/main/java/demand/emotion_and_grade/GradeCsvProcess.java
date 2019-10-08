@@ -1,6 +1,7 @@
 package demand.emotion_and_grade;
 
 import com.csvreader.CsvReader;
+import org.apache.commons.lang3.StringUtils;
 import process.ColumnProcess;
 
 import java.io.IOException;
@@ -20,7 +21,7 @@ public class GradeCsvProcess implements ColumnProcess {
 
         try {
             //剔除grade为空情况
-            if ("".equals(csvReader.get("舆情情感等级")) || null == csvReader.get("舆情情感等级")) {
+            if (StringUtils.isEmpty(csvReader.get("舆情情感等级"))) {
                 return false;
             }
 
