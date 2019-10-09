@@ -53,6 +53,10 @@ public class EmotionAndGradeDeal implements DealFileWay {
      */
     private Object[] headers;
 
+    /**
+     * 是否提取content
+     */
+    private boolean contentExtract = false;
 
     public EmotionAndGradeDeal (Object labelHeader, Object titleHeader) {
         this.labelHeader = labelHeader;
@@ -68,6 +72,7 @@ public class EmotionAndGradeDeal implements DealFileWay {
         this.labelHeader = labelHeader;
         this.titleHeader = titleHeader;
         this.contentHeader = contentHeader;
+        contentExtract = true;
     }
 
     /**
@@ -126,6 +131,12 @@ public class EmotionAndGradeDeal implements DealFileWay {
                 }
                 if (isContinue || StringsUtilCustomize.isEmpty(title)) {
                     continue;
+                }
+                if (contentExtract) {
+                    //判断content是否为空
+                    if (StringUtils.isEmpty(content)) {
+                        continue;
+                    }
                 }
 
                 String label = dataProcess.getLabel(labels.get(0), labels.get(1));
