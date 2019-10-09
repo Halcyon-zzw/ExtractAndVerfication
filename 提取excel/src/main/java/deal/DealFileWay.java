@@ -49,10 +49,25 @@ public interface DealFileWay {
         List<String> extractSituation = countControl.getExtract();
         System.out.println("----------数据量情况------------");
         extractSituation.forEach(System.out::println);
-        System.out.println("----------过滤数据量少的情况------------");
-        extractSituation = countControl.filterLess(tempResultMap, 400);
-        extractSituation.forEach(System.out::println);
 
+    }
+
+    /**
+     * 过滤数据量少的数据
+     * @param countControl 数据控制对象
+     * @param tempResultMap 数据提取map
+     * @param dataNum 控制的数据量
+     */
+    default HashMap<String, List<String>> fileLessData(CountControl countControl, HashMap<String, List<String>> tempResultMap, int dataNum) {
+        //值为负数，不过滤
+        if (dataNum < 0) {
+            return tempResultMap;
+        }
+        System.out.println("----------过滤数据量少的情况------------");
+        tempResultMap = countControl.filterLess(tempResultMap, dataNum);
+        List<String> extractSituation = countControl.getExtract();
+        extractSituation.forEach(System.out::println);
+        return tempResultMap;
     }
 
     /**

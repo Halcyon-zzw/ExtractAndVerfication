@@ -107,7 +107,8 @@ public class GeneralDealExcel implements DealFileWay {
         System.out.println("----------数据量情况------------");
         extractSituation.forEach(System.out::println);
         System.out.println("----------过滤数据量少的情况------------");
-        extractSituation = countControl.filterLess(tempResultMap, 400);
+        tempResultMap = countControl.filterLess(tempResultMap, 400);
+        countControl.getExtract();
         extractSituation.forEach(System.out::println);
 
         //TODO 改用流操作

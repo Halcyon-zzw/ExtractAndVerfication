@@ -35,7 +35,7 @@ public class GeneralCsvDeal implements DealFileWay {
     /**
      * 行数据处理
      */
-    private RowValueProcess rowValueProcess;
+    private RowValueProcess rowValueProcess = new RowValueProcess();
 
     /**
      * 数量控制
@@ -130,6 +130,8 @@ public class GeneralCsvDeal implements DealFileWay {
 
         //数据提取情况
         dataSituation(countControl, tempResultMap);
+        //过滤数据少的数据
+        tempResultMap = fileLessData(countControl, tempResultMap, 400);
         //添加数据
         resultList = addData(resultList, tempResultMap);
         return resultList;
