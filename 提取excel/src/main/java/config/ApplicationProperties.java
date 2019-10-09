@@ -17,7 +17,7 @@ import org.springframework.context.annotation.Configuration;
 @Data
 public class ApplicationProperties {
 
-    private final PrimaryProperties primaryProperties = new EventProperties();
+    private final PrimaryProperties primaryProperties = new ColumnProperties();
     private final EventClassifyProperties eventClassifyProperties = new EventClassifyProperties();
     private final EmotionProperties emotionProperties = new EmotionProperties();
     private final EmotionAndGradeProperties emotionAndGradeProperties = new EmotionAndGradeProperties();
@@ -65,12 +65,50 @@ public class ApplicationProperties {
             super.path = "E:\\下载\\钉钉文件\\工作资料\\bert\\舆情语料.csv";
             super.dataCount = 10000;
             super.labelNumber = 66;
+            super.label = "事件二级分类";
+//            super.title = 7;
+//            super.content = 8;
+//            super.haveHeader = false;
+        }
+    }
+
+    public class EventProperties extends PrimaryProperties {
+
+        public EventProperties() {
+            super.path = "E:\\下载\\钉钉文件\\工作资料\\bert\\舆情语料.csv";
+            super.dataCount = 3000;
+            super.labelNumber = 66;
+            super.label = "事件二级分类";
+        }
+    }
+
+    /**
+     * 事间补充语料属性
+     */
+    public class EventSupplementProperties extends EventProperties{
+        public EventSupplementProperties() {
+            super.path = "E:\\下载\\钉钉文件\\工作资料\\bert\\事件多分类补充语料.csv";
+            super.dataCount = 100;
+            super.labelNumber = 66;
             super.label = 5;
             super.title = 7;
             super.content = 8;
             super.haveHeader = false;
         }
     }
+
+    @Data
+    public class EventExcelProperties {
+        //        private String path = "E:\\下载\\钉钉文件\\工作资料\\债券舆情语料\\事件分类\\舆情事件分类语料提供-20180910\\105001-事件分类-企业变更.xlsx";
+        private String path = "E:\\下载\\钉钉文件\\工作资料\\债券舆情语料\\事件分类\\舆情事件分类语料提供-20180910\\";
+        private int dataCount = 3000;
+        private int labelNumber = 1;
+        private int label = 1;
+        private int title = 3;
+        private int content = 4;
+        private boolean haveHeader = true;
+    }
+
 
     /**
      * 舆情情感处理 相关属性
@@ -85,71 +123,6 @@ public class ApplicationProperties {
             super.label = "舆情情感";
             super.haveHeader = true;
         }
-
-
-    }
-
-    public class EventProperties extends PrimaryProperties{
-
-        public EventProperties() {
-            super.path = "E:\\下载\\钉钉文件\\工作资料\\bert\\舆情语料.csv";
-            super.dataCount = 3000;
-            super.labelNumber = 66;
-            super.label = "事件二级分类";
-        }
-        /**
-         * 事间补充语料属性
-         */
-        public class EventSupplementProperties extends EventProperties{
-            public EventSupplementProperties() {
-                super.path = "E:\\下载\\钉钉文件\\工作资料\\bert\\事件多分类补充语料.csv";
-                super.dataCount = 100;
-                super.labelNumber = 66;
-                super.label = 5;
-                super.title = 7;
-                super.content = 8;
-                super.haveHeader = false;
-            }
-        }
-    }
-
-    @Data
-    public class EventExcelProperties {
-//        private String path = "E:\\下载\\钉钉文件\\工作资料\\债券舆情语料\\事件分类\\舆情事件分类语料提供-20180910\\105001-事件分类-企业变更.xlsx";
-        private String path = "E:\\下载\\钉钉文件\\工作资料\\债券舆情语料\\事件分类\\舆情事件分类语料提供-20180910\\";
-        private int dataCount = 3000;
-        private int labelNumber = 1;
-        private int label = 1;
-        private int title = 3;
-        private int content = 4;
-        private boolean haveHeader = true;
-    }
-
-    /**
-     * 事件分类相关属性
-     */
-    @Data
-    public class ColumnProperties extends PrimaryProperties{
-
-        public ColumnProperties() {
-
-            super.path = "E:\\下载\\钉钉文件\\工作资料\\bert\\栏目分类数据源_新.csv";
-            super.dataCount = 3000;
-            super.labelNumber = 27;
-            //1-3，存在Id情况（从sql中导出），
-            super.label = 1;
-            super.title = 2;
-            super.content = 3;
-            super.haveHeader = false;
-        }
-
-
-        /**
-         * 最少的数据量，少于该值剔除
-         */
-        private final int leastDataCount = 200;
-
-
     }
 
     /**
@@ -173,10 +146,29 @@ public class ApplicationProperties {
     }
 
 
+    /**
+     *栏目分类相关属性
+     */
     @Data
-    public static class CreateFileProperties {
+    public class ColumnProperties extends PrimaryProperties{
 
+        public ColumnProperties() {
+
+            super.path = "E:\\下载\\钉钉文件\\工作资料\\bert\\栏目分类数据源_新.csv";
+            super.dataCount = 3000;
+            super.labelNumber = 27;
+            //1-3，存在Id情况（从sql中导出），
+            super.label = 1;
+            super.title = 2;
+            super.content = 3;
+            super.haveHeader = false;
+        }
+        /**
+         * 最少的数据量，少于该值剔除
+         */
+        private final int leastDataCount = 200;
     }
+
 
     /**
      * 按比率生成文件相关属性
@@ -206,7 +198,6 @@ public class ApplicationProperties {
 //        private String type = "栏目分类_测试";
         private String type = "情感and等级_标题";
 
-
         /**
          * 输出文件路径
          */
@@ -215,8 +206,5 @@ public class ApplicationProperties {
                 basePath + type + "\\test.tsv",
                 basePath + type + "\\train.tsv",
         };
-
     }
-
-
 }
