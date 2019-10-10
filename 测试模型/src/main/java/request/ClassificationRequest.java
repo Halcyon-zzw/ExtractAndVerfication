@@ -2,6 +2,8 @@ package request;
 
 import bert.BertRequest;
 import bert.single.BertResultSingle;
+import config.ApplicationProperties;
+import config.PropertiesFactory;
 import org.springframework.http.converter.StringHttpMessageConverter;
 import org.springframework.web.client.RestTemplate;
 
@@ -17,9 +19,10 @@ import java.nio.charset.StandardCharsets;
 public abstract class ClassificationRequest<T> {
     int num = 0;
     /**
-     * 请求地址
+     * 获取请求地址
      */
-    String url = "http://10.106.0.51:8062/encode";
+    String url = TestUrlFactory.getTestUrl("emotion");
+
     /**
      * 请求参数
      */
