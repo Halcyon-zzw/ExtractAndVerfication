@@ -46,11 +46,13 @@ public class CountControl {
      *          -1、数据量收集完毕，终止操作
      */
     public int operationStatus(String label, int count, int categoryNum) {
+
        if (null == controlMap.get(label)) {
            //初始化
            controlMap.put(label, 0);
        }
        if (-1 == count) {
+           //提取全部数据
            controlMap.put(label, controlMap.get(label) + 1);
            return 1;
        }

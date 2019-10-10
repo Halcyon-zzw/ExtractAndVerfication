@@ -3,15 +3,15 @@ package demand.general;
 import com.csvreader.CsvReader;
 import config.ApplicationProperties;
 import deal.DealFileWay;
-import pool.DealFile;
+import lombok.Setter;
+import org.apache.commons.lang3.StringUtils;
 import util.FileUtil;
 import util.StringsUtilCustomize;
 
-import java.math.BigDecimal;
+import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
  * 常规数据处理,
@@ -30,7 +30,8 @@ public class GeneralCsvDeal implements DealFileWay {
     /**
      * 变量
      */
-    private final ApplicationProperties aps = new ApplicationProperties();
+    @Setter
+    private ApplicationProperties aps = new ApplicationProperties();
 
     /**
      * 行数据处理
@@ -51,10 +52,26 @@ public class GeneralCsvDeal implements DealFileWay {
     private Object titleHeader;
     private Object contentHeader;
 
+    private boolean labelExtract = true;
+    private boolean titleExtract = true;
+    private boolean contentExtract = true;
+
+
     public GeneralCsvDeal(Object labelHeader, Object titleHeader, Object contentHeader) {
         this.labelHeader = labelHeader;
         this.titleHeader = titleHeader;
         this.contentHeader = contentHeader;
+        Object nullObject = "";
+        Object zeroObject = -1;
+        if (nullObject.equals(labelHeader) || zeroObject.equals(labelHeader)) {
+            labelExtract = false;
+        }
+        if (nullObject.equals(titleHeader) || zeroObject.equals(titleHeader)) {
+            titleExtract = false;
+        }
+        if (nullObject.equals(contentHeader) || zeroObject.equals(contentHeader)) {
+            contentExtract = false;
+        }
     }
 
     /**
@@ -70,7 +87,7 @@ public class GeneralCsvDeal implements DealFileWay {
         HashMap<String, List<String>> tempResultMap = new HashMap<>();
 
         //获取csvRead
-        CsvReader csvReader = FileUtil.getCsvReader(csvPath);
+        CsvReader csvReader = FileUtil.getCsvReader(csvPath, Charset.forName("gbk"));
         System.out.println("开始处理...");
         // 逐条读取记录，直至读完
         try {
@@ -84,7 +101,7 @@ public class GeneralCsvDeal implements DealFileWay {
                 String title = "";
                 String content = "";
                 if (haveHeader()) {
-                    label = csvReader.get((String)labelHeader);
+                    label = csvReader.get((String) labelHeader);
                     title = csvReader.get((String) titleHeader);
                     content = csvReader.get((String) contentHeader);
                 } else {
@@ -93,11 +110,24 @@ public class GeneralCsvDeal implements DealFileWay {
                     content = csvReader.get((Integer) contentHeader);
                 }
 
+                if (! labelExtract) {
+                    //不提取label时，设置label = 0
+                    label = "0";
+                }
 
                 //是否为空
-                if (StringsUtilCustomize.isEmpty(label, title, content)) {
+                if (isEmptyAndExtract(label, labelExtract)) {
                     continue;
                 }
+                if (isEmptyAndExtract(title, titleExtract)) {
+                    continue;
+                }
+                if (isEmptyAndExtract(content, contentExtract)) {
+                    continue;
+                }
+//                if (StringsUtilCustomize.isEmpty(label, title, content)) {
+//                    continue;
+//                }
 
                 //数量控制
                 int operationStatus = countControl.operationStatus(label, aps.getPrimaryProperties().getDataCount(), aps.getPrimaryProperties().getLabelNumber());
@@ -135,6 +165,18 @@ public class GeneralCsvDeal implements DealFileWay {
         //添加数据
         resultList = addData(resultList, tempResultMap);
         return resultList;
+    }
+
+    /**
+     * 需要提取，且为空返回true
+     * @param value 需要检测的值
+     * @param isExtract 是否需要提取
+     */
+    private boolean isEmptyAndExtract(String value, boolean isExtract) {
+        if(isExtract && StringUtils.isEmpty(value)) {
+            return true;
+        }
+        return false;
     }
 
     /**
