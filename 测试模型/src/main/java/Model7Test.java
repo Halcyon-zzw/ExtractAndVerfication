@@ -9,11 +9,15 @@ import bert.single.BertSingleResponse;
 import com.opencsv.CSVReader;
 import com.opencsv.CSVWriter;
 import config.ApplicationProperties;
+import config.FileProperties;
+import config.PropertiesFactory;
 import deal.AbstractDealFileWay;
 import deal.DealFileWay;
 import delete.column.ColumnCsvDeal;
 import delete.column.ColumnCsvExtract;
+import demand.emotion_and_grade_improve.EmotionAndGradeDeal;
 import demand.general.GeneralCsvDeal;
+import pool.DealFile;
 import pool.DealFileModify;
 import request.ClassificationRequest;
 import request.MultipleClassicationRequest;
@@ -35,13 +39,14 @@ public class Model7Test {
     static int rel = 0;
     static int allCount = 0;
     private static ApplicationProperties aps = new ApplicationProperties();
+    private static FileProperties fileProperties = new FileProperties();
 
     public static void main(String[] args) throws IOException {
 
 
-//        testSingle();
+        testSingle();
 
-        testMultiple();
+//        testMultiple();
     }
 
 
@@ -92,13 +97,10 @@ public class Model7Test {
         //获取测试数据集 -TODO:替换
 //        List<String[]> testList = getTestList();
         List<String[]> testList = getTestListEvent();
-        System.out.println(testList.size());
         //存储测试结果
         List<String[]> resultList = new ArrayList<>();
 
-
         for (String[] testStrings : testList) {
-
             //获取bert请求对象
             BertRequest request = getBertRequest(testStrings[1]);
 
@@ -107,8 +109,6 @@ public class Model7Test {
 //            String[] result = multipleProcess(testStrings);
 
             resultList.add(result);
-
-
         }
         //数据写入文本
         createFile(resultList);
@@ -116,19 +116,59 @@ public class Model7Test {
         System.out.println("totle：" + resultList.size() + "  rel:" + rel);
     }
 
-    private static List<String[]> getTestListEvent() throws IOException {
+    private static List<String[]> getTestList() throws IOException {
+//        String path = "E:\\下载\\钉钉文件\\工作资料\\create\\栏目分类\\prediction.csv";
+        String path = fileProperties.getTestPath() ;
 
+        AbstractDealFileWay abstractDealFileWay = new ColumnCsvDeal(new ColumnCsvExtract());
+        DealFileModify dealFileModify = new DealFileModify(abstractDealFileWay);
+        DealFile2Strings dealFile2Strings = new DealFileAdapter(dealFileModify);
 
-        String path = "E:\\下载\\钉钉文件\\工作资料\\bert\\事件分类\\多分类测试语料.csv";
-//        String path = aps.getPrimaryProperties().getPath();
-        Object labelHeader = aps.getPrimaryProperties().getLabel();
-        Object titleHeader = aps.getPrimaryProperties().getTitle();
-        Object contentHeader = aps.getPrimaryProperties().getContent();
-
-        DealFileWay dealCsvWay = new GeneralCsvDeal(labelHeader, titleHeader, contentHeader);
-
-        DealFile2Strings dealFile2Strings = new GeneralDealAdapter(dealCsvWay);
         return dealFile2Strings.dealFile(path);
+    }
+
+    /**
+     * 获取测试数据集
+     * @return
+     * @throws IOException
+     */
+    private static List<String[]> getTestListEvent() throws IOException {
+        //事件分类数据
+//        String path = "E:\\下载\\钉钉文件\\工作资料\\bert\\事件分类\\多分类测试语料.csv";
+//        String path = fileProperties.getTestPath();
+//        ApplicationProperties.PrimaryProperties primaryProperties = PropertiesFactory.getProperties("emotionAndGrade");
+//        String path = primaryProperties.getPath();
+//        Object labelHeader = primaryProperties.getLabel();
+//        Object titleHeader = primaryProperties.getTitle();
+//        Object contentHeader = primaryProperties.getContent();
+//
+//        DealFileWay dealCsvWay = new GeneralCsvDeal(labelHeader, titleHeader, contentHeader);
+//        DealFile2Strings dealFile2Strings = new GeneralDealAdapter(dealCsvWay);
+//
+//        //TODO:修改
+//        List<String[]> tempList = dealFile2Strings.dealFile(path);
+//        List<String[]> resultList = new ArrayList<>();
+
+        //舆情情感&等级数据
+        String path = aps.getEmotionAndGradeProperties().getPath();
+        Object labelHeader_1 = aps.getEmotionAndGradeProperties().getLabel_1();
+        Object labelHeader_2 = aps.getEmotionAndGradeProperties().getLabel_2();
+        Object[] labelHeaders = {labelHeader_1, labelHeader_2};
+        Object titleHeader = aps.getEmotionAndGradeProperties().getTitle();
+
+        DealFileWay dealFileWay = new EmotionAndGradeDeal(labelHeaders, titleHeader);
+        DealFile2Strings dealFile2Strings = new GeneralDealAdapter(dealFileWay);
+        List<String[]> tempList = dealFile2Strings.dealFile(path);
+
+        List<String[]> resultList = new ArrayList<>();
+
+        //截取未参加训练的数据
+        int num = 0;
+        for (int i = 0; i < 7; i++) {
+            resultList.addAll(tempList.subList((i + 1) * 13000, (i + 1) * 13000 + 1300));
+        }
+
+        return resultList;
 
     }
 
@@ -185,16 +225,13 @@ public class Model7Test {
     }
 
     private static String[] singleProcess(String[] testStrings) {
-        BertRequest request = getBertRequest(testStrings[0]);
+        BertRequest request = getBertRequest(testStrings[1]);
 
         //单分类请求
         ClassificationRequest<BertSingleResponse> classificationRequest = new SingleClassificationRequest( request, BertSingleResponse.class);
 
         //获取分类结果
         BertResultSingle bertResult = classificationRequest.getResult();
-
-
-
 
         //获取测试（标准）标签
 //            int label = (Integer.parseInt(ss[2]) - 1) * 3 + Integer.parseInt(ss[3]);
@@ -211,17 +248,6 @@ public class Model7Test {
         //预测概率
         result[2] = String.valueOf(bertResult.getScore());
         return result;
-    }
-
-    private static List<String[]> getTestList() throws IOException {
-//        String path = "E:\\下载\\钉钉文件\\工作资料\\create\\栏目分类\\prediction.csv";
-        String path = "E:\\下载\\钉钉文件\\工作资料\\bert\\栏目分类数据_验证.csv";
-
-        AbstractDealFileWay abstractDealFileWay = new ColumnCsvDeal(new ColumnCsvExtract());
-        DealFileModify dealFileModify = new DealFileModify(abstractDealFileWay);
-        DealFile2Strings dealFile2Strings = new DealFileAdapter(dealFileModify);
-
-        return dealFile2Strings.dealFile(path);
     }
 
     /**
@@ -251,34 +277,9 @@ public class Model7Test {
      */
     private static void createFile(List<String[]> resultList) throws IOException {
 //        CSVWriter writer = new CSVWriter(new FileWriter("E:\\下载\\钉钉文件\\工作资料\\create\\栏目分类\\result.csv"));
-        CSVWriter writer = new CSVWriter(new FileWriter("E:\\下载\\钉钉文件\\工作资料\\验证结果\\事件多分类\\result.csv"));
+        CSVWriter writer = new CSVWriter(new FileWriter(fileProperties.getCreatePath()));
 
         writer.writeAll(resultList);
         writer.close();
     }
-
-
-    //tsv读取
-    public static synchronized List<String[]> getList() throws IOException {
-
-
-//        File file = new File("E:\\下载\\钉钉文件\\工作资料\\create\\栏目分类\\dev.tsv");
-        File file = new File("E:\\下载\\钉钉文件\\工作资料\\bert\\栏目分类数据_验证.csv");
-
-
-        CSVReader csvReader = null;
-        char separatpr = '\t';
-
-        DataInputStream in = new DataInputStream(new FileInputStream(file));
-        csvReader = new CSVReader(new InputStreamReader(in, "utf-8"), separatpr);
-        List<String[]> allList = new ArrayList<>();
-        int i = 0;
-        while (i++ < 10) {
-
-            allList.add(csvReader.readNext());
-        }
-        System.out.println("数据量 : " + allList.size());
-        return allList;
-    }
-
 }
