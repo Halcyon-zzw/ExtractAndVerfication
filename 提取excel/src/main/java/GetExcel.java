@@ -1,5 +1,6 @@
 import config.ApplicationProperties;
 import config.ExcelProperties;
+import config.PropertiesFactory;
 import create.CreateFileWay;
 import create.impl.CreateExcelFile;
 import create.impl.CreateFileProportion;
@@ -71,7 +72,7 @@ public class GetExcel {
     /**
      * 提取grade and emotion 仅标题
      */
-    private static void gradeAndEnotionTitle() throws IOException {
+    public static void gradeAndEnotionTitle() throws IOException {
         //待汇总文件路径
         String path = aps.getEmotionAndGradeProperties().getPath();
 
@@ -85,12 +86,13 @@ public class GetExcel {
         DealFile dealFile = new DealFile(dealFileWay);
         List<String> result = dealFile.dealFile(path);
         //生成文件
-        CreateFileWay createFileWay = new CreateFileProportion(proportions, paths);
-        createFileWay.createFile(result);
+//        CreateFileWay createFileWay = new CreateFileProportion(proportions, paths);
+//        createFileWay.createFile(result);
     }
 
     /**
      * 常规提取excel
+     *
      * @throws IOException
      */
     private static void generalExcelDemo() throws IOException {
@@ -141,18 +143,22 @@ public class GetExcel {
      */
     private static void dealGeneralDemo() throws IOException {
         //待汇总文件路径
-        String path = aps.getPrimaryProperties().getPath();
+        ApplicationProperties.PrimaryProperties properties = PropertiesFactory.getProperties("column");
 
-        Object labelHeader = aps.getPrimaryProperties().getLabel();
-        Object titleHeader = aps.getPrimaryProperties().getTitle();
-        Object contentHeader = aps.getPrimaryProperties().getContent();
 
-        DealFileWay dealCsvWay = new GeneralCsvDeal(labelHeader, titleHeader, contentHeader);
-        List<String> result = dealCsvWay.extractedValue(path);
+        generalDeal(properties);
+
 //        CreateFileWay createFileProportion = new CreateFileProportion(proportions, paths);
 //        createFileProportion.createFile(result);
+    }
 
-
+    private static void generalDeal(ApplicationProperties.PrimaryProperties properties) throws IOException {
+        Object labelHeader = properties.getLabel();
+        Object titleHeader = properties.getTitle();
+        Object contentHeader = properties.getContent();
+        String path = properties.getPath();
+        DealFileWay dealCsvWay = new GeneralCsvDeal(labelHeader, titleHeader, contentHeader);
+        List<String> result = dealCsvWay.extractedValue(path);
     }
 
     /**

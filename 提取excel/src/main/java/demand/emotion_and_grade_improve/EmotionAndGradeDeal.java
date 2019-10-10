@@ -6,6 +6,7 @@ import deal.DealFileWay;
 import demand.emotion_and_grade_improve.EmotionAndGradeDataProcess;
 import demand.general.CountControl;
 import demand.general.RowValueProcess;
+import lombok.Setter;
 import org.apache.commons.lang3.StringUtils;
 import util.FileUtil;
 import util.StringsUtilCustomize;
@@ -26,7 +27,8 @@ public class EmotionAndGradeDeal implements DealFileWay {
     /**
      * 变量
      */
-    private final ApplicationProperties aps = new ApplicationProperties();
+    @Setter
+    private ApplicationProperties aps = new ApplicationProperties();
 
     /**
      * 行数据处理
