@@ -34,6 +34,8 @@ public class GetExcel {
 
     static int countFile = 0;
 
+    private static String basePath = "E:\\文件\\工作\\AI\\bert\\";
+
     private static ApplicationProperties aps = new ApplicationProperties();
 
     private static int[] proportions = aps.getCreateFileProporttionProperties().getProportions();
@@ -118,7 +120,7 @@ public class GetExcel {
     public static void extractClassifySupplement() throws IOException {
 
         //待提取文件路径
-        String extractedPath = "E:\\下载\\钉钉文件\\工作资料\\bert\\事件多分类补充语料.csv";
+        String extractedPath = basePath + "原始语料\\事件\\事件多分类补充语料.csv";
 
         DealFileWay lyricClassifyCsvDeal = new EventClassigySupplementCsvDeal();
         CreateFileWay createFileProportion = new CreateFileProportion(proportions, paths);
@@ -221,9 +223,9 @@ public class GetExcel {
      */
     public static void createFileByFileName() throws IOException {
 
-        String path = "E:\\下载\\钉钉文件\\工作资料\\create\\事件分类.xlsx";
+        String path = basePath + "训练语料\\事件分类.xlsx";
 
-        String dealPath = "E:\\下载\\钉钉文件\\工作资料\\债券舆情语料\\事件分类\\舆情事件分类语料提供-20180910\\";
+        String dealPath = basePath + "原始语料\\债券舆情语料\\事件分类\\舆情事件分类语料提供-20180910\\";
 
         DealFileWay dealFileWay = new FileNameDeal();
         DealFile fileNameToFile = new DealFile(dealFileWay);

@@ -1,6 +1,7 @@
 package demand.event_classify_2;
 
 import com.csvreader.CsvReader;
+import config.ApplicationProperties;
 import deal.DealFileWay;
 import deal.impl.AllClassifyExcelDeal;
 import org.apache.commons.lang3.StringUtils;
@@ -22,6 +23,8 @@ public class EventClassifyCsvProcess implements ColumnProcess {
      * 事件分类列表
      */
     private List<String> eventClassifyList;
+
+    private ApplicationProperties aps = new ApplicationProperties();
 
     public EventClassifyCsvProcess() {
         //从文件中读出事件分类列表
@@ -69,7 +72,7 @@ public class EventClassifyCsvProcess implements ColumnProcess {
         /**
          * 事件分类文件路径
          */
-        String classifyExcelPath = "E:\\下载\\钉钉文件\\工作资料\\create\\事件分类（二级）.xlsx";
+        String classifyExcelPath =  aps.getBaseProperties().getTrainPath() + "事件分类（二级）.xlsx";
         List<String> eventClassifyList = new ArrayList<>();
         DealFileWay allClassifyExcelDeal = new AllClassifyExcelDeal();
         try {

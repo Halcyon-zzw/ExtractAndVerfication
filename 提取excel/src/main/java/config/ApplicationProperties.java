@@ -17,22 +17,35 @@ import org.springframework.context.annotation.Configuration;
 @Data
 public class ApplicationProperties {
 
-    private final PrimaryProperties primaryProperties = new ColumnProperties();
+    private final PrimaryProperties primaryProperties = new EmotionAndGradeProperties();
     private final EventClassifyProperties eventClassifyProperties = new EventClassifyProperties();
     private final EmotionProperties emotionProperties = new EmotionProperties();
     private final EmotionAndGradeProperties emotionAndGradeProperties = new EmotionAndGradeProperties();
     private final CreateFileProporttionProperties createFileProporttionProperties = new CreateFileProporttionProperties();
     private final ColumnProperties columnProperties = new ColumnProperties();
     private final EventExcelProperties eventExcelProperties = new EventExcelProperties();
+    private final BaseProperties baseProperties = new BaseProperties();
     /**
      * 待汇总路径
      */
-    private final String summaryPath = "E:\\下载\\钉钉文件\\工作资料\\bert\\舆情语料.csv";
+    private final String summaryPath = "E:\\文件\\工作\\AI\\bert\\原始语料\\舆情语料.csv";
 
+    @Data
+    public class BaseProperties {
+        private String basePath = "E:\\文件\\工作\\AI\\bert\\";
 
+        private String testResultPath = basePath + "测试结果\\";
 
+        /**
+         * 提取的训练语料
+         */
+        private String trainPath = basePath + "训练语料\\";
 
-
+        /**
+         * 原始语料路径
+         */
+        private String originalPath = basePath + "原始语料\\";
+    }
 
 
 
@@ -62,7 +75,7 @@ public class ApplicationProperties {
     public class EventClassifyProperties extends PrimaryProperties{
         public EventClassifyProperties() {
 
-            super.path = "E:\\下载\\钉钉文件\\工作资料\\bert\\舆情语料.csv";
+            super.path = baseProperties.getOriginalPath() + "舆情语料.csv";
             super.dataCount = 10000;
             super.labelNumber = 66;
             super.label = "事件二级分类";
@@ -75,7 +88,6 @@ public class ApplicationProperties {
     public class EventProperties extends PrimaryProperties {
 
         public EventProperties() {
-            super.path = "E:\\下载\\钉钉文件\\工作资料\\bert\\舆情语料.csv";
             super.dataCount = 3000;
             super.labelNumber = 66;
             super.label = "事件二级分类";
@@ -87,7 +99,7 @@ public class ApplicationProperties {
      */
     public class EventSupplementProperties extends EventProperties{
         public EventSupplementProperties() {
-            super.path = "E:\\下载\\钉钉文件\\工作资料\\bert\\事件多分类补充语料.csv";
+            super.path = baseProperties.getOriginalPath() + "事件\\事件多分类补充语料.csv";
             super.dataCount = 100;
             super.labelNumber = 66;
             super.label = 5;
@@ -99,8 +111,7 @@ public class ApplicationProperties {
 
     @Data
     public class EventExcelProperties {
-        //        private String path = "E:\\下载\\钉钉文件\\工作资料\\债券舆情语料\\事件分类\\舆情事件分类语料提供-20180910\\105001-事件分类-企业变更.xlsx";
-        private String path = "E:\\下载\\钉钉文件\\工作资料\\债券舆情语料\\事件分类\\舆情事件分类语料提供-20180910\\";
+        private String path = baseProperties.getOriginalPath() + "债券舆情语料\\事件分类\\舆情事件分类语料提供-20180910\\";
         private int dataCount = 3000;
         private int labelNumber = 1;
         private int label = 1;
@@ -117,7 +128,7 @@ public class ApplicationProperties {
     public class EmotionProperties extends PrimaryProperties{
         public EmotionProperties() {
 
-            super.path = "E:\\文件\\工作\\AI\\bert\\舆情语料.csv";
+            super.path = baseProperties.getBasePath() + "舆情语料.csv";
             super.dataCount = 3000;
             super.labelNumber = 3;
             super.label = "舆情情感";
@@ -154,7 +165,7 @@ public class ApplicationProperties {
 
         public ColumnProperties() {
 
-            super.path = "E:\\下载\\钉钉文件\\工作资料\\bert\\栏目分类数据源_新.csv";
+            super.path = baseProperties.getOriginalPath() + "栏目\\栏目分类数据源_新.csv";
             super.dataCount = 3000;
             super.labelNumber = 27;
             //1-3，存在Id情况（从sql中导出），
@@ -174,7 +185,7 @@ public class ApplicationProperties {
      * 按比率生成文件相关属性
      */
     @Data
-    public static class CreateFileProporttionProperties {
+    public class CreateFileProporttionProperties {
 
         /**
          * 输出文件比率
@@ -184,7 +195,7 @@ public class ApplicationProperties {
         /**
          * 基础路径
          */
-        private String basePath = "E:\\下载\\钉钉文件\\工作资料\\create\\";
+        private String trainBasePath = baseProperties.getTrainPath();
         /**
          * 具体的数据类型
          * TODO： 生成不同的文件需要修改
@@ -202,9 +213,9 @@ public class ApplicationProperties {
          * 输出文件路径
          */
         private String[] paths = {
-                basePath + type + "\\dev.tsv",
-                basePath + type + "\\test.tsv",
-                basePath + type + "\\train.tsv",
+                trainBasePath + type + "\\dev.tsv",
+                trainBasePath + type + "\\test.tsv",
+                trainBasePath + type + "\\train.tsv",
         };
     }
 }

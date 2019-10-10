@@ -197,7 +197,7 @@ public class EventClassifyCsvDeal implements DealFileWay {
      * @param count 数据量
      */
     private void fillFromFile(Map<String, List<String>> secondaryEventHashMap, String fileKey, int count) {
-        String prefixPath = "E:\\下载\\钉钉文件\\工作资料\\债券舆情语料\\事件分类\\舆情事件分类语料提供-20180910\\";
+        String prefixPath = aps.getBaseProperties().getOriginalPath() + "债券舆情语料\\事件分类\\舆情事件分类语料提供-20180910\\";
         String suffix = ".xlsx";
         String fileName = getFileNameMapping(fileKey);
         String filePath = prefixPath + fileName + suffix;
@@ -218,7 +218,7 @@ public class EventClassifyCsvDeal implements DealFileWay {
         /**
          * 事件分类文件路径
          */
-        String classifyExcelPath = "E:\\下载\\钉钉文件\\工作资料\\create\\事件二级分类.xlsx";
+        String classifyExcelPath = aps.getBaseProperties().getTrainPath() + "事件二级分类.xlsx";
 
         List<String> eventClassifyList = new ArrayList<>();
         DealFileWay allClassifyExcelDeal = new AllClassifyExcelDeal();

@@ -40,6 +40,7 @@ public class Model7Test {
     static int allCount = 0;
     private static ApplicationProperties aps = new ApplicationProperties();
     private static FileProperties fileProperties = new FileProperties();
+    private static String basePath = fileProperties.getBasePath();
 
     public static void main(String[] args) throws IOException {
 
@@ -117,7 +118,7 @@ public class Model7Test {
     }
 
     private static List<String[]> getTestList() throws IOException {
-//        String path = "E:\\下载\\钉钉文件\\工作资料\\create\\栏目分类\\prediction.csv";
+//        String path = basePath + "训练语料\\栏目分类\\prediction.csv";
         String path = fileProperties.getTestPath() ;
 
         AbstractDealFileWay abstractDealFileWay = new ColumnCsvDeal(new ColumnCsvExtract());

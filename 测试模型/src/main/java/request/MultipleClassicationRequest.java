@@ -27,7 +27,7 @@ import java.util.stream.Collectors;
 public class MultipleClassicationRequest extends ClassificationRequest {
     private List<String> resultList = new ArrayList<>();
 
-    private String path = "E:\\下载\\钉钉文件\\工作资料\\验证结果\\事件多分类\\事件多分类请求缓存.txt";
+    private String path = "E:\\文件\\工作\\AI\\bert\\测试结果\\事件多分类\\事件多分类请求缓存.txt";
     private List<List<PredictionUnit>> resonstList = new ArrayList<>();
 
     public MultipleClassicationRequest(BertRequest bertRequest, Class responseType) {
