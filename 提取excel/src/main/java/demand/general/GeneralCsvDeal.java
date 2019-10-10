@@ -57,6 +57,12 @@ public class GeneralCsvDeal implements DealFileWay {
     private boolean contentExtract = true;
 
 
+    /**
+     * 设置属性为""或-1时表示不提取该列数据
+     * @param labelHeader
+     * @param titleHeader
+     * @param contentHeader
+     */
     public GeneralCsvDeal(Object labelHeader, Object titleHeader, Object contentHeader) {
         this.labelHeader = labelHeader;
         this.titleHeader = titleHeader;

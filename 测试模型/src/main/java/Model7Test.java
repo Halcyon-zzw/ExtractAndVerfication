@@ -4,6 +4,7 @@ import bert.PredictionUnit;
 import bert.deal_file.DealFileAdapter;
 import bert.deal_file.DealFile2Strings;
 import bert.deal_file.GeneralDealAdapter;
+import bert.extract.ColumnExtract;
 import bert.single.BertResultSingle;
 import bert.single.BertSingleResponse;
 import com.opencsv.CSVReader;
@@ -28,6 +29,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * @description: ${description}
@@ -134,6 +136,11 @@ public class Model7Test {
      * @throws IOException
      */
     private static List<String[]> getTestListEvent() throws IOException {
+        //栏目数据（舆情）数据提取
+        ColumnExtract columnExtract =new ColumnExtract();
+        return columnExtract.extract();
+
+
         //事件分类数据
 //        String path = "E:\\下载\\钉钉文件\\工作资料\\bert\\事件分类\\多分类测试语料.csv";
 //        String path = fileProperties.getTestPath();
@@ -151,25 +158,25 @@ public class Model7Test {
 //        List<String[]> resultList = new ArrayList<>();
 
         //舆情情感&等级数据
-        String path = aps.getEmotionAndGradeProperties().getPath();
-        Object labelHeader_1 = aps.getEmotionAndGradeProperties().getLabel_1();
-        Object labelHeader_2 = aps.getEmotionAndGradeProperties().getLabel_2();
-        Object[] labelHeaders = {labelHeader_1, labelHeader_2};
-        Object titleHeader = aps.getEmotionAndGradeProperties().getTitle();
-
-        DealFileWay dealFileWay = new EmotionAndGradeDeal(labelHeaders, titleHeader);
-        DealFile2Strings dealFile2Strings = new GeneralDealAdapter(dealFileWay);
-        List<String[]> tempList = dealFile2Strings.dealFile(path);
-
-        List<String[]> resultList = new ArrayList<>();
-
-        //截取未参加训练的数据
-        int num = 0;
-        for (int i = 0; i < 7; i++) {
-            resultList.addAll(tempList.subList((i + 1) * 13000, (i + 1) * 13000 + 1300));
-        }
-
-        return resultList;
+//        String path = aps.getEmotionAndGradeProperties().getPath();
+//        Object labelHeader_1 = aps.getEmotionAndGradeProperties().getLabel_1();
+//        Object labelHeader_2 = aps.getEmotionAndGradeProperties().getLabel_2();
+//        Object[] labelHeaders = {labelHeader_1, labelHeader_2};
+//        Object titleHeader = aps.getEmotionAndGradeProperties().getTitle();
+//
+//        DealFileWay dealFileWay = new EmotionAndGradeDeal(labelHeaders, titleHeader);
+//        DealFile2Strings dealFile2Strings = new GeneralDealAdapter(dealFileWay);
+//        List<String[]> tempList = dealFile2Strings.dealFile(path);
+//
+//        List<String[]> resultList = new ArrayList<>();
+//
+//        //截取未参加训练的数据
+//        int num = 0;
+//        for (int i = 0; i < 7; i++) {
+//            resultList.addAll(tempList.subList((i + 1) * 13000, (i + 1) * 13000 + 1300));
+//        }
+//
+//        return resultList;
 
     }
 
