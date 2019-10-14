@@ -17,6 +17,7 @@ import org.springframework.context.annotation.Configuration;
 @Data
 public class ApplicationProperties {
 
+    private final BaseProperties baseProperties = new BaseProperties();
     private final PrimaryProperties primaryProperties = new EmotionAndGradeProperties();
     private final EventClassifyProperties eventClassifyProperties = new EventClassifyProperties();
     private final EmotionProperties emotionProperties = new EmotionProperties();
@@ -24,7 +25,7 @@ public class ApplicationProperties {
     private final CreateFileProporttionProperties createFileProporttionProperties = new CreateFileProporttionProperties();
     private final ColumnProperties columnProperties = new ColumnProperties();
     private final EventExcelProperties eventExcelProperties = new EventExcelProperties();
-    private final BaseProperties baseProperties = new BaseProperties();
+
     /**
      * 待汇总路径
      */
@@ -146,11 +147,12 @@ public class ApplicationProperties {
         Object label_2;
         public EmotionAndGradeProperties() {
 
-            super.path = "E:\\文件\\工作\\AI\\bert\\舆情语料.csv";
+            super.path = baseProperties.getOriginalPath() + "舆情语料.csv";
             super.dataCount = 13000;
             super.labelNumber = 7;
             label_1 = "舆情情感";
             label_2 = "舆情情感等级";
+            super.content = "内容";
 
             super.haveHeader = true;
         }

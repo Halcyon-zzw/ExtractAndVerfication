@@ -70,6 +70,13 @@ public class EmotionAndGradeDeal implements DealFileWay {
         this.titleHeader = titleHeader;
     }
 
+    public EmotionAndGradeDeal(Object[] labelHeaders, Object titleHeader, Object contentHeader) {
+        this.labelHeaders = labelHeaders;
+        this.titleHeader = titleHeader;
+        this.contentHeader = contentHeader;
+        contentExtract = true;
+    }
+
     public EmotionAndGradeDeal(Object labelHeader, Object titleHeader, Object contentHeader) {
         this.labelHeader = labelHeader;
         this.titleHeader = titleHeader;
