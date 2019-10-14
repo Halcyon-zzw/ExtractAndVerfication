@@ -30,9 +30,4 @@ public class EmotionAndGradeDataProcess extends RowValueProcess {
 
         return String.valueOf(label);
     }
-
-    @Override
-    public String getArticle(String title, String content) {
-        return dealString(title);
-    }
 }
