@@ -248,13 +248,15 @@ public class Model7Test {
         if (bertResult.getLabel().equals(String.valueOf(label))) {
             rel++;
         }
-        String[] result = new String[3];
+        String[] result = new String[4];
         //测试标签
         result[0] = String.valueOf(label);
         //预测标签
         result[1] = bertResult.getLabel();
         //预测概率
         result[2] = String.valueOf(bertResult.getScore());
+        //原文
+        result[3] = testStrings[1];
         return result;
     }
 
@@ -285,6 +287,11 @@ public class Model7Test {
      */
     private static void createFile(List<String[]> resultList) throws IOException {
 //        CSVWriter writer = new CSVWriter(new FileWriter("E:\\下载\\钉钉文件\\工作资料\\create\\栏目分类\\result.csv"));
+        Path path = Paths.get(fileProperties.getCreatePath());
+        File file = path.getParent().toFile();
+        if (!file.exists()) {
+            file.mkdir();
+        }
         CSVWriter writer = new CSVWriter(new FileWriter(fileProperties.getCreatePath()));
 
         writer.writeAll(resultList);
