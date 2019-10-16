@@ -1,5 +1,6 @@
 package demand.general;
 
+import config.ApplicationProperties;
 import util.StringsUtilCustomize;
 
 /**
@@ -11,6 +12,8 @@ import util.StringsUtilCustomize;
  * @Version: 1.0
  */
 public class RowValueProcess {
+
+    private ApplicationProperties aps = new ApplicationProperties();
 
     /**
      * 字符串的最小长度
@@ -33,7 +36,7 @@ public class RowValueProcess {
         /**
          * 截取字符的长度，拼接时需要一个字符
          */
-        int articleLength = 512;
+        int articleLength = aps.getArticleLength();
         //处理特殊字符
         content = dealString(content);
         //删除无效内容
@@ -47,8 +50,8 @@ public class RowValueProcess {
         if (article.length() > articleLength) {
             String resultArticle = "";
             //截取内容
-            resultArticle = article.substring(0, 256);
-            resultArticle += article.substring(article.length() - 256, article.length());
+            resultArticle = article.substring(0, articleLength / 2);
+            resultArticle += article.substring(article.length() - articleLength / 2, article.length());
 
             return resultArticle;
         }
@@ -80,11 +83,11 @@ public class RowValueProcess {
     protected String dealString(String tempString) {
 
         return tempString
-                .replaceAll("\b", " ")
-                .replaceAll("\f", " ")
-                .replaceAll("\n", " ")
-                .replaceAll("\r", " ")
-                .replaceAll("\t", " ");
+                .replaceAll("\b", "")
+                .replaceAll("\f", "")
+                .replaceAll("\n", "")
+                .replaceAll("\r", "")
+                .replaceAll("\t", "");
     }
 
     /**

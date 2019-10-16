@@ -67,6 +67,15 @@ public class FileUtil {
         return workbook.getSheetAt(sheetIndex);
     }
 
+    /**
+     * 获取csv文件格式操作对象,默认使用UTF-8编码格式
+     * @param csvPath
+     * @return
+     * @throws FileNotFoundException
+     */
+    public static CsvReader getCsvReader(String csvPath) {
+        return getCsvReader(csvPath, Charset.forName("UTF-8"));
+    }
 
     /**
      * 获取csv文件格式操作对象
@@ -76,12 +85,32 @@ public class FileUtil {
      * @return CsvReader对象
      */
     public static CsvReader getCsvReader(String csvPath, Charset encodingFormat) {
+        return getCsvReader(csvPath, ',', encodingFormat);
+    }
 
-        char separatpr = ',';
+    /**
+     * 获取csv文件格式操作对象
+     *
+     * @param csvPath
+     * @param separator 分割符
+     * @return CsvReader对象
+     */
+    public static CsvReader getCsvReader(String csvPath, char separator) {
+        return getCsvReader(csvPath, separator, Charset.forName("UTF-8"));
+    }
+
+    /**
+     * 获取csv文件格式操作对象
+     *
+     * @param csvPath
+     * @param encodingFormat 编码格式
+     * @return CsvReader对象
+     */
+    public static CsvReader getCsvReader(String csvPath, char separator, Charset encodingFormat) {
         CsvReader csvReader = null;
 
         try {
-            csvReader = new CsvReader(csvPath, separatpr, encodingFormat);
+            csvReader = new CsvReader(csvPath, separator, encodingFormat);
 
             //解决数据长度大于100000出错问题
             csvReader.setSafetySwitch(false);
@@ -92,16 +121,6 @@ public class FileUtil {
         return csvReader;
     }
 
-    /**
-     * 获取csv文件格式操作对象,默认使用UTF-8编码格式
-     * @param csvPath
-     * @return
-     * @throws FileNotFoundException
-     */
-    public static CsvReader getCsvReader(String csvPath) {
-
-        return getCsvReader(csvPath, Charset.forName("UTF-8"));
-    }
 
     /**
      * 通过自定义编码格式获取csvReader对象，

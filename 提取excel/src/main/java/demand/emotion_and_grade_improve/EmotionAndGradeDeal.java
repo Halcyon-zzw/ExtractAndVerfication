@@ -161,6 +161,9 @@ public class EmotionAndGradeDeal implements DealFileWay {
                 //提取一行数据 - 变
                 String rowValue = dataProcess.extractRowValue(new String[]{labels.get(0), labels.get(1)}, title, content);
 
+                //统计文章长度    (截取前面的标签)
+                countControl.rangeStatistics(rowValue.split("\t")[1]);
+
                 if (null == tempResultMap.get(label)) {
                     tempResultMap.put(label, new ArrayList<String>());
                 }
@@ -211,5 +214,7 @@ public class EmotionAndGradeDeal implements DealFileWay {
 
         return aps.getPrimaryProperties().isHaveHeader();
     }
+
+
 
 }

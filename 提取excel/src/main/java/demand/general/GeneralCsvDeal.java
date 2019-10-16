@@ -6,7 +6,6 @@ import deal.DealFileWay;
 import lombok.Setter;
 import org.apache.commons.lang3.StringUtils;
 import util.FileUtil;
-import util.StringsUtilCustomize;
 
 import java.nio.charset.Charset;
 import java.util.ArrayList;
@@ -56,6 +55,9 @@ public class GeneralCsvDeal implements DealFileWay {
     private boolean titleExtract = true;
     private boolean contentExtract = true;
 
+    private Charset charset = Charset.forName("UTF-8");
+    private char separator = ',';
+
 
     /**
      * 设置属性为""或-1时表示不提取该列数据
@@ -80,6 +82,23 @@ public class GeneralCsvDeal implements DealFileWay {
         }
     }
 
+    public GeneralCsvDeal(Object labelHeader, Object titleHeader, Object contentHeader, char separator) {
+        this(labelHeader, titleHeader, contentHeader);
+        this.separator = separator;
+    }
+
+    public GeneralCsvDeal(Object labelHeader, Object titleHeader, Object contentHeader, Charset charset) {
+        this(labelHeader, titleHeader, contentHeader);
+        this.charset = charset;
+    }
+
+    public GeneralCsvDeal(Object labelHeader, Object titleHeader, Object contentHeader, char separator, Charset charset) {
+        this(labelHeader, titleHeader, contentHeader);
+        this.separator = separator;
+        this.charset = charset;
+    }
+
+
     /**
      * 从文件中提取数据
      *
@@ -93,7 +112,7 @@ public class GeneralCsvDeal implements DealFileWay {
         HashMap<String, List<String>> tempResultMap = new HashMap<>();
 
         //获取csvRead
-        CsvReader csvReader = FileUtil.getCsvReader(csvPath, Charset.forName("gbk"));
+        CsvReader csvReader = FileUtil.getCsvReader(csvPath, separator, charset);
         System.out.println("开始处理...");
         // 逐条读取记录，直至读完
         try {
@@ -167,7 +186,7 @@ public class GeneralCsvDeal implements DealFileWay {
         //数据提取情况
         dataSituation(countControl, tempResultMap);
         //过滤数据少的数据
-        tempResultMap = fileLessData(countControl, tempResultMap, 400);
+        tempResultMap = fileLessData(countControl, tempResultMap, aps.getLessDataCount());
         //添加数据
         resultList = addData(resultList, tempResultMap);
         return resultList;
