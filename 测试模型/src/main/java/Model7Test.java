@@ -5,6 +5,7 @@ import bert.deal_file.DealFileAdapter;
 import bert.deal_file.DealFile2Strings;
 import bert.deal_file.GeneralDealAdapter;
 import bert.extract.ColumnExtract;
+import bert.extract.EmotionAndGradeExtract;
 import bert.single.BertResultSingle;
 import bert.single.BertSingleResponse;
 import com.opencsv.CSVReader;
@@ -23,8 +24,11 @@ import pool.DealFileModify;
 import request.ClassificationRequest;
 import request.MultipleClassicationRequest;
 import request.SingleClassificationRequest;
+import util.FileUtil;
 
 import java.io.*;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -116,7 +120,14 @@ public class Model7Test {
         //数据写入文本
         createFile(resultList);
 
-        System.out.println("totle：" + resultList.size() + "  rel:" + rel);
+        String resultString = "总量：" + resultList.size() + "\n";
+        resultString += "正确数量：" + rel + "\n";
+        float correctRate = rel / resultList.size();
+        resultString += "正确率：" + correctRate + "\n";
+        System.out.println(resultString);
+        List<String> temp = new ArrayList<>();
+        temp.add(resultString);
+        FileUtil.createFile(temp, fileProperties.getStatisticsPath());
     }
 
     private static List<String[]> getTestList() throws IOException {
@@ -137,8 +148,12 @@ public class Model7Test {
      */
     private static List<String[]> getTestListEvent() throws IOException {
         //栏目数据（舆情）数据提取
-        ColumnExtract columnExtract =new ColumnExtract();
-        return columnExtract.extract();
+//        ColumnExtract columnExtract =new ColumnExtract();
+//        return columnExtract.extract();
+
+        //舆情情感&等级数据
+        EmotionAndGradeExtract emotionAndGradeExtract = new EmotionAndGradeExtract();
+        return emotionAndGradeExtract.extract();
 
 
         //事件分类数据
@@ -157,26 +172,7 @@ public class Model7Test {
 //        List<String[]> tempList = dealFile2Strings.dealFile(path);
 //        List<String[]> resultList = new ArrayList<>();
 
-        //舆情情感&等级数据
-//        String path = aps.getEmotionAndGradeProperties().getPath();
-//        Object labelHeader_1 = aps.getEmotionAndGradeProperties().getLabel_1();
-//        Object labelHeader_2 = aps.getEmotionAndGradeProperties().getLabel_2();
-//        Object[] labelHeaders = {labelHeader_1, labelHeader_2};
-//        Object titleHeader = aps.getEmotionAndGradeProperties().getTitle();
-//
-//        DealFileWay dealFileWay = new EmotionAndGradeDeal(labelHeaders, titleHeader);
-//        DealFile2Strings dealFile2Strings = new GeneralDealAdapter(dealFileWay);
-//        List<String[]> tempList = dealFile2Strings.dealFile(path);
-//
-//        List<String[]> resultList = new ArrayList<>();
-//
-//        //截取未参加训练的数据
-//        int num = 0;
-//        for (int i = 0; i < 7; i++) {
-//            resultList.addAll(tempList.subList((i + 1) * 13000, (i + 1) * 13000 + 1300));
-//        }
-//
-//        return resultList;
+
 
     }
 

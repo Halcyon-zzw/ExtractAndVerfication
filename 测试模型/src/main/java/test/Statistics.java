@@ -21,6 +21,7 @@ import java.util.stream.Collectors;
 public class Statistics {
 
     private static FileProperties fileProperties = new FileProperties();
+    private static FileProperties.PrimaryProperties primaryProperties = fileProperties.getPrimaryProperties();
 
     public static void main(String[] args) throws IOException {
         statistics();
@@ -51,7 +52,7 @@ public class Statistics {
 
         List<String> errorData = data.stream().map(PredictionData::toString).collect(Collectors.toList());
         //错误数据输出到文件
-        FileUtil.createFile(errorData, fileProperties.getErrorPath());
+        FileUtil.createFile(errorData, primaryProperties.getErrorPath());
 
 
         //统计出错情况
@@ -71,20 +72,21 @@ public class Statistics {
             toolMistakeMap.put(category, mistakeMap);
         }
 
-
+        List<String> resultList = new ArrayList<>();
         //输出
         for (Map.Entry<String, HashMap<String, Integer>> entryTool : toolMistakeMap.entrySet()) {
-            System.out.println("类别" + entryTool.getKey() + ":");
-            System.out.println("----");
-            System.out.println("误识别情况：");
+            resultList.add("类别" + entryTool.getKey() + ":");
+            resultList.add("----");
+            resultList.add("误识别情况：");
+            
             for (Map.Entry<String, Integer> entry : entryTool.getValue().entrySet()) {
-                System.out.println(entry.getKey() + ":" + entry.getValue());
+                resultList.add(entry.getKey() + ":" + entry.getValue());
             }
             long toolNum = entryTool.getValue().entrySet().stream().mapToInt(HashMap.Entry::getValue).sum();
-            System.out.println("总误识别数：" + toolNum);
-            System.out.println("-----------------------------");
+            resultList.add("总误识别数：" + toolNum);
+            resultList.add("-----------------------------");
         }
-
+        FileUtil.createFile(resultList, primaryProperties.getStatisticsPath());
 
     }
 }
