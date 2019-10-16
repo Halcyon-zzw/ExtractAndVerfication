@@ -82,14 +82,15 @@ public class GetExcel {
         Object labelHeader_2 = aps.getEmotionAndGradeProperties().getLabel_2();
         Object[] labelHeaders = {labelHeader_1, labelHeader_2};
         Object titleHeader = aps.getEmotionAndGradeProperties().getTitle();
+        Object contentHeader = aps.getEmotionAndGradeProperties().getContent();
 
-
-        DealFileWay dealFileWay = new EmotionAndGradeDeal(labelHeaders, titleHeader);
+//        DealFileWay dealFileWay = new EmotionAndGradeDeal(labelHeaders, titleHeader);
+        DealFileWay dealFileWay = new EmotionAndGradeDeal(labelHeaders, titleHeader, contentHeader);
         DealFile dealFile = new DealFile(dealFileWay);
         List<String> result = dealFile.dealFile(path);
         //生成文件
-//        CreateFileWay createFileWay = new CreateFileProportion(proportions, paths);
-//        createFileWay.createFile(result);
+        CreateFileWay createFileWay = new CreateFileProportion(proportions, paths);
+        createFileWay.createFile(result);
     }
 
     /**
