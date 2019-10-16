@@ -182,6 +182,22 @@ public class ApplicationProperties {
         private final int leastDataCount = 200;
     }
 
+    public class PrimaryTestProperties {
+
+    }
+
+
+    public class EmotionAndGradeTestProperties extends PrimaryProperties{
+        public EmotionAndGradeTestProperties() {
+            super.path = baseProperties.getTrainPath() + "情感and等级_删无效\\test.tsv";
+            super.dataCount = -1;
+            super.labelNumber = 7;
+            super.label = 0;
+            super.title = 1;
+            super.content = -1;
+            super.haveHeader = false;
+        }
+    }
 
     /**
      * 按比率生成文件相关属性
