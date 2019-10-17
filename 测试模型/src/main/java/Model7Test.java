@@ -29,10 +29,8 @@ import util.FileUtil;
 import java.io.*;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.time.LocalTime;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -107,16 +105,22 @@ public class Model7Test {
         //存储测试结果
         List<String[]> resultList = new ArrayList<>();
 
+        LocalTime startTime = LocalTime.now();
         for (String[] testStrings : testList) {
             //获取bert请求对象
             BertRequest request = getBertRequest(testStrings[1]);
 
-            //-TODO:替换
+            //-TODO:替换  请求
             String[] result = singleProcess(testStrings);
 //            String[] result = multipleProcess(testStrings);
 
             resultList.add(result);
         }
+
+        LocalTime endTime = LocalTime.now();
+        //耗时
+        int consumingTime = endTime.toSecondOfDay() - startTime.toSecondOfDay();
+        System.out.println("请求结束，耗时：" + consumingTime / 60 + "分钟");
         //数据写入文本
         createFile(resultList);
 
