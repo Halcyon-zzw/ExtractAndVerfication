@@ -14,6 +14,7 @@ import java.util.stream.Collectors;
 /**
  * 统计
  *
+ * 统计每一类的正确率
  * @Author: zhuzw
  * @Date: 2019/10/10 8:48
  * @Version: 1.0
@@ -22,6 +23,11 @@ public class Statistics {
 
     private static FileProperties fileProperties = new FileProperties();
     private static FileProperties.PrimaryProperties primaryProperties = fileProperties.getPrimaryProperties();
+
+    /**
+     * 记录每类分类的数量
+     */
+    private static HashMap<String, Integer> categoriesMap = new HashMap<>();
 
     public static void main(String[] args) throws IOException {
         statistics();
@@ -48,6 +54,12 @@ public class Statistics {
                 predictionData.setContent(csvReader.get(3));
                 data.add(predictionData);
             }
+
+            //统计分类总数
+            if (null == categoriesMap.get(predictionData.getStandard())) {
+                categoriesMap.put(predictionData.getStandard(), 0);
+            }
+            categoriesMap.put(predictionData.getStandard(), categoriesMap.get(predictionData.getStandard()));
         }
 
         List<String> errorData = data.stream().map(PredictionData::toString).collect(Collectors.toList());
@@ -82,8 +94,11 @@ public class Statistics {
             for (Map.Entry<String, Integer> entry : entryTool.getValue().entrySet()) {
                 resultList.add(entry.getKey() + ":" + entry.getValue());
             }
-            long toolNum = entryTool.getValue().entrySet().stream().mapToInt(HashMap.Entry::getValue).sum();
-            resultList.add("总误识别数：" + toolNum);
+            int toolMistakeNum = entryTool.getValue().entrySet().stream().mapToInt(HashMap.Entry::getValue).sum();
+            int toolNum = categoriesMap.get(entryTool.getKey());
+            resultList.add("分类总数：" + toolNum);
+            resultList.add("总误识别数：" + toolMistakeNum);
+            resultList.add("准确率：" + (toolMistakeNum / toolNum));
             resultList.add("-----------------------------");
         }
         FileUtil.createFile(resultList, primaryProperties.getStatisticsPath());

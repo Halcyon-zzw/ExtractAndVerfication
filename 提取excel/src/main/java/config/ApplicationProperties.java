@@ -17,13 +17,16 @@ import org.springframework.context.annotation.Configuration;
 @Data
 public class ApplicationProperties {
 
+    private final int beginLength = 140;
 
-    private final int articleLength = 400;
+    private final int endLength = 50;
+
+    private final int articleLength = beginLength + endLength;
 
     private final int lessDataCount = -1;
 
     private final BaseProperties baseProperties = new BaseProperties();
-    private final PrimaryProperties primaryProperties = new EmotionAndGradeProperties();
+    private PrimaryProperties primaryProperties;
     private final EventClassifyProperties eventClassifyProperties = new EventClassifyProperties();
     private final EmotionProperties emotionProperties = new EmotionProperties();
     private final EmotionAndGradeProperties emotionAndGradeProperties = new EmotionAndGradeProperties();
@@ -76,6 +79,12 @@ public class ApplicationProperties {
         protected Object content = "内容";
         protected boolean haveHeader = true;
 
+        public String toString() {
+            return "路径：" + path + "\n"
+                    + "数据量：" + dataCount + "\n"
+                    + "过滤数据量：" + lessCount + "\n"
+                    + "标签数量：" + labelNumber + "\n";
+        }
     }
 
     /**
@@ -151,19 +160,26 @@ public class ApplicationProperties {
      */
     @Data
     public class EmotionAndGradeProperties extends PrimaryProperties{
-        private final int DATA_COUNT = 13000;
+        private final int DATA_COUNT = 50000;
         Object label_1;
         Object label_2;
         public EmotionAndGradeProperties() {
 
             super.path = baseProperties.getOriginalPath() + "舆情语料.csv";
-            super.dataCount = 26000;
+            super.dataCount = 50000;
             super.labelNumber = 7;
             label_1 = "舆情情感";
             label_2 = "舆情情感等级";
             super.content = "内容";
 
             super.haveHeader = true;
+        }
+
+        public String toString() {
+            return "路径：" + path + "\n"
+                    + "数据量：" + dataCount + "\n"
+                    + "过滤数据量：" + lessCount + "\n"
+                    + "标签数量：" + labelNumber + "\n";
         }
     }
 
@@ -198,7 +214,8 @@ public class ApplicationProperties {
 
     public class EmotionAndGradeTestProperties extends PrimaryProperties{
         public EmotionAndGradeTestProperties() {
-            super.path = baseProperties.getTrainPath() + "情感and等级_删无效\\test.tsv";
+//            super.path = baseProperties.getTrainPath() + "情感and等级_删无效\\test.tsv";
+            super.path = baseProperties.getTrainPath() + "情感_等级_test\\test.tsv";
             super.dataCount = -1;
             super.labelNumber = 7;
             super.label = 0;
@@ -237,7 +254,9 @@ public class ApplicationProperties {
 //        private String type = "情感and等级_标题_test";
 //        private String type = "情感and等级_含无效";
 //        private String type = "情感and等级_删无效";
-        private String type = "情感and等级_26000(9_13000)";
+//        private String type = "情感and等级_26000(9_13000)";
+        private String type = "情感and等级_50000";
+//        private String type = "情感and等级_All";
 
         /**
          * 输出文件路径

@@ -11,6 +11,7 @@ import org.apache.commons.lang3.StringUtils;
 import util.FileUtil;
 import util.StringsUtilCustomize;
 
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -99,10 +100,14 @@ public class EmotionAndGradeDeal implements DealFileWay {
         //获取csvRead
         CsvReader csvReader = FileUtil.getCsvReader(csvPath);
         System.out.println("开始处理...");
+        System.out.println("处理参数：");
+        System.out.println("数据长度：" + aps.getArticleLength());
+        System.out.println(aps.getPrimaryProperties().toString());
 
 
         String title = "";
         String content = "";
+        LocalTime localTime1 = LocalTime.now();
         // 逐条读取记录，直至读完
         try {
             if (haveHeader()) {
@@ -180,7 +185,8 @@ public class EmotionAndGradeDeal implements DealFileWay {
                 csvReader.close();
             }
         }
-
+        LocalTime localTime2 = LocalTime.now();
+        System.out.println("耗时：" + (localTime2.toSecondOfDay() - localTime1.toSecondOfDay()));
         //数据提取情况
         dataSituation(countControl, tempResultMap);
         //添加数据
