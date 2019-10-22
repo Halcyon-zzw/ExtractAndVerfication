@@ -49,6 +49,8 @@ public class EmotionAndGradeExtract {
         Object titleHeader = aps.getEmotionAndGradeTestProperties().getTitle();
         Object content = -1;
         DealFileWay dealFileWay = new GeneralCsvDeal(label, titleHeader, content, '\t');
+        aps.setPrimaryProperties(aps.getEmotionAndGradeTestProperties());
+        ((GeneralCsvDeal) dealFileWay).setAps(aps);
         DealFile2Strings dealFile2Strings = new GeneralDealAdapter(dealFileWay);
         List<String[]> tempList = dealFile2Strings.dealFile(path);
 
