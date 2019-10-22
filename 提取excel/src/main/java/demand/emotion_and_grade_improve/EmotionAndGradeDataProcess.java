@@ -25,7 +25,7 @@ public class EmotionAndGradeDataProcess extends RowValueProcess {
         int label = (label_1 - 1) * 3 + label_2;
         //中性4、5、6 统一成 4
         if (label > 3 && label <7) {
-            label = 6;
+            label = 5;
         }
 
         return String.valueOf(label);
