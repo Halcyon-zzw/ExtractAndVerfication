@@ -86,6 +86,8 @@ public class GetExcel {
 
 //        DealFileWay dealFileWay = new EmotionAndGradeDeal(labelHeaders, titleHeader);
         DealFileWay dealFileWay = new EmotionAndGradeDeal(labelHeaders, titleHeader, contentHeader);
+        aps.setPrimaryProperties(PropertiesFactory.getProperties("emotionAndGrade"));
+        ((EmotionAndGradeDeal) dealFileWay).setAps(aps);
         DealFile dealFile = new DealFile(dealFileWay);
         List<String> result = dealFile.dealFile(path);
         //生成文件
