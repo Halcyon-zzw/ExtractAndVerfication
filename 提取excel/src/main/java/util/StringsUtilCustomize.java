@@ -4,6 +4,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.poi.util.StringUtil;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.regex.Pattern;
 
@@ -314,5 +315,75 @@ public class StringsUtilCustomize {
             return true;
         }
         return false;
+    }
+
+    public static boolean isLetterOrNumber(char c) {
+        boolean isNumber = Character.isDigit(c);
+        boolean isLetter = Character.isLetter(c);
+        if (isNumber || isLetter) {
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * 删除字符串中的空格（不删除英文字母间的空格）
+     * @param str
+     * @return
+     */
+    public static String substringByDeleteSpace(String str) {
+        str = str.trim();
+        while(-1 != str.indexOf("  ")) {
+            str = str.replaceAll(" {2,}", " ");
+        }
+
+        char[] charsOfContent = str.toCharArray();
+        for (int i = 0; i < charsOfContent.length; i++) {
+            if (' ' == charsOfContent[i]) {
+                char beforeChar = '#';
+                char afterChar = '#';
+                if (i - 1 >= 0) {
+                    beforeChar = charsOfContent[i - 1];
+                }
+                if (i + 1 < str.length()) {
+                    afterChar = charsOfContent[i + 1];
+                }
+
+                //判断前后是否为字母     -- \0 也作为判断依据，解决字母中出现多个空格后删除情况
+                if (! (StringsUtilCustomize.isLetterOrNumber(beforeChar) && StringsUtilCustomize.isLetterOrNumber(afterChar))) {    //不是字母
+                    charsOfContent[i] = '~';
+                }
+            }
+        }
+        str = new String(charsOfContent);
+        str = str.replace("~", "");
+
+        return str;
+    }
+
+    /**
+     * 切分句子
+     * @param str
+     * @param sentenceSeparator
+     * @return
+     */
+    public static List<String> splitSentence(String str, String sentenceSeparator) {
+        List<String> sentences = new ArrayList<>();
+        //第一个for切分段落
+        for (String line : str.split("[\r\n]")) {
+            line = StringUtils.strip(line.trim(), "　");
+            if (line.length() == 0) {
+                continue;
+            }
+            //第二个for切分句子
+            for (String sentence : line.split(sentenceSeparator)) {
+                sentence = sentence.trim();
+                if (sentence.length() == 0) {
+                    continue;
+                }
+                sentences.add(sentence);
+            }
+        }
+        return sentences;
     }
 }
