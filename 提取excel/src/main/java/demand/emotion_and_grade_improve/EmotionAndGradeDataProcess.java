@@ -1,6 +1,7 @@
 package demand.emotion_and_grade_improve;
 
-import demand.general.RowValueProcess;
+import demand.general.ArticleProcess;
+import demand.general.process.ProcessWay;
 
 /**
  * 情感7分类数据处理
@@ -9,7 +10,11 @@ import demand.general.RowValueProcess;
  * @Date: 2019/9/23 16:36
  * @Version: 1.0
  */
-public class EmotionAndGradeDataProcess extends RowValueProcess {
+public class EmotionAndGradeDataProcess extends ArticleProcess {
+
+    public EmotionAndGradeDataProcess(ProcessWay processWay) {
+        super(processWay);
+    }
 
     /**
      * 默认直接使用标签；需计算重写该方法
