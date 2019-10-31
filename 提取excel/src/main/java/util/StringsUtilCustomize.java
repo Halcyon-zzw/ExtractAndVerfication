@@ -369,21 +369,16 @@ public class StringsUtilCustomize {
      */
     public static List<String> splitSentence(String str, String sentenceSeparator) {
         List<String> sentences = new ArrayList<>();
-        //第一个for切分段落
-        for (String line : str.split("[\r\n]")) {
-            line = StringUtils.strip(line.trim(), "　");
-            if (line.length() == 0) {
+
+        //第二个for切分句子
+        for (String sentence : str.split(sentenceSeparator)) {
+            sentence = sentence.trim();
+            if (sentence.length() == 0) {
                 continue;
             }
-            //第二个for切分句子
-            for (String sentence : line.split(sentenceSeparator)) {
-                sentence = sentence.trim();
-                if (sentence.length() == 0) {
-                    continue;
-                }
-                sentences.add(sentence);
-            }
+            sentences.add(sentence);
         }
+
         return sentences;
     }
 }
