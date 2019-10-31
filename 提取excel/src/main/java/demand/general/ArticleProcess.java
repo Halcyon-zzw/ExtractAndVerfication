@@ -19,7 +19,7 @@ import java.util.stream.Collectors;
  * @Date: 2019/9/10 15:30
  * @Version: 1.0
  */
-public class RowValueProcess {
+public class ArticleProcess {
 
     static int count = 0;
     /**
@@ -32,8 +32,22 @@ public class RowValueProcess {
 
     private ProcessWay processWay;
 
-    public RowValueProcess(ProcessWay processWay) {
+    public ArticleProcess(ProcessWay processWay) {
         this.processWay = processWay;
+    }
+
+    /**
+     * 提取一行数据
+     *
+     * @param labels  用于计算标签的参数
+     * @param title   标题
+     * @param content 内容
+     * @return
+     */
+    public String extractRowValue(String[] labels, String title, String content) {
+        String label = getLabel(labels);
+        String article = getArticle(title, content);
+        return label + "\t" + article;
     }
 
     /**
@@ -63,7 +77,6 @@ public class RowValueProcess {
 
         String article = title + " " + content;
 
-
         //删除括号
         article = StringsUtilCustomize.substringByDeleteBrackets(article);
 
@@ -82,27 +95,14 @@ public class RowValueProcess {
 
 
     /**
-     * 提取一行数据
-     *
-     * @param labels  用于计算标签的参数
-     * @param title   标题
-     * @param content 内容
-     * @return
-     */
-    public String extractRowValue(String[] labels, String title, String content) {
-        String label = getLabel(labels);
-        String article = getArticle(title, content);
-        return label + "\t" + article;
-    }
-
-    /**
      * 处理string格式，解决生成tsv文件自动换行问题（内容不在一个表格中）
      *
      * @param content 待处理文本
      * @return 处理后文本
      */
     public String dealContent(String content) {
-        StringsUtilCustomize.substringByDeleteSpace(content);
+        content = content.replace("[.]+", "");
+        content = StringsUtilCustomize.substringByDeleteSpace(content);
         return replaceSynbolOfTable(content);
     }
 
