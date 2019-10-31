@@ -3,7 +3,9 @@ package demand.general.excel;
 import config.ApplicationProperties;
 import deal.DealFileWay;
 import demand.general.CountControl;
-import demand.general.RowValueProcess;
+import demand.general.ArticleProcess;
+import demand.general.process.InvalidProcess;
+import lombok.Setter;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
@@ -31,9 +33,10 @@ public class GeneralDealExcel implements DealFileWay {
     private CountControl countControl = new CountControl();
 
     /**
-     * 行数据处理
+     * 行数据处理 - 默认删除无效数据
      */
-    private RowValueProcess rowValueProcess = new RowValueProcess();
+    @Setter
+    private ArticleProcess articleProcess = new ArticleProcess(new InvalidProcess());
 
     private int labelHeader;
     private int titleHeader;
@@ -93,7 +96,7 @@ public class GeneralDealExcel implements DealFileWay {
             }
 
             //提取一行数据
-            String rowValue = rowValueProcess.extractRowValue(new String[]{label}, title, content);
+            String rowValue = articleProcess.extractRowValue(new String[]{label}, title, content);
 
             if (null == tempResultMap.get(label)) {
                 tempResultMap.put(label, new ArrayList<String>());

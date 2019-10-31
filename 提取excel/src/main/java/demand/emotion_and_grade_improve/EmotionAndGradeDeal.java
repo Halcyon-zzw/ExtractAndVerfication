@@ -3,9 +3,8 @@ package demand.emotion_and_grade_improve;
 import com.csvreader.CsvReader;
 import config.ApplicationProperties;
 import deal.DealFileWay;
-import demand.emotion_and_grade_improve.EmotionAndGradeDataProcess;
 import demand.general.CountControl;
-import demand.general.RowValueProcess;
+import demand.general.ArticleProcess;
 import lombok.Setter;
 import org.apache.commons.lang3.StringUtils;
 import util.FileUtil;
@@ -31,10 +30,14 @@ public class EmotionAndGradeDeal implements DealFileWay {
     @Setter
     private ApplicationProperties aps = new ApplicationProperties();
 
+    @Setter
+    char separator = ',';
+
     /**
      * 行数据处理
      */
-    private RowValueProcess dataProcess = new EmotionAndGradeDataProcess();
+    @Setter
+    private ArticleProcess articleProcess;
 
     /**
      * 数量控制
@@ -98,7 +101,7 @@ public class EmotionAndGradeDeal implements DealFileWay {
         HashMap<String, List<String>> tempResultMap = new HashMap<>();
 
         //获取csvRead
-        CsvReader csvReader = FileUtil.getCsvReader(csvPath);
+        CsvReader csvReader = FileUtil.getCsvReader(csvPath, separator);
         System.out.println("开始处理...");
         System.out.println("处理参数：");
         System.out.println("数据长度：" + aps.getArticleLength());
@@ -153,7 +156,7 @@ public class EmotionAndGradeDeal implements DealFileWay {
                     }
                 }
 
-                String label = dataProcess.getLabel(labels.get(0), labels.get(1));
+                String label = articleProcess.getLabel(labels.get(0), labels.get(1));
 
                 //数量控制
                 int operationStatus = countControl.operationStatus(label, aps.getEmotionAndGradeProperties().getDataCount(), aps.getEmotionAndGradeProperties().getLabelNumber());
@@ -164,7 +167,7 @@ public class EmotionAndGradeDeal implements DealFileWay {
                 }
 
                 //提取一行数据 - 变
-                String rowValue = dataProcess.extractRowValue(new String[]{labels.get(0), labels.get(1)}, title, content);
+                String rowValue = articleProcess.extractRowValue(new String[]{labels.get(0), labels.get(1)}, title, content);
 
                 //统计文章长度    (截取前面的标签)
                 countControl.rangeStatistics(rowValue.split("\t")[1]);

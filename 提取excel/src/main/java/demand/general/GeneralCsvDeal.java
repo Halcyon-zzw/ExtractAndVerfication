@@ -3,6 +3,8 @@ package demand.general;
 import com.csvreader.CsvReader;
 import config.ApplicationProperties;
 import deal.DealFileWay;
+import demand.general.process.InvalidProcess;
+import demand.general.process.ProcessWay;
 import lombok.Setter;
 import org.apache.commons.lang3.StringUtils;
 import util.FileUtil;
@@ -32,10 +34,16 @@ public class GeneralCsvDeal implements DealFileWay {
     @Setter
     private ApplicationProperties aps = new ApplicationProperties();
 
+
+    /**
+     * 文章处理方式，默认删除无效数据
+     */
+    @Setter
+    private ProcessWay processWay = new InvalidProcess();
     /**
      * 行数据处理
      */
-    private RowValueProcess rowValueProcess = new RowValueProcess();
+    private ArticleProcess articleProcess = new ArticleProcess(processWay);
 
     /**
      * 数量控制
@@ -55,7 +63,9 @@ public class GeneralCsvDeal implements DealFileWay {
     private boolean titleExtract = true;
     private boolean contentExtract = true;
 
+    @Setter
     private Charset charset = Charset.forName("UTF-8");
+    @Setter
     private char separator = ',';
 
 
@@ -82,21 +92,6 @@ public class GeneralCsvDeal implements DealFileWay {
         }
     }
 
-    public GeneralCsvDeal(Object labelHeader, Object titleHeader, Object contentHeader, char separator) {
-        this(labelHeader, titleHeader, contentHeader);
-        this.separator = separator;
-    }
-
-    public GeneralCsvDeal(Object labelHeader, Object titleHeader, Object contentHeader, Charset charset) {
-        this(labelHeader, titleHeader, contentHeader);
-        this.charset = charset;
-    }
-
-    public GeneralCsvDeal(Object labelHeader, Object titleHeader, Object contentHeader, char separator, Charset charset) {
-        this(labelHeader, titleHeader, contentHeader);
-        this.separator = separator;
-        this.charset = charset;
-    }
 
 
     /**
@@ -164,7 +159,7 @@ public class GeneralCsvDeal implements DealFileWay {
 
                 //提取一行数据
 
-                String rowValue = rowValueProcess.extractRowValue(new String[]{label}, title, content);
+                String rowValue = articleProcess.extractRowValue(new String[]{label}, title, content);
 
                 if (null == tempResultMap.get(label)) {
                     tempResultMap.put(label, new ArrayList<String>());
