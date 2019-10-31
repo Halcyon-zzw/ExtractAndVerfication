@@ -19,11 +19,12 @@ public class ApplicationProperties {
 
     private final int beginLength = 140;
 
-    private final int endLength = 50;
+    private final int endLength = 58;
 
     private final int articleLength = beginLength + endLength;
 
     private final int lessDataCount = -1;
+
 
     private final BaseProperties baseProperties = new BaseProperties();
     private PrimaryProperties primaryProperties;
@@ -34,9 +35,18 @@ public class ApplicationProperties {
     private final ColumnProperties columnProperties = new ColumnProperties();
     private final EventExcelProperties eventExcelProperties = new EventExcelProperties();
 
+    private final EmotionAndGradeTsvProperties emotionAndGradeTsvProperties = new EmotionAndGradeTsvProperties();
+
 
     private final EmotionAndGradeTestProperties emotionAndGradeTestProperties = new EmotionAndGradeTestProperties();
 
+    private final String keywordsPath = baseProperties.basePath + "情感关键词.txt";
+
+    private final String sentenceSeparator = "[。？?！!；;]";
+
+    public class Other {
+
+    }
 
     /**
      * 待汇总路径
@@ -166,13 +176,32 @@ public class ApplicationProperties {
         public EmotionAndGradeProperties() {
 
             super.path = baseProperties.getOriginalPath() + "舆情语料.csv";
-            super.dataCount = 50000;
+            super.dataCount = -1;
             super.labelNumber = 7;
             label_1 = "舆情情感";
             label_2 = "舆情情感等级";
             super.content = "内容";
 
             super.haveHeader = true;
+        }
+
+        public String toString() {
+            return "路径：" + path + "\n"
+                    + "数据量：" + dataCount + "\n"
+                    + "过滤数据量：" + lessCount + "\n"
+                    + "标签数量：" + labelNumber + "\n";
+        }
+    }
+
+    public class EmotionAndGradeTsvProperties extends PrimaryProperties{
+        public EmotionAndGradeTsvProperties() {
+            super.path = baseProperties.getTrainPath() + "情感and等级_摘要_All\\";
+            super.dataCount = -1;
+            super.labelNumber = 7;
+            super.label = 0;
+            super.title = 1;
+            super.content = 2;
+            super.haveHeader = false;
         }
 
         public String toString() {
@@ -215,7 +244,7 @@ public class ApplicationProperties {
     public class EmotionAndGradeTestProperties extends PrimaryProperties{
         public EmotionAndGradeTestProperties() {
 //            super.path = baseProperties.getTrainPath() + "情感and等级_删无效\\test.tsv";
-            super.path = baseProperties.getTrainPath() + "情感_等级_test\\test.tsv";
+            super.path = baseProperties.getTrainPath() + "情感and等级_50000\\test.tsv";
             super.dataCount = -1;
             super.labelNumber = 7;
             super.label = 0;
@@ -224,6 +253,7 @@ public class ApplicationProperties {
             super.haveHeader = false;
         }
     }
+
 
     /**
      * 按比率生成文件相关属性
@@ -234,7 +264,8 @@ public class ApplicationProperties {
         /**
          * 输出文件比率
          */
-        private final int[] proportions = {1, 2, 7};
+//        private final int[] proportions = {1, 2, 7};
+        private final int[] proportions = {1, 1, 8};
 
         /**
          * 基础路径
@@ -254,9 +285,10 @@ public class ApplicationProperties {
 //        private String type = "情感and等级_标题_test";
 //        private String type = "情感and等级_含无效";
 //        private String type = "情感and等级_删无效";
-//        private String type = "情感and等级_26000(9_13000)";
-        private String type = "情感and等级_50000";
-//        private String type = "情感and等级_All";
+//        private String type = "情感and等级_26000";
+//        private String type = "情感and等级_50000";
+//        private String type = "情感and等级_summary_All_118";
+        private String type = "情感and等级_keyword_All_118";
 
         /**
          * 输出文件路径

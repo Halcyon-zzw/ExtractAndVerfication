@@ -32,6 +32,8 @@ public class PropertiesFactory {
         } else if (propertyType.equalsIgnoreCase("column")) {
             //栏目分类
             return new ApplicationProperties().getColumnProperties();
+        }else if (propertyType.equals("emotionAndGradeTsv")) {
+            return new ApplicationProperties().getEmotionAndGradeTsvProperties();
         }
         return null;
     }

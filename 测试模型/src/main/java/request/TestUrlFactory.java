@@ -21,6 +21,8 @@ public class TestUrlFactory {
         }else if (testName.equalsIgnoreCase("event")) {
             //事件分类：62分类
             return "http://10.106.0.51:8062/encode";
+        } else if (testName.equalsIgnoreCase("emotion_50000")) {
+            return "http://10.106.0.51:8050/encode";
         }
         return null;
     }
