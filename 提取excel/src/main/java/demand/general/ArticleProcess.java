@@ -2,17 +2,13 @@ package demand.general;
 
 import config.ApplicationProperties;
 import demand.general.process.ProcessWay;
-import org.apache.commons.lang3.StringUtils;
-import util.FileUtil;
 import util.StringsUtilCustomize;
 
-import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 /**
- * 行数据处理
+ * 文章数据处理
  * 使用直接处理，需要计算重写getLabel方法
  *
  * @Author: zhuzw
@@ -69,14 +65,11 @@ public class ArticleProcess {
         int endLength = aps.getEndLength();
 
         title = replaceSynbolOfTable(title);
-
-        content = processWay.process(content);
-
         //处理特殊字符
         content = dealContent(content);
+        content = processWay.process(content);
 
         String article = title + " " + content;
-
         //删除括号
         article = StringsUtilCustomize.substringByDeleteBrackets(article);
 
@@ -90,7 +83,6 @@ public class ArticleProcess {
             return resultArticle;
         }
         return article;
-
     }
 
 
@@ -107,7 +99,6 @@ public class ArticleProcess {
     }
 
 
-
     /**
      * 替换table以上的符号
      *
@@ -122,5 +113,4 @@ public class ArticleProcess {
                 .replaceAll("\r", "")
                 .replaceAll("\t", "");
     }
-
 }

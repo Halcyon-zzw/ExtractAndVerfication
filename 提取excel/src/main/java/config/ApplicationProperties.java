@@ -273,6 +273,7 @@ public class ApplicationProperties {
         private String trainBasePath = baseProperties.getTrainPath();
         /**
          * 具体的数据类型
+         * 命名：类型_处理方式_数据量_生成文件方式_日期
          * TODO： 生成不同的文件需要修改
          */
 //        private String type = "舆情情感";
@@ -288,7 +289,7 @@ public class ApplicationProperties {
 //        private String type = "情感and等级_26000";
 //        private String type = "情感and等级_50000";
 //        private String type = "情感and等级_summary_All_118";
-        private String type = "情感and等级_keyword_All_118";
+        private String type = "情感and等级_keyword_All_118_1031";
 
         /**
          * 输出文件路径
