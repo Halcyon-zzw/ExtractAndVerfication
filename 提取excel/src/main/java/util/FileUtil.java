@@ -1,6 +1,7 @@
 package util;
 
 import com.csvreader.CsvReader;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.formula.functions.T;
 import org.apache.poi.ss.usermodel.Sheet;
@@ -10,8 +11,10 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import java.io.*;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -137,7 +140,7 @@ public class FileUtil {
 
 
     /**
-     * 将字符串列表保存到文件中
+     * 将字符串列表保存到文件中,不存在目录自动创建
      *
      * @param strings 字符串列表
      * @param path 文件路径（包含文件名）
@@ -150,22 +153,52 @@ public class FileUtil {
             //不存在，生成目录
             dir.mkdir();
         }
-        //输出流
-        FileOutputStream fout = new FileOutputStream(target.toFile(), false);
-        OutputStreamWriter out = new OutputStreamWriter(fout, StandardCharsets.UTF_8);
-//        OutputStreamWriter out = new OutputStreamWriter(fout, "gbk");
-        BufferedWriter bw = new BufferedWriter(out);
+
+//        BufferedWriter bw = new BufferedWriter(
+//                new OutputStreamWriter(
+//                        new FileOutputStream(target.toFile())
+//                        , StandardCharsets.UTF_8));
+        BufferedWriter bw = Files.newBufferedWriter(target);
+
         for (String s : strings) {
             if(s == null) {
                 continue;
             }
-            bw.write(s);
+            bw.append(s);
             bw.newLine();
         }
 
         //逐层关闭
         bw.close();
-        out.close();
-        fout.close();
+    }
+
+    /**
+     * 读取所有数据，处理方式，默认直接放回
+     * @param path
+     * @return
+     * @throws IOException
+     */
+    public static List<String> readAll(String path) throws IOException {
+        return readAll(path, (line) -> {return line;});
+    }
+
+    public static List<String> readAll(String path, DataProcess<String> dataProcess) throws IOException {
+        List<String> resultList = new ArrayList<>();
+        //加载关键字
+        String keywordsPath = path;
+        if (resultList.size() == 0) {
+//            BufferedReader bReader  = new BufferedReader(new InputStreamReader(new FileInputStream(keywordsPath), "UTF-8"));
+            BufferedReader bReader = Files.newBufferedReader(Paths.get(keywordsPath), Charset.forName("UTF-8"));
+
+            String line = null;
+            String tempLine = null;
+            while ((line = bReader.readLine()) != null) {
+                if (!StringUtils.isEmpty(line)) {
+                    tempLine = dataProcess.process(line);
+                    resultList.add(tempLine);
+                }
+            }
+        }
+        return resultList;
     }
 }

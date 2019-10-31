@@ -17,40 +17,26 @@ import java.util.stream.Collectors;
  * @Version: 1.0
  */
 public class KeywordProcess implements ProcessWay {
+    List<String> keywordList = new ArrayList<>();
     private ApplicationProperties aps = new ApplicationProperties();
 
     @Override
     public String process(String str) {
-        List<String> keywordList = new ArrayList<>();
-        //加载关键字
+
+        //关键字路径
         String keywordsPath = aps.getKeywordsPath();
+        //只需要第一次读取文件
         if (keywordList.size() == 0) {
-            BufferedReader bReader = null;
             try {
-                bReader = new BufferedReader(new InputStreamReader(new FileInputStream(keywordsPath), "UTF-8"));
-            } catch (UnsupportedEncodingException e) {
+                keywordList = FileUtil.readAll(keywordsPath);
+            } catch (IOException e) {
                 e.printStackTrace();
-            } catch (FileNotFoundException e) {
-                e.printStackTrace();
-            }
-            String line = null;
-            int i = 0;
-            while (true) {
-                try {
-                    if (!((line = bReader.readLine()) != null)) break;
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-                if (!StringUtils.isEmpty(line)) {
-                    keywordList.add(line);
-                }
-                i++;
             }
         }
 
-        //获得句子集合,并过滤长度大于100的句子
+        //获得句子集合,并过滤长度大于200的句子
         List<String> sentenceList = StringsUtilCustomize.splitSentence(str, aps.getSentenceSeparator())
-                .stream().filter(s -> s.length() > 100)
+                .stream().filter(s -> s.length() < 200)
                 .map(s -> s + "。")
                 .collect(Collectors.toList());
 
