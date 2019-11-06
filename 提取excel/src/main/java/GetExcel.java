@@ -12,14 +12,21 @@ import delete.column.ColumnCsvDeal;
 import delete.column.ColumnCsvExtract;
 import demand.emotion_and_grade.EmotionAndGradeCsvDeal;
 import demand.emotion_and_grade_improve.EmotionAndGradeDeal;
+import demand.emotion_and_grade_improve.EmotionAndGradeLabel5Process;
+import demand.emotion_and_grade_improve.EmotionAndGradeLabel7Process;
 import demand.event_classify_2.EventClassifyCsvDeal;
 import demand.event_classify_2.EventClassigySupplementCsvDeal;
+import demand.general.ArticleProcess;
+import demand.general.ExtractAgent;
 import demand.general.GeneralCsvDeal;
 import demand.general.excel.GeneralDealExcel;
+import demand.general.process.KeywordProcess;
+import demand.general.process.NoneProcess;
 import model.ExcelMessage;
 import pool.DealFile;
 
 import java.io.IOException;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -29,6 +36,14 @@ import java.util.List;
  * @Author: zhuzw
  * @Date: 2019/8/6 19:23
  * @Version: 1.0
+ *
+ * TODO
+ * 优化数据处理方式
+ * 将设计模式引入项目，
+ * 学习spring框架，将spring框架引入项目
+ * 将日志引入项目
+ * 将项目改成web项目，属性通过web可选实现
+ *
  */
 public class GetExcel {
 
@@ -42,6 +57,7 @@ public class GetExcel {
 
     private static String[] paths = aps.getCreateFileProporttionProperties().getPaths();
 
+    private static ExtractAgent extractAgent = new ExtractAgent();
 
     public static void main(String[] args) throws IOException {
 
@@ -67,33 +83,75 @@ public class GetExcel {
 
 //        generalExcelDemo();
 
-        //提取grade and emotion 仅标题
-        gradeAndEnotionTitle();
+        aps.setPrimaryProperties(PropertiesFactory.getProperties("emotionAndGrade7"));
+
+        long startTime = System.currentTimeMillis();
+
+        //处理7分类
+//        ArticleProcess articleProcess = new EmotionAndGradeLabel7Process(new KeywordProcess());
+        //处理5分类
+//        ArticleProcess articleProcess = new EmotionAndGradeLabel5Process(new KeywordProcess());
+        //原始处理，
+        ArticleProcess articleProcess = new EmotionAndGradeLabel7Process(new KeywordProcess());
+
+        /**
+         * 当前日期，格式：1106
+         */
+        String date = LocalDate.now().getMonthValue() + ""
+                //小于10在前面补充0
+                + (LocalDate.now().getDayOfMonth() < 10 ? "0" + LocalDate.now().getDayOfMonth() : LocalDate.now().getDayOfMonth());
+        String type = aps.getPrimaryProperties().getType() + "\\"   //文件夹
+                + aps.getPrimaryProperties().getType()     //类型
+                + "_" + aps.getPrimaryProperties().getLabelNumber()     //label数量
+                + "_" + articleProcess.getProcessWay().getType()        //处理方式
+                + "_" +aps.getPrimaryProperties().getDataCount()        //数据量（每类）
+                + "_" + aps.getCreateFileProporttionProperties().getCreateProportionString() //输出文件的比率
+                + "_" + date;       //当前日期
+        aps.getCreateFileProporttionProperties().setType(type);
+
+        printProperties(aps);
+
+        //输出分类信息
+        articleProcess.info();
+        //提取grade and emotion
+        extractAgent.setArticleProcess(articleProcess);
+        extractAgent.setAps(aps);
+        extractAgent.extractEmotionAndGrade();
+        System.out.println("耗时：" + (System.currentTimeMillis() - startTime));
+//        mergeTitleAndContent();
     }
 
-    /**
-     * 提取grade and emotion 仅标题
-     */
-    public static void gradeAndEnotionTitle() throws IOException {
-        //待汇总文件路径
-        String path = aps.getEmotionAndGradeProperties().getPath();
+    public static void printProperties(ApplicationProperties aps) {
+        System.out.println("开始处理...");
+        System.out.println("处理参数：");
+        System.out.println("===================");
+        System.out.println("数据长度：" + aps.getArticleLength());
+        System.out.println(aps.getPrimaryProperties().toString());
+        System.out.println("输出路径:" + aps.getCreateFileProporttionProperties().getTrainDir());
+    }
 
-        Object labelHeader_1 = aps.getEmotionAndGradeProperties().getLabel_1();
-        Object labelHeader_2 = aps.getEmotionAndGradeProperties().getLabel_2();
-        Object[] labelHeaders = {labelHeader_1, labelHeader_2};
-        Object titleHeader = aps.getEmotionAndGradeProperties().getTitle();
-        Object contentHeader = aps.getEmotionAndGradeProperties().getContent();
+    private static void mergeTitleAndContent() throws IOException {
+        //待汇总文件路径
+        String path = aps.getEmotionAndGradeTsvProperties().getPath();
+
+        Object labelHeader = aps.getEmotionAndGradeTsvProperties().getLabel();
+        Object titleHeader = aps.getEmotionAndGradeTsvProperties().getTitle();
+        Object contentHeader = aps.getEmotionAndGradeTsvProperties().getContent();
 
 //        DealFileWay dealFileWay = new EmotionAndGradeDeal(labelHeaders, titleHeader);
-        DealFileWay dealFileWay = new EmotionAndGradeDeal(labelHeaders, titleHeader, contentHeader);
-        aps.setPrimaryProperties(PropertiesFactory.getProperties("emotionAndGrade"));
-        ((EmotionAndGradeDeal) dealFileWay).setAps(aps);
+        DealFileWay dealFileWay = new GeneralCsvDeal(labelHeader, titleHeader, contentHeader);
+        ((GeneralCsvDeal) dealFileWay).setSeparator('\t');
+        aps.setPrimaryProperties(PropertiesFactory.getProperties("emotionAndGradeTsv"));
+        ((GeneralCsvDeal) dealFileWay).setAps(aps);
         DealFile dealFile = new DealFile(dealFileWay);
         List<String> result = dealFile.dealFile(path);
         //生成文件
         CreateFileWay createFileWay = new CreateFileProportion(proportions, paths);
         createFileWay.createFile(result);
+
     }
+
+
 
     /**
      * 常规提取excel
