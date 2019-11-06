@@ -157,7 +157,7 @@ public class StringsUtilCustomize {
     }
 
     /**
-     * 删除markString（第一次匹配）及其之前的内容
+     * 删除markString（第一次匹配）及其之前的内容，以及该句的标点
      *
      * @param str        待处理的字符串
      * @param markString 标识字符串
@@ -166,7 +166,14 @@ public class StringsUtilCustomize {
     public static String substringByDeleteBefore(String str, String markString) {
         int markIndex = str.indexOf(markString);
         if (-1 != markIndex) {
-            str = str.substring(markIndex + markString.length(), str.length());
+//            str = str.substring(markIndex + markString.length(), str.length());
+            //删除标点  开始位置再 + 1
+            if (markIndex + markString.length() + 1 < str.length()) {
+                str = str.substring(markIndex + markString.length() + 1, str.length());
+            }else {
+                str = str.substring(markIndex + markString.length(), str.length());
+            }
+
         }
         return str;
     }
@@ -207,7 +214,7 @@ public class StringsUtilCustomize {
     }
 
     /**
-     * 删除标识符字符串所在的句子（标点符号之间）段
+     * 删除标识符字符串所在的句子（标点符号之间）
      *
      * @param str
      * @param markString
