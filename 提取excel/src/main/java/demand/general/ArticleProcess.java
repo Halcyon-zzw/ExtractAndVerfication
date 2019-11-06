@@ -1,7 +1,9 @@
 package demand.general;
 
 import config.ApplicationProperties;
+import demand.general.process.InvalidProcess;
 import demand.general.process.ProcessWay;
+import lombok.Getter;
 import util.StringsUtilCustomize;
 
 import java.util.ArrayList;
@@ -26,7 +28,8 @@ public class ArticleProcess {
 
     private List<String> keywordList = new ArrayList<>();
 
-    private ProcessWay processWay;
+    @Getter
+    protected ProcessWay processWay;
 
     public ArticleProcess(ProcessWay processWay) {
         this.processWay = processWay;
@@ -73,15 +76,21 @@ public class ArticleProcess {
         //删除括号
         article = StringsUtilCustomize.substringByDeleteBrackets(article);
 
-        //判断长度是否超过
-        if (article.length() > articleLength) {
-            String resultArticle = "";
-            //截取内容
-            resultArticle = article.substring(0, beginLength);
-            resultArticle += article.substring(article.length() - endLength, article.length());
 
-            return resultArticle;
+//        //判断长度是否超过
+//        if (article.length() > articleLength) {
+//            String resultArticle = "";
+//            //截取内容
+//            resultArticle = article.substring(0, beginLength);
+//            resultArticle += article.substring(article.length() - endLength, article.length());
+//
+//            return resultArticle;
+//        }
+        if (article.length() >= aps.getArticleLength()) {
+            article = article.substring(0, aps.getArticleLength());
         }
+
+
         return article;
     }
 
@@ -112,5 +121,10 @@ public class ArticleProcess {
                 .replaceAll("\n", "")
                 .replaceAll("\r", "")
                 .replaceAll("\t", "");
+    }
+
+    public void info() {
+        System.out.println(">>>处理3分类。");
+        processWay.info();
     }
 }

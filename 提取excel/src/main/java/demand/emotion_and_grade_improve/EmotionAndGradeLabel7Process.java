@@ -10,9 +10,9 @@ import demand.general.process.ProcessWay;
  * @Date: 2019/9/23 16:36
  * @Version: 1.0
  */
-public class EmotionAndGradeDataProcess extends ArticleProcess {
+public class EmotionAndGradeLabel7Process extends ArticleProcess {
 
-    public EmotionAndGradeDataProcess(ProcessWay processWay) {
+    public EmotionAndGradeLabel7Process(ProcessWay processWay) {
         super(processWay);
     }
 
@@ -34,5 +34,10 @@ public class EmotionAndGradeDataProcess extends ArticleProcess {
         }
 
         return String.valueOf(label);
+    }
+
+    public void info() {
+        System.out.println(">>>>>>>处理7分类。");
+        super.processWay.info();
     }
 }
