@@ -17,7 +17,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * TODO
+ * 提取emotion + grade数据，提升后
  *
  * @Author: zhuzw
  * @Date: 2019/9/23 16:12
@@ -102,12 +102,6 @@ public class EmotionAndGradeDeal implements DealFileWay {
 
         //获取csvRead
         CsvReader csvReader = FileUtil.getCsvReader(csvPath, separator);
-        System.out.println("开始处理...");
-        System.out.println("处理参数：");
-        System.out.println("数据长度：" + aps.getArticleLength());
-        System.out.println(aps.getPrimaryProperties().toString());
-
-
         String title = "";
         String content = "";
         LocalTime localTime1 = LocalTime.now();

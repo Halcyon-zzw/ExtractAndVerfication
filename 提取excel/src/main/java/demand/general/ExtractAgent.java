@@ -5,12 +5,14 @@ import config.PropertiesFactory;
 import create.CreateFileWay;
 import create.impl.CreateFileProportion;
 import deal.DealFileWay;
-import demand.emotion_and_grade_improve.EmotionAndGradeDataProcess;
+import demand.emotion_and_grade_improve.EmotionAndGradeLabel7Process;
 import demand.emotion_and_grade_improve.EmotionAndGradeDeal;
 import demand.general.process.KeywordProcess;
+import lombok.Setter;
 import pool.DealFile;
 
 import java.io.IOException;
+import java.time.LocalDate;
 import java.util.List;
 
 /**
@@ -22,13 +24,24 @@ import java.util.List;
  */
 public class ExtractAgent {
 
+    @Setter
     private ApplicationProperties aps = new ApplicationProperties();
     private int[] proportions = aps.getCreateFileProporttionProperties().getProportions();
-    private String[] paths = aps.getCreateFileProporttionProperties().getPaths();
 
     private DealFileWay dealFileWay;
 
+    @Setter
     private ArticleProcess articleProcess;
+
+
+    public ExtractAgent() {
+
+    }
+
+    public ExtractAgent(ArticleProcess articleProcess, ApplicationProperties aps) {
+        this.aps = aps;
+        this.articleProcess = articleProcess;
+    }
 
     public void extractGeneral() {
 
@@ -46,17 +59,22 @@ public class ExtractAgent {
 
 //        DealFileWay dealFileWay = new EmotionAndGradeDeal(labelHeaders, titleHeader);
         dealFileWay = new EmotionAndGradeDeal(labelHeaders, titleHeader, contentHeader);
-        ((EmotionAndGradeDeal) dealFileWay).setArticleProcess(new EmotionAndGradeDataProcess(new KeywordProcess()));
-        aps.setPrimaryProperties(PropertiesFactory.getProperties("emotionAndGrade"));
+
+//        ((EmotionAndGradeDeal) dealFileWay).setArticleProcess(new EmotionAndGradeLabel7Process(new KeywordProcess()));
+//        aps.setPrimaryProperties(PropertiesFactory.getProperties("emotionAndGrade"));
+        ((EmotionAndGradeDeal) dealFileWay).setArticleProcess(articleProcess);
         ((EmotionAndGradeDeal) dealFileWay).setAps(aps);
 
         DealFile dealFile = new DealFile(dealFileWay);
         List<String> result = dealFile.dealFile(path);
-        //生成文件
-        CreateFileWay createFileWay = new CreateFileProportion(proportions, paths);
-        createFileWay.createFile(result);
 
+        //生成文件
+        createFile(result);
 
     }
 
+    public void createFile(List<String> resultList) throws IOException {
+        CreateFileWay createFileWay = new CreateFileProportion(proportions, aps.getCreateFileProporttionProperties().getPaths());
+        createFileWay.createFile(resultList);
+    }
 }

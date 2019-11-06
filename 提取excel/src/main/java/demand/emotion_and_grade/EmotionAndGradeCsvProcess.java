@@ -46,6 +46,10 @@ public class EmotionAndGradeCsvProcess implements ColumnProcess {
 
             //每个分类（9类）取DATA_COUNT条数据
             if (emotionAndGradeNum[emotionAndGrade] >= EMOTION_AND_GRADE_COUNT) {
+                if (-1 == EMOTION_AND_GRADE_COUNT) {
+                    //提取所有
+                    return true;
+                }
                 return false;
             }
             //程序后续返回true，添加成功，故对应分类数量++ ,

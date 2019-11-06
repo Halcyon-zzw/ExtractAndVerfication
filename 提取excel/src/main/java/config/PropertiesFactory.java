@@ -26,9 +26,11 @@ public class PropertiesFactory {
         } else if (propertyType.equalsIgnoreCase("emotion")) {
             //舆情情感
             return new ApplicationProperties().getEmotionProperties();
-        } else if (propertyType.equalsIgnoreCase("emotionAndGrade")) {
+        } else if (propertyType.equalsIgnoreCase("emotionAndGrade7")) {
             //情感 and 等级
             return new ApplicationProperties().getEmotionAndGradeProperties();
+        } else if (propertyType.equalsIgnoreCase("emotionAndGrade5")) {
+            return new ApplicationProperties().getEmotionAndGradeProperties5();
         } else if (propertyType.equalsIgnoreCase("column")) {
             //栏目分类
             return new ApplicationProperties().getColumnProperties();
