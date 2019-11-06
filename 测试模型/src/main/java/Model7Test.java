@@ -1,37 +1,35 @@
 import bert.BertRequest;
 import bert.BertResponse;
 import bert.PredictionUnit;
-import bert.deal_file.DealFileAdapter;
 import bert.deal_file.DealFile2Strings;
-import bert.deal_file.GeneralDealAdapter;
-import bert.extract.ColumnExtract;
+import bert.deal_file.DealFileAdapter;
 import bert.extract.EmotionAndGradeExtract;
 import bert.single.BertResultSingle;
 import bert.single.BertSingleResponse;
-import com.opencsv.CSVReader;
 import com.opencsv.CSVWriter;
 import config.ApplicationProperties;
 import config.FileProperties;
-import config.PropertiesFactory;
 import deal.AbstractDealFileWay;
-import deal.DealFileWay;
 import delete.column.ColumnCsvDeal;
 import delete.column.ColumnCsvExtract;
-import demand.emotion_and_grade_improve.EmotionAndGradeDeal;
-import demand.general.GeneralCsvDeal;
-import pool.DealFile;
 import pool.DealFileModify;
 import request.ClassificationRequest;
 import request.MultipleClassicationRequest;
 import request.SingleClassificationRequest;
+import test.RequestThread;
 import util.FileUtil;
 
-import java.io.*;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.LocalTime;
-import java.util.*;
-import java.util.stream.Collectors;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.CountDownLatch;
 
 /**
  * @description: ${description}
@@ -83,7 +81,7 @@ public class Model7Test {
         //存储测试结果
         List<String[]> resultList = new ArrayList<>();
 
-        for(Map.Entry<String, List<String>> entry : testMap.entrySet()) {
+        for (Map.Entry<String, List<String>> entry : testMap.entrySet()) {
             String[] result = multipleProcess(entry.getKey(), entry.getValue());
             resultList.add(result);
         }
@@ -97,46 +95,94 @@ public class Model7Test {
     }
 
 
-
     private static void testSingle() throws IOException {
         //获取测试数据集 -TODO:替换
 //        List<String[]> testList = getTestList();
+
         List<String[]> testList = getTestListEvent();
-        //存储测试结果
-        List<String[]> resultList = new ArrayList<>();
+//        int testNum = 100;
+//        testList = testList.subList(0, testNum);
 
         LocalTime startTime = LocalTime.now();
-        for (String[] testStrings : testList) {
-            //获取bert请求对象
-            BertRequest request = getBertRequest(testStrings[1]);
 
-            //-TODO:替换  请求
-            String[] result = singleProcess(testStrings);
-//            String[] result = multipleProcess(testStrings);
 
-            resultList.add(result);
+        int length = testList.size();
+        //初始线程数
+        int num = 6;
+        String[] urls = {
+                "http://10.106.0.51:8050/encode", "http://10.106.0.51:8051/encode",
+                "http://10.106.0.51:8052/encode", "http://10.106.0.51:8053/encode",
+                "http://10.106.0.51:8054/encode", "http://10.106.0.51:8055/encode",
+        };
+
+        //启动多线程
+        int baseNum = length / num;
+        int end = 0;
+        final CountDownLatch latch = new CountDownLatch(num);
+        for (int i = 0; i < num; i++) {
+            int start = i * baseNum;
+            end = start + baseNum;
+            if (i == (num - 1)) {
+                //最后一次，处理所有
+                end = length;
+            }
+            RequestThread requestThread = new RequestThread("线程[" + (i + 1) + "] ", testList.subList(start, end), urls[i]);
+            requestThread.start();
+//            try {
+//
+//                requestThread.sleep(500);
+//            } catch (InterruptedException e) {
+//                e.printStackTrace();
+//            }
         }
-
+//        for (String[] testStrings : testList) {
+//            //-TODO:替换  请求
+//            String[] result = singleProcess(testStrings);
+////            String[] result = multipleProcess(testStrings);
+//            resultList.add(result);
+//        }
+        while (RequestThread.resultList.size() < testList.size()) {
+//            System.out.println(RequestThread.resultList.size());
+        }
+//        System.out.println("hello-------------------------");
+//        try {
+//            latch.await();
+//        } catch (InterruptedException e) {
+//            e.printStackTrace();
+//        }
+        //存储测试结果
+        List<String[]> resultList = new ArrayList<>();
+        System.out.println("处理长度：" + RequestThread.resultList.size());
+        for (String[] strings : RequestThread.resultList) {
+            resultList.add(strings);
+            //对比标签
+            if (strings[0].equals(strings[1])) {
+                rel++;
+            }
+        }
         LocalTime endTime = LocalTime.now();
-        //耗时
-        int consumingTime = endTime.toSecondOfDay() - startTime.toSecondOfDay();
-        System.out.println("请求结束，耗时：" + consumingTime / 60 + "分钟");
+//        //耗时
+        long consumingTime = (long)endTime.toSecondOfDay() - (long)startTime.toSecondOfDay();
+        System.out.println("请求结束，耗时：" + consumingTime  + "秒");
+
+
+
         //数据写入文本
         createFile(resultList);
 
         String resultString = "总量：" + resultList.size() + "\n";
         resultString += "正确数量：" + rel + "\n";
-        float correctRate = rel / resultList.size();
+        float correctRate = (float) rel / resultList.size();
         resultString += "正确率：" + correctRate + "\n";
         System.out.println(resultString);
         List<String> temp = new ArrayList<>();
         temp.add(resultString);
-        FileUtil.createFile(temp, fileProperties.getStatisticsPath());
+        FileUtil.createFile(temp, fileProperties.getCreatePath2());
     }
 
     private static List<String[]> getTestList() throws IOException {
 //        String path = basePath + "训练语料\\栏目分类\\prediction.csv";
-        String path = fileProperties.getTestPath() ;
+        String path = fileProperties.getTestPath();
 
         AbstractDealFileWay abstractDealFileWay = new ColumnCsvDeal(new ColumnCsvExtract());
         DealFileModify dealFileModify = new DealFileModify(abstractDealFileWay);
@@ -147,6 +193,7 @@ public class Model7Test {
 
     /**
      * 获取测试数据集
+     *
      * @return
      * @throws IOException
      */
@@ -177,7 +224,6 @@ public class Model7Test {
 //        List<String[]> resultList = new ArrayList<>();
 
 
-
     }
 
     private static String[] multipleProcess(String testString, List<String> labelList) {
@@ -187,7 +233,7 @@ public class Model7Test {
         ClassificationRequest<BertResponse> classificationRequest = new MultipleClassicationRequest(request, BertResponse.class);
 
         //获取分类结果
-        List<PredictionUnit> predictionUnitList =  ((MultipleClassicationRequest) classificationRequest).getResultMultiple(labelList.size() + 1);
+        List<PredictionUnit> predictionUnitList = ((MultipleClassicationRequest) classificationRequest).getResultMultiple(labelList.size() + 1);
 
 
         //获取验证结果标签集
@@ -206,10 +252,10 @@ public class Model7Test {
         //对比标签，所有都在
         int tempNum = 0;
         for (String label : labelList) {
-            if (! labelResopnse.contains(label)) {
+            if (!labelResopnse.contains(label)) {
                 break;
             }
-            tempNum ++;
+            tempNum++;
         }
         if (tempNum == labelList.size()) {
             allCount++;
@@ -232,33 +278,7 @@ public class Model7Test {
         return result;
     }
 
-    private static String[] singleProcess(String[] testStrings) {
-        BertRequest request = getBertRequest(testStrings[1]);
 
-        //单分类请求
-        ClassificationRequest<BertSingleResponse> classificationRequest = new SingleClassificationRequest( request, BertSingleResponse.class);
-
-        //获取分类结果
-        BertResultSingle bertResult = classificationRequest.getResult();
-
-        //获取测试（标准）标签
-//            int label = (Integer.parseInt(ss[2]) - 1) * 3 + Integer.parseInt(ss[3]);
-        String label = testStrings[0];
-        //对比标签
-        if (bertResult.getLabel().equals(String.valueOf(label))) {
-            rel++;
-        }
-        String[] result = new String[4];
-        //测试标签
-        result[0] = String.valueOf(label);
-        //预测标签
-        result[1] = bertResult.getLabel();
-        //预测概率
-        result[2] = String.valueOf(bertResult.getScore());
-        //原文
-        result[3] = testStrings[1];
-        return result;
-    }
 
     /**
      * 获取bert请求对象

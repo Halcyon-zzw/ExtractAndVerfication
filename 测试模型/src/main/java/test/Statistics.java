@@ -42,9 +42,9 @@ public class Statistics {
         //定义分类类别
         String[] categorys = {"1", "2", "3", "6", "7", "8", "9"};
 
-        //读取数据
+        //存储错误结果数据
         List<PredictionData> data = new ArrayList<>();
-        CsvReader csvReader = FileUtil.getCsvReader(new FileProperties().getCreatePath());
+        CsvReader csvReader = FileUtil.getCsvReader(primaryProperties.getCreatePath());
         while (csvReader.readRecord()) {
             PredictionData predictionData = new PredictionData();
             predictionData.setStandard(csvReader.get(0));
@@ -55,11 +55,11 @@ public class Statistics {
                 data.add(predictionData);
             }
 
-            //统计分类总数
+            //统计每个分类总数
             if (null == categoriesMap.get(predictionData.getStandard())) {
                 categoriesMap.put(predictionData.getStandard(), 0);
             }
-            categoriesMap.put(predictionData.getStandard(), categoriesMap.get(predictionData.getStandard()));
+            categoriesMap.put(predictionData.getStandard(), categoriesMap.get(predictionData.getStandard()) + 1);
         }
 
         List<String> errorData = data.stream().map(PredictionData::toString).collect(Collectors.toList());
@@ -84,8 +84,13 @@ public class Statistics {
             toolMistakeMap.put(category, mistakeMap);
         }
 
+        int toolCorrectNum = 0;
+
+        int toolErrorNum = 0;
+        int toolErrorNum2 = 0;
+
         List<String> resultList = new ArrayList<>();
-        //输出
+        //输出误识别到每一类情况
         for (Map.Entry<String, HashMap<String, Integer>> entryTool : toolMistakeMap.entrySet()) {
             resultList.add("类别" + entryTool.getKey() + ":");
             resultList.add("----");
@@ -98,9 +103,23 @@ public class Statistics {
             int toolNum = categoriesMap.get(entryTool.getKey());
             resultList.add("分类总数：" + toolNum);
             resultList.add("总误识别数：" + toolMistakeNum);
-            resultList.add("准确率：" + (toolMistakeNum / toolNum));
+            resultList.add("准确率：" + ((toolNum - toolMistakeNum) / (float)toolNum));
+            int toolMistakeNum2 = entryTool.getValue().entrySet().stream()
+                    .filter(e -> (Integer.valueOf(e.getKey()) - 1) / 3 != (Integer.valueOf(entryTool.getKey()) - 1) / 3)
+                    .mapToInt(HashMap.Entry::getValue).sum();
+//            int toolNum2 =
+            resultList.add("忽略星级错误数：" + toolMistakeNum2);
             resultList.add("-----------------------------");
+
+            toolCorrectNum += toolNum;
+            toolErrorNum += toolMistakeNum;
+            toolErrorNum2 += toolMistakeNum2;
         }
+        resultList.add("-----------------------------");
+        resultList.add("-----------------------------");
+        resultList.add("准确率：" + ((toolCorrectNum - toolErrorNum) / (float)toolCorrectNum));
+        resultList.add("忽略星级准确率：" + ((toolCorrectNum - toolErrorNum2) / (float)toolCorrectNum));
+
         FileUtil.createFile(resultList, primaryProperties.getStatisticsPath());
 
     }
