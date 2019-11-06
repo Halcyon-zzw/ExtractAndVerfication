@@ -5,6 +5,8 @@ import lombok.Getter;
 import lombok.Setter;
 import org.springframework.context.annotation.Configuration;
 
+import java.time.LocalDate;
+
 /**
  * 系统属性
  *
@@ -17,20 +19,23 @@ import org.springframework.context.annotation.Configuration;
 @Data
 public class ApplicationProperties {
 
-    private final int beginLength = 140;
-
-    private final int endLength = 58;
-
+//    private final int beginLength = 140;
+//    private final int endLength = 58;
+//    private final int articleLength = beginLength + endLength;
+    private final int beginLength = 200;
+    private final int endLength = 150;
     private final int articleLength = beginLength + endLength;
+
 
     private final int lessDataCount = -1;
 
 
     private final BaseProperties baseProperties = new BaseProperties();
-    private PrimaryProperties primaryProperties;
+    private PrimaryProperties primaryProperties = new EmotionAndGradeProperties5();
     private final EventClassifyProperties eventClassifyProperties = new EventClassifyProperties();
     private final EmotionProperties emotionProperties = new EmotionProperties();
     private final EmotionAndGradeProperties emotionAndGradeProperties = new EmotionAndGradeProperties();
+    private final EmotionAndGradeProperties5 emotionAndGradeProperties5 = new EmotionAndGradeProperties5();
     private final CreateFileProporttionProperties createFileProporttionProperties = new CreateFileProporttionProperties();
     private final ColumnProperties columnProperties = new ColumnProperties();
     private final EventExcelProperties eventExcelProperties = new EventExcelProperties();
@@ -40,7 +45,7 @@ public class ApplicationProperties {
 
     private final EmotionAndGradeTestProperties emotionAndGradeTestProperties = new EmotionAndGradeTestProperties();
 
-    private final String keywordsPath = baseProperties.basePath + "情感关键词.txt";
+    private final String keywordsPath = baseProperties.basePath + "情感关键词_所有.txt";
 
     private final String sentenceSeparator = "[。？?！!；;]";
 
@@ -89,11 +94,13 @@ public class ApplicationProperties {
         protected Object content = "内容";
         protected boolean haveHeader = true;
 
+        protected String type = "";
+
         public String toString() {
             return "路径：" + path + "\n"
                     + "数据量：" + dataCount + "\n"
                     + "过滤数据量：" + lessCount + "\n"
-                    + "标签数量：" + labelNumber + "\n";
+                    + "标签数量：" + labelNumber;
         }
     }
 
@@ -170,28 +177,38 @@ public class ApplicationProperties {
      */
     @Data
     public class EmotionAndGradeProperties extends PrimaryProperties{
-        private final int DATA_COUNT = 50000;
-        Object label_1;
-        Object label_2;
+        private int DATA_COUNT = -1;
+        protected Object label_1;
+        protected Object label_2;
         public EmotionAndGradeProperties() {
 
             super.path = baseProperties.getOriginalPath() + "舆情语料.csv";
-            super.dataCount = -1;
+            super.dataCount =10000;
             super.labelNumber = 7;
             label_1 = "舆情情感";
             label_2 = "舆情情感等级";
             super.content = "内容";
 
             super.haveHeader = true;
+
+            super.type = "情感and等级";
         }
 
         public String toString() {
             return "路径：" + path + "\n"
                     + "数据量：" + dataCount + "\n"
                     + "过滤数据量：" + lessCount + "\n"
-                    + "标签数量：" + labelNumber + "\n";
+                    + "标签数量：" + labelNumber;
         }
     }
+
+    public class EmotionAndGradeProperties5 extends EmotionAndGradeProperties{
+        public EmotionAndGradeProperties5() {
+            super();
+            super.labelNumber = 5;
+        }
+    }
+
 
     public class EmotionAndGradeTsvProperties extends PrimaryProperties{
         public EmotionAndGradeTsvProperties() {
@@ -262,10 +279,19 @@ public class ApplicationProperties {
     public class CreateFileProporttionProperties {
 
         /**
+         * 当前日期，格式：1106
+         */
+        String data = LocalDate.now().getMonthValue() + ""
+                //小于10在前面补充0
+                + (LocalDate.now().getDayOfMonth() < 10 ? "0" + LocalDate.now().getDayOfMonth() : LocalDate.now().getDayOfMonth());
+
+        /**
          * 输出文件比率
          */
 //        private final int[] proportions = {1, 2, 7};
         private final int[] proportions = {1, 1, 8};
+
+        private final String createProportionString = "118";
 
         /**
          * 基础路径
@@ -289,15 +315,33 @@ public class ApplicationProperties {
 //        private String type = "情感and等级_26000";
 //        private String type = "情感and等级_50000";
 //        private String type = "情感and等级_summary_All_118";
-        private String type = "情感and等级_keyword_All_118_1031";
+//        private String type = "情感and等级_keyword_All_118_1101";
+//        private String type = "情感and等级_keyword_26000_118_1102";
+//        private String type = "情感and等级_keyword_All_118_1102";
+//        private String type = "情感and等级_keyword_delete_All_118_1102";
+        //new:  类型_分类数量_处理方式_数据量_输出文件方式_日期
+//        private String type = primaryProperties.getType() + "_" + primaryProperties.getLabelNumber()
+//                + "_keyword_delete_" + primaryProperties.getDataCount() + "_" + createProportionString + "_" + data;
+        private String type;
 
+        private String trainDir;
         /**
          * 输出文件路径
          */
-        private String[] paths = {
-                trainBasePath + type + "\\dev.tsv",
-                trainBasePath + type + "\\test.tsv",
-                trainBasePath + type + "\\train.tsv",
-        };
+        private String[] paths;
+
+        public String getTrainDir() {
+            return trainBasePath + type;
+        }
+
+        public String[] getPaths() {
+            paths = new String[]{
+                    trainBasePath + type + "\\dev.tsv",
+                    trainBasePath + type + "\\test.tsv",
+                    trainBasePath + type + "\\train.tsv",
+            };
+            return paths;
+        }
+
     }
 }
