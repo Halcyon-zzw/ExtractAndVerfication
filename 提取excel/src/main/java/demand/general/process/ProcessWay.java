@@ -8,5 +8,9 @@ package demand.general.process;
  * @Version: 1.0
  */
 public interface ProcessWay {
+    String getType();
+
     String process(String str);
+
+    void info();
 }

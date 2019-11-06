@@ -1,5 +1,6 @@
 package demand.general.process;
 
+import lombok.Getter;
 import util.StringsUtilCustomize;
 
 /**
@@ -16,6 +17,9 @@ public class InvalidProcess implements ProcessWay {
      * 字符串的最小长度
      */
     private final int lessLength = 20;
+
+    @Getter
+    private String type = "keyword";
 
     @Override
     public String process(String str) {
@@ -117,5 +121,34 @@ public class InvalidProcess implements ProcessWay {
         }
 
         return str;
+    }
+
+
+    public String processSelect(String str) {
+        String[] beginStrings = {"电", "讯", "获悉", "公告"};
+        //删除开头20字符内的 beginStrings
+        for (String beginString : beginStrings) {
+            int beginIndex = str.indexOf(beginString);
+            if (beginIndex <= 20) {
+                str = StringsUtilCustomize.substringByDeleteBefore(str, beginString);
+            }
+        }
+
+        //删除 “特此公告”及之后内容
+        str = StringsUtilCustomize.substringByDeleteAfterLast(str, "特此公告");
+
+
+        //删除标识字符串所在块
+        String[] blockStrings = {"虚假记载、误导性陈述", "证券代码", "债券代码", "备份文件", "本公司董事会研究确定",
+                "敬请广大投资者"};
+        for (String blockString : blockStrings) {
+            str = StringsUtilCustomize.substringByDeleteBlockAll(str, blockString);
+        }
+        return str;
+    }
+
+    @Override
+    public void info() {
+        System.out.println(">>>删除无效数据");
     }
 }
