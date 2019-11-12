@@ -1,19 +1,13 @@
 package deal.impl;
 
-import com.csvreader.CsvReader;
-import create.CreateFileWay;
-import create.impl.CreateFileProportion;
 import deal.DealFileWay;
 import deal.DealFileWayConditional;
-import demand.event_classify_2.EventClassifyCsvDeal;
+import old.event_classify_2.EventClassifyCsvDeal;
 import pool.DealFile;
-import util.FileUtil;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
  * 有条件的对事件分类提取（Csv文件）

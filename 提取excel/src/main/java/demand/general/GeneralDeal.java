@@ -3,6 +3,8 @@ package demand.general;
 import java.util.List;
 
 /**
+ * 通用提取数据接口
+ *
  * TODO 修改成抽象类
  *
  * @Author: zhuzw

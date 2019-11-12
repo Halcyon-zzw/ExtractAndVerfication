@@ -99,7 +99,7 @@ public class CountControl {
                 .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (a, b) -> a, HashMap::new));
 
 
-        //controlMap过滤数据少的数据，并姐结果返回至map中
+        //controlMap过滤数据少的数据，并将结果返回至map中
         controlMap = controlMap.entrySet().stream()
                 .filter(tempResult -> tempResult.getValue() > lessCount)
                 .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (a, b) -> a, HashMap::new));

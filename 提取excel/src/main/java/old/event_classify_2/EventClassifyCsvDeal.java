@@ -1,4 +1,4 @@
-package demand.event_classify_2;
+package old.event_classify_2;
 
 import com.csvreader.CsvReader;
 import config.ApplicationProperties;
@@ -6,6 +6,7 @@ import deal.DealFileWay;
 import deal.DealFileWayConditional;
 import deal.impl.AllClassifyExcelDeal;
 import deal.impl.LyricExcelDealConditional;
+import old.AbstractExtractCsvValue;
 import process.ColumnProcess;
 import process.impl.ContentCsvProcess;
 import process.impl.TitleCsvProcess;
@@ -15,7 +16,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import extract.*;
+
 /**
  * 提取csv文件，事件分类数据
  *

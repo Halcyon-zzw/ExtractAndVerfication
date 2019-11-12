@@ -10,11 +10,12 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 import java.io.*;
 import java.nio.charset.Charset;
-import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -147,13 +148,9 @@ public class FileUtil {
      * @throws IOException
      */
     public static void createFile(List<String> strings, String path) throws IOException {
-        Path target = Paths.get(path);
-        File dir = target.getParent().toFile();
-        if (! dir.exists()) {
-            //不存在，生成目录
-            dir.mkdir();
-        }
+        createDir(path);
 
+        Path target = Paths.get(path);
 //        BufferedWriter bw = new BufferedWriter(
 //                new OutputStreamWriter(
 //                        new FileOutputStream(target.toFile())
@@ -167,7 +164,31 @@ public class FileUtil {
             bw.append(s);
             bw.newLine();
         }
+        //逐层关闭
+        bw.close();
+    }
 
+
+    /**
+     * 将字符串列表保存到文件中,不存在目录自动创建
+     *
+     * @param strings 字符串列表
+     * @param path 文件路径（包含文件名）
+     * @throws IOException
+     */
+    public static void createFile2(Collection<String> strings, String path) throws IOException {
+        createDir(path);
+
+        Path target = Paths.get(path);
+        BufferedWriter bw = Files.newBufferedWriter(target);
+
+        for (String s : strings) {
+            if(s == null) {
+                continue;
+            }
+            bw.append(s);
+            bw.newLine();
+        }
         //逐层关闭
         bw.close();
     }
@@ -200,5 +221,17 @@ public class FileUtil {
             }
         }
         return resultList;
+    }
+
+    public static boolean createDir(String path) {
+        Path target = Paths.get(path);
+        File dir = target.getParent().toFile();
+        if (! dir.exists()) {
+            //不存在，生成目录
+            dir.mkdir();
+            System.out.println("创建目录成功，时间：" + LocalDate.now());
+            return true;
+        }
+        return false;
     }
 }

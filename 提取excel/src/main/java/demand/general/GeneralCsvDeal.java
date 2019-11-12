@@ -22,7 +22,6 @@ import java.util.List;
  *
  * @Author: zhuzw
  * @Date: 2019/8/28 19:08
- * @Version: 1.0
  * @Version 2.0
  * 添加构造函数，外部设置提取的目标，解决多次调用问题。运行时决定调用对象
  */

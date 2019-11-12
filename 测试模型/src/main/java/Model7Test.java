@@ -12,6 +12,7 @@ import config.FileProperties;
 import deal.AbstractDealFileWay;
 import delete.column.ColumnCsvDeal;
 import delete.column.ColumnCsvExtract;
+import demand.emotion_and_grade_improve.EmotionAndGradeExcelDeal;
 import pool.DealFileModify;
 import request.ClassificationRequest;
 import request.MultipleClassicationRequest;
@@ -108,11 +109,12 @@ public class Model7Test {
 
         int length = testList.size();
         //初始线程数
-        int num = 6;
+        int num = 1;
         String[] urls = {
-                "http://10.106.0.51:8050/encode", "http://10.106.0.51:8051/encode",
-                "http://10.106.0.51:8052/encode", "http://10.106.0.51:8053/encode",
-                "http://10.106.0.51:8054/encode", "http://10.106.0.51:8055/encode",
+                "http://10.106.0.51:8013/encode",
+//                "http://10.106.0.51:8051/encode",
+//                "http://10.106.0.51:8052/encode", "http://10.106.0.51:8053/encode",
+//                "http://10.106.0.51:8054/encode", "http://10.106.0.51:8055/encode",
         };
 
         //启动多线程
@@ -305,16 +307,26 @@ public class Model7Test {
      * @param resultList 待生成的结果集
      * @throws IOException
      */
-    private static void createFile(List<String[]> resultList) throws IOException {
+    private static void createFile(List<String[]> resultList) {
 //        CSVWriter writer = new CSVWriter(new FileWriter("E:\\下载\\钉钉文件\\工作资料\\create\\栏目分类\\result.csv"));
         Path path = Paths.get(fileProperties.getCreatePath());
         File file = path.getParent().toFile();
         if (!file.exists()) {
             file.mkdir();
         }
-        CSVWriter writer = new CSVWriter(new FileWriter(fileProperties.getCreatePath()));
 
-        writer.writeAll(resultList);
-        writer.close();
+        CSVWriter writer = null;
+        try {
+            writer = new CSVWriter(new FileWriter(fileProperties.getCreatePath()));
+            writer.writeAll(resultList);
+            writer.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }finally {
+
+        }
+
+
+
     }
 }

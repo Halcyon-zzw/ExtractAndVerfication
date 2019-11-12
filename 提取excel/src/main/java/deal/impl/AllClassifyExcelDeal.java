@@ -22,8 +22,7 @@ public class AllClassifyExcelDeal implements DealFileWay {
 
     @Override
     public List<String> extractedValue(String path) throws IOException {
-        Workbook workbook = FileUtil.getWorkbook(path);
-        Sheet sheet = workbook.getSheetAt(0);
+        Sheet sheet = FileUtil.getSheet(path, 0);
 
         List<String> resultList = new ArrayList<>();
 

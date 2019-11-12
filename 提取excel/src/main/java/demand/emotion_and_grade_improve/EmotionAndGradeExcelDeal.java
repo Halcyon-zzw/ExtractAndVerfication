@@ -7,6 +7,10 @@ import demand.general.ArticleProcess;
 import demand.general.CountControl;
 import lombok.Setter;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
 import util.FileUtil;
 import util.StringsUtilCustomize;
 
@@ -23,7 +27,7 @@ import java.util.Map;
  * @Date: 2019/9/23 16:12
  * @Version: 1.0
  */
-public class EmotionAndGradeDeal implements DealFileWay {
+public class EmotionAndGradeExcelDeal implements DealFileWay {
     @Setter
     char separator = ',';
     /**
@@ -62,24 +66,24 @@ public class EmotionAndGradeDeal implements DealFileWay {
      */
     private boolean contentExtract = false;
 
-    public EmotionAndGradeDeal(Object labelHeader, Object titleHeader) {
+    public EmotionAndGradeExcelDeal(Object labelHeader, Object titleHeader) {
         this.labelHeader = labelHeader;
         this.titleHeader = titleHeader;
     }
 
-    public EmotionAndGradeDeal(Object[] labelHeaders, Object titleHeader) {
+    public EmotionAndGradeExcelDeal(Object[] labelHeaders, Object titleHeader) {
         this.labelHeaders = labelHeaders;
         this.titleHeader = titleHeader;
     }
 
-    public EmotionAndGradeDeal(Object[] labelHeaders, Object titleHeader, Object contentHeader) {
+    public EmotionAndGradeExcelDeal(Object[] labelHeaders, Object titleHeader, Object contentHeader) {
         this.labelHeaders = labelHeaders;
         this.titleHeader = titleHeader;
         this.contentHeader = contentHeader;
         contentExtract = true;
     }
 
-    public EmotionAndGradeDeal(Object labelHeader, Object titleHeader, Object contentHeader) {
+    public EmotionAndGradeExcelDeal(Object labelHeader, Object titleHeader, Object contentHeader) {
         this.labelHeader = labelHeader;
         this.titleHeader = titleHeader;
         this.contentHeader = contentHeader;
@@ -89,46 +93,52 @@ public class EmotionAndGradeDeal implements DealFileWay {
     /**
      * 从文件中提取数据
      *
-     * @param csvPath 文件路径
+     * @param path 文件路径
      * @return 舆情情感\t标题\t内容
      */
     @Override
-    public List<String> extractedValue(String csvPath) {
+    public List<String> extractedValue(String path) {
         List<String> resultList = new ArrayList<>();
 
         HashMap<String, List<String>> tempResultMap = new HashMap<>();
 
-        //获取csvRead
-        CsvReader csvReader = FileUtil.getCsvReader(csvPath, separator);
+        //读取文件第一个工作表
+        Sheet sheet = FileUtil.getSheet(path, 0);
+        //最后一行
+        int lastRowIndex = sheet.getLastRowNum();
+
+        int firstRowIndex = 0;
+        if (haveHeader()) {
+            firstRowIndex = 1;
+        }
         String title = "";
         String content = "";
         LocalTime localTime1 = LocalTime.now();
+
+
         // 逐条读取记录，直至读完
         try {
-            if (haveHeader()) {
-                csvReader.readHeaders();
-            }
-            while (csvReader.readRecord()) {
+            for (int rowIndex = firstRowIndex; rowIndex <= lastRowIndex; rowIndex++) {
+                //获得该行数据
+                Row row = sheet.getRow(rowIndex);
+                if (null == row) {
+                    continue;
+                }
+
                 //每次初始化labels数组，解决数量控制死循环bug
                 List<String> labels = new ArrayList<>();
-                //从文件中获取值 - 不变
-                if (haveHeader()) {
 
-                    for (Object labelHeader : labelHeaders) {
-
-                        labels.add(csvReader.get((String) labelHeader));
-                    }
-
-                    title = csvReader.get((String) titleHeader);
-                    content = csvReader.get((String) contentHeader);
-
-                } else {
-                    for (Object labelHeader : labelHeaders) {
-                        labels.add(csvReader.get((Integer) labelHeader));
-                    }
-                    title = csvReader.get((Integer) titleHeader);
-                    content = csvReader.get((Integer) contentHeader);
+                for (Object labelHeader : labelHeaders) {
+                    Cell labelCell = row.getCell((Integer) labelHeader);
+                    String tempLabel = labelCell == null ? null : labelCell.toString().split("\\.")[0];
+                    labels.add(tempLabel);
                 }
+                Cell titleCell = row.getCell((Integer) titleHeader);
+                Cell countCell = row.getCell((Integer) contentHeader);
+
+                title = titleCell == null ? null : titleCell.toString();
+                content = countCell == null ? null : countCell.toString();
+
 
 
                 //是否为空 - 变
@@ -144,7 +154,7 @@ public class EmotionAndGradeDeal implements DealFileWay {
                 if (contentExtract) {
                     //判断content是否为空
                     if (StringUtils.isEmpty(content)) {
-                        continue;
+                        content = "";
                     }
                 }
 
@@ -176,12 +186,14 @@ public class EmotionAndGradeDeal implements DealFileWay {
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
-            if (null != csvReader) {
-                csvReader.close();
-            }
+
         }
         LocalTime localTime2 = LocalTime.now();
         System.out.println("耗时：" + (localTime2.toSecondOfDay() - localTime1.toSecondOfDay()));
+        //数据提取情况
+        dataSituation(countControl, tempResultMap);
+        //过滤数据量少的
+        tempResultMap = countControl.filterLess(tempResultMap, aps.getPrimaryProperties().getLessCount());
         //数据提取情况
         dataSituation(countControl, tempResultMap);
         //添加数据

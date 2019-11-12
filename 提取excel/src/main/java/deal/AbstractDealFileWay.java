@@ -1,7 +1,7 @@
 package deal;
 
 import com.csvreader.CsvReader;
-import extract.AbstractExtractCsvValue;
+import old.AbstractExtractCsvValue;
 import util.FileUtil;
 
 import java.io.IOException;

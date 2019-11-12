@@ -86,6 +86,7 @@ public class ArticleProcess {
 //
 //            return resultArticle;
 //        }
+        //直接截取文章长度
         if (article.length() >= aps.getArticleLength()) {
             article = article.substring(0, aps.getArticleLength());
         }

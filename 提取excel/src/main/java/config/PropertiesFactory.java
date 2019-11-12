@@ -30,7 +30,11 @@ public class PropertiesFactory {
             //情感 and 等级
             return new ApplicationProperties().getEmotionAndGradeProperties();
         } else if (propertyType.equalsIgnoreCase("emotionAndGrade5")) {
+            //情感 and 等级 5分类
             return new ApplicationProperties().getEmotionAndGradeProperties5();
+        } else if (propertyType.equalsIgnoreCase("emotionAndGradeExcel")) {
+            //情感 and 等级 excel
+            return new ApplicationProperties().getEmotionAndGradeExcelProperties();
         } else if (propertyType.equalsIgnoreCase("column")) {
             //栏目分类
             return new ApplicationProperties().getColumnProperties();

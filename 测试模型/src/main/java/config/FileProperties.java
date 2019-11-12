@@ -27,12 +27,17 @@ public class FileProperties {
     /**
      * 统计正确率及错误数据集
      */
-    private String createPath = "E:\\文件\\工作\\AI\\bert\\测试结果\\情感and等级_50000\\result.csv";
-    private String createPath2 = "E:\\文件\\工作\\AI\\bert\\测试结果\\情感and等级_50000\\result.txt";
+    private String createPath = "E:\\文件\\工作\\AI\\bert\\测试结果\\情感and等级_13000_1111\\result.csv";
+    private String createPath2 = "E:\\文件\\工作\\AI\\bert\\测试结果\\情感and等级_13000_1111\\result.txt";
 
 
     private String statisticsPath = "E:\\文件\\工作\\AI\\bert\\测试结果\\情感and等级_50000\\统计情况.txt";
     private String errorPath = aps.getBaseProperties().getTestResultPath() + "情感and等级_50000\\错误数据集.tsv";
+
+    /**
+     * 临时地址，用于保存问题
+     */
+    private String temporaryPath = "E:\\文件\\工作\\AI\\bert\\临时文件.csv";
 
     @Data
     public class PrimaryProperties{

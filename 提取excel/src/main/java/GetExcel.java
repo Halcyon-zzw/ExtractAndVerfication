@@ -11,17 +11,14 @@ import delete.LyricExcelDeal;
 import delete.column.ColumnCsvDeal;
 import delete.column.ColumnCsvExtract;
 import demand.emotion_and_grade.EmotionAndGradeCsvDeal;
-import demand.emotion_and_grade_improve.EmotionAndGradeDeal;
-import demand.emotion_and_grade_improve.EmotionAndGradeLabel5Process;
-import demand.emotion_and_grade_improve.EmotionAndGradeLabel7Process;
-import demand.event_classify_2.EventClassifyCsvDeal;
-import demand.event_classify_2.EventClassigySupplementCsvDeal;
+import demand.emotion_and_grade_improve.*;
+import old.event_classify_2.EventClassifyCsvDeal;
+import old.event_classify_2.EventClassigySupplementCsvDeal;
 import demand.general.ArticleProcess;
 import demand.general.ExtractAgent;
 import demand.general.GeneralCsvDeal;
 import demand.general.excel.GeneralDealExcel;
 import demand.general.process.KeywordProcess;
-import demand.general.process.NoneProcess;
 import model.ExcelMessage;
 import pool.DealFile;
 
@@ -60,57 +57,37 @@ public class GetExcel {
     private static ExtractAgent extractAgent = new ExtractAgent();
 
     public static void main(String[] args) throws IOException {
-
         //提取舆情情感+舆情等级（9类）                                                                                                                                                                                                                                                                                                  数据
 //        dealEmotionAndGradeCsvDemo();
-
         //提取舆情情感（3类）数据
 //        dealGeneralDemo();
-
 //        dealLyricExcelDemo();
-
         //提取分类数据
 //        extractClassify();
-
         //文件名生成文件
 //        createFileByFileName();
-
         //提取栏目分类数据
 //        dealColumnCsvDemo();
-
         //提取补充事件分类数据
 //        extractClassifySupplement();
-
 //        generalExcelDemo();
-
-        aps.setPrimaryProperties(PropertiesFactory.getProperties("emotionAndGrade7"));
-
+//        mergeTitleAndContent();
         long startTime = System.currentTimeMillis();
-
+        //处理8分类 TODO change
+        ArticleProcess articleProcess = new EmotionAndGradeLabel7ChinaProcess(new KeywordProcess());
         //处理7分类
 //        ArticleProcess articleProcess = new EmotionAndGradeLabel7Process(new KeywordProcess());
         //处理5分类
 //        ArticleProcess articleProcess = new EmotionAndGradeLabel5Process(new KeywordProcess());
         //原始处理，
-        ArticleProcess articleProcess = new EmotionAndGradeLabel7Process(new KeywordProcess());
+//        ArticleProcess articleProcess = new EmotionAndGradeLabel7Process(new NoneProcess());
 
-        /**
-         * 当前日期，格式：1106
-         */
-        String date = LocalDate.now().getMonthValue() + ""
-                //小于10在前面补充0
-                + (LocalDate.now().getDayOfMonth() < 10 ? "0" + LocalDate.now().getDayOfMonth() : LocalDate.now().getDayOfMonth());
-        String type = aps.getPrimaryProperties().getType() + "\\"   //文件夹
-                + aps.getPrimaryProperties().getType()     //类型
-                + "_" + aps.getPrimaryProperties().getLabelNumber()     //label数量
-                + "_" + articleProcess.getProcessWay().getType()        //处理方式
-                + "_" +aps.getPrimaryProperties().getDataCount()        //数据量（每类）
-                + "_" + aps.getCreateFileProporttionProperties().getCreateProportionString() //输出文件的比率
-                + "_" + date;       //当前日期
+        //分类数量修改分类处理方式  TODO change
+        aps.setPrimaryProperties(PropertiesFactory.getProperties("emotionAndGradeExcel"));
+        String type = getCreateType(aps, articleProcess);
         aps.getCreateFileProporttionProperties().setType(type);
-
+        //输出配置
         printProperties(aps);
-
         //输出分类信息
         articleProcess.info();
         //提取grade and emotion
@@ -118,18 +95,46 @@ public class GetExcel {
         extractAgent.setAps(aps);
         extractAgent.extractEmotionAndGrade();
         System.out.println("耗时：" + (System.currentTimeMillis() - startTime));
-//        mergeTitleAndContent();
+
+    }
+
+    /**
+     * 获取生成文件的类型
+     * @param aps
+     * @param articleProcess
+     * @return
+     */
+    public static String getCreateType(ApplicationProperties aps, ArticleProcess articleProcess) {
+        //当前日期，格式：1106
+        String date = LocalDate.now().getMonthValue() + ""
+                //小于10在前面补充0
+                + (LocalDate.now().getDayOfMonth() < 10 ? "0" + LocalDate.now().getDayOfMonth() : LocalDate.now().getDayOfMonth());
+
+        //数据量为-1时，显示为 all，否则显示原本数量
+        String dataCountString = aps.getPrimaryProperties().getDataCount()  == -1 ? "all" : aps.getPrimaryProperties().getDataCount()  + "";
+        String type = aps.getPrimaryProperties().getType() + "\\"   //文件夹
+                + aps.getPrimaryProperties().getType()     //类型
+                + "_" + aps.getPrimaryProperties().getLabelNumber()     //label数量,
+                + "_" + articleProcess.getProcessWay().getType()        //处理方式
+                + "_" + dataCountString       //数据量（每类）
+                + "_" + aps.getCreateFileProporttionProperties().getCreateProportionString() //输出文件的比率
+                + "_" + date;       //当前日期
+        return type;
     }
 
     public static void printProperties(ApplicationProperties aps) {
         System.out.println("开始处理...");
         System.out.println("处理参数：");
         System.out.println("===================");
+        System.out.println(aps.getPrimaryProperties().info());
         System.out.println("数据长度：" + aps.getArticleLength());
-        System.out.println(aps.getPrimaryProperties().toString());
         System.out.println("输出路径:" + aps.getCreateFileProporttionProperties().getTrainDir());
     }
 
+
+    /**
+     * 处理tsv文件的配置
+     */
     private static void mergeTitleAndContent() throws IOException {
         //待汇总文件路径
         String path = aps.getEmotionAndGradeTsvProperties().getPath();

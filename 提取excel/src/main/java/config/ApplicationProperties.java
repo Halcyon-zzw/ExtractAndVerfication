@@ -1,15 +1,12 @@
 package config;
 
 import lombok.Data;
-import lombok.Getter;
-import lombok.Setter;
-import org.springframework.context.annotation.Configuration;
 
 import java.time.LocalDate;
 
 /**
  * 系统属性
- *
+ * <p>
  * TODO 每个类都new该对象，改进
  *
  * @Author: zhuzw
@@ -19,44 +16,40 @@ import java.time.LocalDate;
 @Data
 public class ApplicationProperties {
 
-//    private final int beginLength = 140;
+    //    private final int beginLength = 140;
 //    private final int endLength = 58;
 //    private final int articleLength = beginLength + endLength;
     private final int beginLength = 200;
     private final int endLength = 150;
     private final int articleLength = beginLength + endLength;
 
-
     private final int lessDataCount = -1;
 
 
     private final BaseProperties baseProperties = new BaseProperties();
-    private PrimaryProperties primaryProperties = new EmotionAndGradeProperties5();
     private final EventClassifyProperties eventClassifyProperties = new EventClassifyProperties();
     private final EmotionProperties emotionProperties = new EmotionProperties();
     private final EmotionAndGradeProperties emotionAndGradeProperties = new EmotionAndGradeProperties();
     private final EmotionAndGradeProperties5 emotionAndGradeProperties5 = new EmotionAndGradeProperties5();
+    private final EmotionAndGradeExcelProperties emotionAndGradeExcelProperties = new EmotionAndGradeExcelProperties();
     private final CreateFileProporttionProperties createFileProporttionProperties = new CreateFileProporttionProperties();
     private final ColumnProperties columnProperties = new ColumnProperties();
     private final EventExcelProperties eventExcelProperties = new EventExcelProperties();
-
     private final EmotionAndGradeTsvProperties emotionAndGradeTsvProperties = new EmotionAndGradeTsvProperties();
-
-
     private final EmotionAndGradeTestProperties emotionAndGradeTestProperties = new EmotionAndGradeTestProperties();
-
     private final String keywordsPath = baseProperties.basePath + "情感关键词_所有.txt";
-
     private final String sentenceSeparator = "[。？?！!；;]";
-
-    public class Other {
-
-    }
-
     /**
      * 待汇总路径
      */
     private final String summaryPath = "E:\\文件\\工作\\AI\\bert\\原始语料\\舆情语料.csv";
+    private PrimaryProperties primaryProperties = new EmotionAndGradeProperties5();
+
+    private final String temporaryPath = "E:\\文件\\工作\\AI\\bert\\临时文件.txt";
+
+    public class Other {
+
+    }
 
     @Data
     public class BaseProperties {
@@ -74,7 +67,6 @@ public class ApplicationProperties {
          */
         private String originalPath = basePath + "原始语料\\";
     }
-
 
 
     /**
@@ -96,8 +88,9 @@ public class ApplicationProperties {
 
         protected String type = "";
 
-        public String toString() {
-            return "路径：" + path + "\n"
+        public String info() {
+            return "处理类型：" + type + "\n"
+                    + "路径：" + path + "\n"
                     + "数据量：" + dataCount + "\n"
                     + "过滤数据量：" + lessCount + "\n"
                     + "标签数量：" + labelNumber;
@@ -108,7 +101,7 @@ public class ApplicationProperties {
      * 事件分类处理 相关属性
      */
     @Data
-    public class EventClassifyProperties extends PrimaryProperties{
+    public class EventClassifyProperties extends PrimaryProperties {
         public EventClassifyProperties() {
 
             super.path = baseProperties.getOriginalPath() + "舆情语料.csv";
@@ -133,7 +126,7 @@ public class ApplicationProperties {
     /**
      * 事间补充语料属性
      */
-    public class EventSupplementProperties extends EventProperties{
+    public class EventSupplementProperties extends EventProperties {
         public EventSupplementProperties() {
             super.path = baseProperties.getOriginalPath() + "事件\\事件多分类补充语料.csv";
             super.dataCount = 100;
@@ -161,7 +154,7 @@ public class ApplicationProperties {
      * 舆情情感处理 相关属性
      */
     @Data
-    public class EmotionProperties extends PrimaryProperties{
+    public class EmotionProperties extends PrimaryProperties {
         public EmotionProperties() {
 
             super.path = baseProperties.getBasePath() + "舆情语料.csv";
@@ -176,14 +169,15 @@ public class ApplicationProperties {
      * 情感&等级处理 相关属性
      */
     @Data
-    public class EmotionAndGradeProperties extends PrimaryProperties{
-        private int DATA_COUNT = -1;
+    public class EmotionAndGradeProperties extends PrimaryProperties {
         protected Object label_1;
         protected Object label_2;
+        private int DATA_COUNT = -1;
+
         public EmotionAndGradeProperties() {
 
             super.path = baseProperties.getOriginalPath() + "舆情语料.csv";
-            super.dataCount =10000;
+            super.dataCount = 20000;
             super.labelNumber = 7;
             label_1 = "舆情情感";
             label_2 = "舆情情感等级";
@@ -193,16 +187,28 @@ public class ApplicationProperties {
 
             super.type = "情感and等级";
         }
+    }
 
-        public String toString() {
-            return "路径：" + path + "\n"
-                    + "数据量：" + dataCount + "\n"
-                    + "过滤数据量：" + lessCount + "\n"
-                    + "标签数量：" + labelNumber;
+    /**
+     * 情感&等级处理 相关属性
+     */
+    @Data
+    public class EmotionAndGradeExcelProperties extends EmotionAndGradeProperties {
+
+        public EmotionAndGradeExcelProperties() {
+            super.path = baseProperties.getOriginalPath() + "\\舆情语料\\舆情情感\\语料\\舆情情感语料.xlsx";
+            super.dataCount = -1;
+            super.lessCount = 10000;
+            super.labelNumber = 10;
+            label_1 = 3;
+            label_2 = 4;
+
+            super.title = 2;
+            super.content = 5;
         }
     }
 
-    public class EmotionAndGradeProperties5 extends EmotionAndGradeProperties{
+    public class EmotionAndGradeProperties5 extends EmotionAndGradeProperties {
         public EmotionAndGradeProperties5() {
             super();
             super.labelNumber = 5;
@@ -210,7 +216,7 @@ public class ApplicationProperties {
     }
 
 
-    public class EmotionAndGradeTsvProperties extends PrimaryProperties{
+    public class EmotionAndGradeTsvProperties extends PrimaryProperties {
         public EmotionAndGradeTsvProperties() {
             super.path = baseProperties.getTrainPath() + "情感and等级_摘要_All\\";
             super.dataCount = -1;
@@ -231,10 +237,15 @@ public class ApplicationProperties {
 
 
     /**
-     *栏目分类相关属性
+     * 栏目分类相关属性
      */
     @Data
-    public class ColumnProperties extends PrimaryProperties{
+    public class ColumnProperties extends PrimaryProperties {
+
+        /**
+         * 最少的数据量，少于该值剔除
+         */
+        private final int leastDataCount = 200;
 
         public ColumnProperties() {
 
@@ -247,10 +258,6 @@ public class ApplicationProperties {
             super.content = 3;
             super.haveHeader = false;
         }
-        /**
-         * 最少的数据量，少于该值剔除
-         */
-        private final int leastDataCount = 200;
     }
 
     public class PrimaryTestProperties {
@@ -258,7 +265,7 @@ public class ApplicationProperties {
     }
 
 
-    public class EmotionAndGradeTestProperties extends PrimaryProperties{
+    public class EmotionAndGradeTestProperties extends PrimaryProperties {
         public EmotionAndGradeTestProperties() {
 //            super.path = baseProperties.getTrainPath() + "情感and等级_删无效\\test.tsv";
             super.path = baseProperties.getTrainPath() + "情感and等级_50000\\test.tsv";
@@ -279,20 +286,17 @@ public class ApplicationProperties {
     public class CreateFileProporttionProperties {
 
         /**
+         * 输出文件比率
+         */
+//        private final int[] proportions = {1, 2, 7};
+        private final int[] proportions = {1, 1, 8};
+        private final String createProportionString = "118";
+        /**
          * 当前日期，格式：1106
          */
         String data = LocalDate.now().getMonthValue() + ""
                 //小于10在前面补充0
                 + (LocalDate.now().getDayOfMonth() < 10 ? "0" + LocalDate.now().getDayOfMonth() : LocalDate.now().getDayOfMonth());
-
-        /**
-         * 输出文件比率
-         */
-//        private final int[] proportions = {1, 2, 7};
-        private final int[] proportions = {1, 1, 8};
-
-        private final String createProportionString = "118";
-
         /**
          * 基础路径
          */

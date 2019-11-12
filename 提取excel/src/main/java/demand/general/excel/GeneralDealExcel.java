@@ -59,6 +59,7 @@ public class GeneralDealExcel implements DealFileWay {
         //最后一行
         int lastRowIndex = sheet.getLastRowNum();
 
+
         int firstRowIndex = 0;
         if (haveHeader()) {
             firstRowIndex = 1;

@@ -4,7 +4,7 @@ import demand.general.ArticleProcess;
 import demand.general.process.ProcessWay;
 
 /**
- * 情感7分类数据处理
+ * 情感7分类数据处理，初始名称为数字
  *
  * @Author: zhuzw
  * @Date: 2019/9/23 16:36

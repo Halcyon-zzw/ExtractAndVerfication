@@ -50,3 +50,5 @@ out/production/代码质量规范/META-INF/代码质量规范.kotlin_module
 src/main/java/test.txt
 提取excel/src/test/java/util/FileUtilTest.java
 提取excel/src/test/java/util/StringsUtilCustomizeTest.java
+提取excel/src/test/java/demand/general/process/ProcessWayTest.java
+提取excel/src/test/java/demand/emotion_and_grade_improve/EmotionAndGradeLabel5ProcessTest.java
