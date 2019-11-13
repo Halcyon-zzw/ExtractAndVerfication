@@ -82,6 +82,7 @@ public class ApplicationProperties {
         protected String path;
 
         protected Object label = "";
+        protected Object[] labels = {};
         protected Object title = "标题";
         protected Object content = "内容";
         protected boolean haveHeader = true;
@@ -177,10 +178,12 @@ public class ApplicationProperties {
         public EmotionAndGradeProperties() {
 
             super.path = baseProperties.getOriginalPath() + "舆情语料.csv";
-            super.dataCount = 20000;
+            super.dataCount = 14000;
             super.labelNumber = 7;
             label_1 = "舆情情感";
             label_2 = "舆情情感等级";
+            Object[] labelss = {label_1, label_2};
+            super.labels = labelss;
             super.content = "内容";
 
             super.haveHeader = true;
@@ -202,6 +205,8 @@ public class ApplicationProperties {
             super.labelNumber = 10;
             label_1 = 3;
             label_2 = 4;
+            Object[] labelss = {label_1, label_2};
+            super.labels = labelss;
 
             super.title = 2;
             super.content = 5;
@@ -215,15 +220,37 @@ public class ApplicationProperties {
         }
     }
 
+    public class PrimaryTestProperties {
+
+    }
+
+
+    public class EmotionAndGradeTestProperties extends PrimaryProperties {
+        public EmotionAndGradeTestProperties() {
+//            super.path = baseProperties.getTrainPath() + "情感and等级_删无效\\test.tsv";
+            super.path = baseProperties.getTestResultPath() + "\\情感7类测试集.csv";
+            super.dataCount = -1;
+            super.labelNumber = 7;
+            super.label = 2;
+            Object[] labelss = {2, 3};
+            super.labels = labelss;
+            super.title = 7;
+            super.content = 8;
+            super.haveHeader = false;
+
+            super.type = "情感and等级_test";
+        }
+    }
+
 
     public class EmotionAndGradeTsvProperties extends PrimaryProperties {
         public EmotionAndGradeTsvProperties() {
-            super.path = baseProperties.getTrainPath() + "情感and等级_摘要_All\\";
+            super.path = baseProperties.getTrainPath() + "情感and等级\\情感and等级_keyword_delete_13000_118_1105\\test.tsv";
             super.dataCount = -1;
             super.labelNumber = 7;
             super.label = 0;
             super.title = 1;
-            super.content = 2;
+            super.content = -1;
             super.haveHeader = false;
         }
 
@@ -256,24 +283,6 @@ public class ApplicationProperties {
             super.label = 1;
             super.title = 2;
             super.content = 3;
-            super.haveHeader = false;
-        }
-    }
-
-    public class PrimaryTestProperties {
-
-    }
-
-
-    public class EmotionAndGradeTestProperties extends PrimaryProperties {
-        public EmotionAndGradeTestProperties() {
-//            super.path = baseProperties.getTrainPath() + "情感and等级_删无效\\test.tsv";
-            super.path = baseProperties.getTrainPath() + "情感and等级_50000\\test.tsv";
-            super.dataCount = -1;
-            super.labelNumber = 7;
-            super.label = 0;
-            super.title = 1;
-            super.content = -1;
             super.haveHeader = false;
         }
     }

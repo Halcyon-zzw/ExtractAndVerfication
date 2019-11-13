@@ -1,54 +1,25 @@
-package demand.general;
+package demand.emotion_and_grade_improve;
 
 import config.ApplicationProperties;
-import demand.general.process.InvalidProcess;
+import demand.general.ArticleProcess;
 import demand.general.process.ProcessWay;
-import lombok.Getter;
 import util.StringsUtilCustomize;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
- * 文章数据处理
- * 使用直接处理，需要计算重写getLabel方法
+ * TODO
  *
  * @Author: zhuzw
- * @Date: 2019/9/10 15:30
+ * @Date: 2019/11/13 9:56
  * @Version: 1.0
  */
-public class ArticleProcess {
-
-    static int count = 0;
-    /**
-     * 字符串的最小长度
-     */
-    private final int lessLength = 20;
+public class OriginalArticleProcess extends ArticleProcess {
     private ApplicationProperties aps = new ApplicationProperties();
 
-    private List<String> keywordList = new ArrayList<>();
-
-    @Getter
-    protected ProcessWay processWay;
-
-    public ArticleProcess(ProcessWay processWay) {
-        this.processWay = processWay;
-    }
-
-    /**
-     * 提取一行数据
-     *
-     * @param labels  用于计算标签的参数
-     * @param title   标题
-     * @param content 内容
-     * @return
-     */
-    public String extractRowValue(String[] labels, String title, String content) {
-        String label = getLabel(labels);
-        String article = getArticle(title, content);
-        return label + "\t" + article;
+    public OriginalArticleProcess(ProcessWay processWay) {
+        super(processWay);
     }
 
     /**
@@ -62,43 +33,17 @@ public class ArticleProcess {
     }
 
     public String getArticle(String title, String content) {
-        /**
-         * 截取字符的长度，拼接时需要一个字符
-         */
-        int articleLength = aps.getArticleLength();
-        int beginLength = aps.getBeginLength();
-        int endLength = aps.getEndLength();
 
         title = replaceSynbolOfTable(title);
         //处理特殊字符
         content = dealContent(content);
         //TODO 放在文章级别处理报错
-        content = deleteDate(content);
+//        content = deleteDate(content);
         content = processWay.process(content);
 
         String article = title + " " + content;
         //删除括号
         article = StringsUtilCustomize.substringByDeleteBrackets(article);
-
-
-
-
-        //判断长度是否超过
-        if (article.length() > articleLength) {
-            String resultArticle = "";
-            //截取内容
-            resultArticle = article.substring(0, beginLength);
-            resultArticle += article.substring(article.length() - endLength, article.length());
-
-            return resultArticle;
-        }
-        //直接截取文章长度
-//        if (article.length() >= aps.getArticleLength()) {
-//            article = article.substring(0, aps.getArticleLength());
-//        }
-
-
-
 
         return article;
     }
@@ -117,7 +62,7 @@ public class ArticleProcess {
         StringBuffer stringBuffer = new StringBuffer("");
         while (m.find()) {
             String deleteStr = m.group();
-//            System.out.println(m.group());
+            System.out.println(m.group());
             int index = article.indexOf(deleteStr);
 
             stringBuffer.append(article.substring(0, index));
@@ -142,7 +87,7 @@ public class ArticleProcess {
 
         //关键，结束后将后半部分加上
         stringBuffer.append(article);
-//        System.out.println(stringBuffer.toString());
+        System.out.println(stringBuffer.toString());
         return stringBuffer.toString();
     }
 
@@ -176,7 +121,7 @@ public class ArticleProcess {
     }
 
     public void info() {
-        System.out.println(">>>处理3分类。");
+        System.out.println(">>>返回原始语料。");
         processWay.info();
     }
 }

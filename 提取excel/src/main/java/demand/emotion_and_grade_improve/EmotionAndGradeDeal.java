@@ -104,6 +104,7 @@ public class EmotionAndGradeDeal implements DealFileWay {
         String content = "";
         LocalTime localTime1 = LocalTime.now();
         // 逐条读取记录，直至读完
+        String temp = "";
         try {
             if (haveHeader()) {
                 csvReader.readHeaders();
@@ -160,8 +161,9 @@ public class EmotionAndGradeDeal implements DealFileWay {
 
                 //提取一行数据 - 变
                 String rowValue = articleProcess.extractRowValue(new String[]{labels.get(0), labels.get(1)}, title, content);
-
+                temp = rowValue;
                 //统计文章长度    (截取前面的标签)
+
                 countControl.rangeStatistics(rowValue.split("\t")[1]);
 
                 if (null == tempResultMap.get(label)) {
@@ -174,6 +176,7 @@ public class EmotionAndGradeDeal implements DealFileWay {
 
             }
         } catch (Exception e) {
+            System.out.println(temp);
             e.printStackTrace();
         } finally {
             if (null != csvReader) {

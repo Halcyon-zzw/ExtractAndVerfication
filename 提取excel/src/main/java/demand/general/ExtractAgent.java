@@ -56,9 +56,9 @@ public class ExtractAgent {
 
 
         //TODO change  目前获取Excel属性
-        Object labelHeader_1 = aps.getEmotionAndGradeExcelProperties().getLabel_1();
-        Object labelHeader_2 = aps.getEmotionAndGradeExcelProperties().getLabel_2();
-        Object[] labelHeaders = {labelHeader_1, labelHeader_2};
+//        Object labelHeader_1 = aps.getEmotionAndGradeExcelProperties().getLabel_1();
+//        Object labelHeader_2 = aps.getEmotionAndGradeExcelProperties().getLabel_2();
+        Object[] labelHeaders = aps.getPrimaryProperties().getLabels();
         Object titleHeader = aps.getPrimaryProperties().getTitle();
         Object contentHeader = aps.getPrimaryProperties().getContent();
 
@@ -68,9 +68,9 @@ public class ExtractAgent {
 //        ((EmotionAndGradeDeal) dealFileWay).setAps(aps);
 
         //TODO change
-        dealFileWay = new EmotionAndGradeExcelDeal(labelHeaders, titleHeader, contentHeader);
-        ((EmotionAndGradeExcelDeal) dealFileWay).setArticleProcess(articleProcess);
-        ((EmotionAndGradeExcelDeal) dealFileWay).setAps(aps);
+        dealFileWay = new EmotionAndGradeDeal(labelHeaders, titleHeader, contentHeader);
+        ((EmotionAndGradeDeal) dealFileWay).setArticleProcess(articleProcess);
+        ((EmotionAndGradeDeal) dealFileWay).setAps(aps);
 
         DealFile dealFile = new DealFile(dealFileWay);
         List<String> result = dealFile.dealFile(aps.getPrimaryProperties().getPath());

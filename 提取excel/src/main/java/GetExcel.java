@@ -1,25 +1,23 @@
 import config.ApplicationProperties;
-import config.ExcelProperties;
 import config.PropertiesFactory;
 import create.CreateFileWay;
 import create.impl.CreateExcelFile;
 import create.impl.CreateFileProportion;
-import deal.AbstractDealFileWay;
 import deal.DealFileWay;
 import deal.impl.FileNameDeal;
-import delete.LyricExcelDeal;
-import delete.column.ColumnCsvDeal;
-import delete.column.ColumnCsvExtract;
-import demand.emotion_and_grade.EmotionAndGradeCsvDeal;
-import demand.emotion_and_grade_improve.*;
-import old.event_classify_2.EventClassifyCsvDeal;
-import old.event_classify_2.EventClassigySupplementCsvDeal;
+import demand.emotion_and_grade_improve.EmotionAndGradeLabel7ChinaProcess;
+import demand.emotion_and_grade_improve.EmotionAndGradeLabel7Process;
+import demand.emotion_and_grade_improve.OriginalArticleProcess;
 import demand.general.ArticleProcess;
 import demand.general.ExtractAgent;
 import demand.general.GeneralCsvDeal;
 import demand.general.excel.GeneralDealExcel;
+import demand.general.process.InvalidProcess;
 import demand.general.process.KeywordProcess;
+import demand.general.process.NoneProcess;
 import model.ExcelMessage;
+import old.event_classify_2.EventClassifyCsvDeal;
+import old.event_classify_2.EventClassigySupplementCsvDeal;
 import pool.DealFile;
 
 import java.io.IOException;
@@ -33,14 +31,13 @@ import java.util.List;
  * @Author: zhuzw
  * @Date: 2019/8/6 19:23
  * @Version: 1.0
- *
+ * <p>
  * TODO
  * 优化数据处理方式
  * 将设计模式引入项目，
  * 学习spring框架，将spring框架引入项目
  * 将日志引入项目
  * 将项目改成web项目，属性通过web可选实现
- *
  */
 public class GetExcel {
 
@@ -57,33 +54,45 @@ public class GetExcel {
     private static ExtractAgent extractAgent = new ExtractAgent();
 
     public static void main(String[] args) throws IOException {
-        //提取舆情情感+舆情等级（9类）                                                                                                                                                                                                                                                                                                  数据
-//        dealEmotionAndGradeCsvDemo();
+
         //提取舆情情感（3类）数据
 //        dealGeneralDemo();
-//        dealLyricExcelDemo();
         //提取分类数据
 //        extractClassify();
         //文件名生成文件
 //        createFileByFileName();
-        //提取栏目分类数据
-//        dealColumnCsvDemo();
         //提取补充事件分类数据
 //        extractClassifySupplement();
 //        generalExcelDemo();
 //        mergeTitleAndContent();
+
         long startTime = System.currentTimeMillis();
+
+        extractEmotionAndGarde();
+
+        System.out.println("耗时：" + (System.currentTimeMillis() - startTime));
+
+    }
+
+
+    /**
+     * 配置属性
+     * @throws IOException
+     */
+    private static void extractEmotionAndGarde() throws IOException {
         //处理8分类 TODO change
-        ArticleProcess articleProcess = new EmotionAndGradeLabel7ChinaProcess(new KeywordProcess());
-        //处理7分类
-//        ArticleProcess articleProcess = new EmotionAndGradeLabel7Process(new KeywordProcess());
-        //处理5分类
-//        ArticleProcess articleProcess = new EmotionAndGradeLabel5Process(new KeywordProcess());
-        //原始处理，
-//        ArticleProcess articleProcess = new EmotionAndGradeLabel7Process(new NoneProcess());
+        ArticleProcess articleProcess = new OriginalArticleProcess(new NoneProcess());
 
         //分类数量修改分类处理方式  TODO change
-        aps.setPrimaryProperties(PropertiesFactory.getProperties("emotionAndGradeExcel"));
+        aps.setPrimaryProperties(PropertiesFactory.getProperties("emotionAndGradeTest"));
+        extract(articleProcess);
+    }
+
+
+    /**
+     * 提取情感 and 等级 数据（通用提取方法）
+     */
+    private static void extract(ArticleProcess articleProcess) throws IOException {
         String type = getCreateType(aps, articleProcess);
         aps.getCreateFileProporttionProperties().setType(type);
         //输出配置
@@ -94,12 +103,11 @@ public class GetExcel {
         extractAgent.setArticleProcess(articleProcess);
         extractAgent.setAps(aps);
         extractAgent.extractEmotionAndGrade();
-        System.out.println("耗时：" + (System.currentTimeMillis() - startTime));
-
     }
 
     /**
      * 获取生成文件的类型
+     *
      * @param aps
      * @param articleProcess
      * @return
@@ -111,7 +119,7 @@ public class GetExcel {
                 + (LocalDate.now().getDayOfMonth() < 10 ? "0" + LocalDate.now().getDayOfMonth() : LocalDate.now().getDayOfMonth());
 
         //数据量为-1时，显示为 all，否则显示原本数量
-        String dataCountString = aps.getPrimaryProperties().getDataCount()  == -1 ? "all" : aps.getPrimaryProperties().getDataCount()  + "";
+        String dataCountString = aps.getPrimaryProperties().getDataCount() == -1 ? "all" : aps.getPrimaryProperties().getDataCount() + "";
         String type = aps.getPrimaryProperties().getType() + "\\"   //文件夹
                 + aps.getPrimaryProperties().getType()     //类型
                 + "_" + aps.getPrimaryProperties().getLabelNumber()     //label数量,
@@ -157,7 +165,6 @@ public class GetExcel {
     }
 
 
-
     /**
      * 常规提取excel
      *
@@ -195,16 +202,6 @@ public class GetExcel {
 
     }
 
-    private static void dealColumnCsvDemo() throws IOException {
-        //待处理文件路径
-        String pendingPath = aps.getColumnProperties().getPath();
-
-        AbstractDealFileWay abstractDealFileWay = new ColumnCsvDeal(new ColumnCsvExtract());
-        abstractDealFileWay.extractedValue(pendingPath);
-//        CreateFileWay createFileProportion = new CreateFileProportion(proportions, paths);
-//        DealFileModify dealLyricCsv = new DealFileModify(abstractDealFileWay, createFileProportion);
-//        dealLyricCsv.dealAndCreateFile(pendingPath);
-    }
 
     /**
      * 演示提取舆情情感（3类）数据
@@ -227,43 +224,6 @@ public class GetExcel {
         String path = properties.getPath();
         DealFileWay dealCsvWay = new GeneralCsvDeal(labelHeader, titleHeader, contentHeader);
         List<String> result = dealCsvWay.extractedValue(path);
-    }
-
-    /**
-     * 演示提取舆情情感+舆情等级（9类）数据
-     *
-     * @throws IOException
-     */
-    public static void dealEmotionAndGradeCsvDemo() throws IOException {
-
-        //待汇总文件路径
-        String summariedPath = aps.getSummaryPath();
-
-        DealFileWay dealCsvWay = new EmotionAndGradeCsvDeal();
-        CreateFileWay createFileProportion = new CreateFileProportion(proportions, paths);
-        DealFile dealLyricCsv = new DealFile(dealCsvWay, createFileProportion);
-        dealLyricCsv.dealAndCreateFile(summariedPath);
-
-    }
-
-    /**
-     * 处理舆情excel数据
-     *
-     * @throws IOException
-     */
-    public static void dealLyricExcelDemo() throws IOException {
-        //待汇总文件路径
-        String summariedPath = ExcelProperties.summariedPath + "102001-事件分类-资质风险.xlsx";
-        String[] paths = {
-                ExcelProperties.devTsvPath,
-                ExcelProperties.testTsvPath,
-                ExcelProperties.trainTsvPath
-        };
-
-        DealFileWay dealFileWay = new LyricExcelDeal();
-        CreateFileWay createFileWay = new CreateFileProportion(proportions, paths);
-        DealFile dealFile = new DealFile(dealFileWay, createFileWay);
-        dealFile.dealAndCreateFile(summariedPath);
     }
 
 

@@ -1,22 +1,12 @@
 import bert.BertRequest;
 import bert.BertResponse;
 import bert.PredictionUnit;
-import bert.deal_file.DealFile2Strings;
-import bert.deal_file.DealFileAdapter;
 import bert.extract.EmotionAndGradeExtract;
-import bert.single.BertResultSingle;
-import bert.single.BertSingleResponse;
 import com.opencsv.CSVWriter;
 import config.ApplicationProperties;
 import config.FileProperties;
-import deal.AbstractDealFileWay;
-import delete.column.ColumnCsvDeal;
-import delete.column.ColumnCsvExtract;
-import demand.emotion_and_grade_improve.EmotionAndGradeExcelDeal;
-import pool.DealFileModify;
 import request.ClassificationRequest;
 import request.MultipleClassicationRequest;
-import request.SingleClassificationRequest;
 import test.RequestThread;
 import util.FileUtil;
 
@@ -164,9 +154,8 @@ public class Model7Test {
         }
         LocalTime endTime = LocalTime.now();
 //        //耗时
-        long consumingTime = (long)endTime.toSecondOfDay() - (long)startTime.toSecondOfDay();
-        System.out.println("请求结束，耗时：" + consumingTime  + "秒");
-
+        long consumingTime = (long) endTime.toSecondOfDay() - (long) startTime.toSecondOfDay();
+        System.out.println("请求结束，耗时：" + consumingTime + "秒");
 
 
         //数据写入文本
@@ -184,13 +173,14 @@ public class Model7Test {
 
     private static List<String[]> getTestList() throws IOException {
 //        String path = basePath + "训练语料\\栏目分类\\prediction.csv";
-        String path = fileProperties.getTestPath();
-
-        AbstractDealFileWay abstractDealFileWay = new ColumnCsvDeal(new ColumnCsvExtract());
-        DealFileModify dealFileModify = new DealFileModify(abstractDealFileWay);
-        DealFile2Strings dealFile2Strings = new DealFileAdapter(dealFileModify);
-
-        return dealFile2Strings.dealFile(path);
+//        String path = fileProperties.getTestPath();
+//
+//        AbstractDealFileWay abstractDealFileWay = new ColumnCsvDeal(new ColumnCsvExtract());
+//        DealFileModify dealFileModify = new DealFileModify(abstractDealFileWay);
+//        DealFile2Strings dealFile2Strings = new DealFileAdapter(dealFileModify);
+//
+//        return dealFile2Strings.dealFile(path);
+        return null;
     }
 
     /**
@@ -281,7 +271,6 @@ public class Model7Test {
     }
 
 
-
     /**
      * 获取bert请求对象
      *
@@ -322,10 +311,9 @@ public class Model7Test {
             writer.close();
         } catch (IOException e) {
             e.printStackTrace();
-        }finally {
+        } finally {
 
         }
-
 
 
     }

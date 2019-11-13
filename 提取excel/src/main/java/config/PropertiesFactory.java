@@ -40,6 +40,8 @@ public class PropertiesFactory {
             return new ApplicationProperties().getColumnProperties();
         }else if (propertyType.equals("emotionAndGradeTsv")) {
             return new ApplicationProperties().getEmotionAndGradeTsvProperties();
+        }else if (propertyType.equals("emotionAndGradeTest")) {
+            return new ApplicationProperties().getEmotionAndGradeTestProperties();
         }
         return null;
     }

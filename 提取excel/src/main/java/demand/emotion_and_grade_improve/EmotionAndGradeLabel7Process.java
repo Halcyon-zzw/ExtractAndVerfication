@@ -9,6 +9,9 @@ import demand.general.process.ProcessWay;
  * @Author: zhuzw
  * @Date: 2019/9/23 16:36
  * @Version: 1.0
+ *
+ * @Version: 2.0
+ *          7分类标签名由 1-9 改成101、102......
  */
 public class EmotionAndGradeLabel7Process extends ArticleProcess {
 
@@ -27,10 +30,12 @@ public class EmotionAndGradeLabel7Process extends ArticleProcess {
         int label_1 = Integer.parseInt(labels[0]);
         int label_2 = Integer.parseInt(labels[1]);
         //计算label
-        int label = (label_1 - 1) * 3 + label_2;
-        //中性4、5、6 统一成 4
-        if (label > 3 && label <7) {
-            label = 5;
+//        int label = (label_1 - 1) * 3 + label_2;
+        int label = label_1 * 100 + label_2;
+        //中性4、5、6 统一成 200
+        if (2 == label / 100) {
+            label = 200;
+//            label = 5;
         }
 
         return String.valueOf(label);

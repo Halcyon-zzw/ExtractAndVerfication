@@ -8,7 +8,6 @@ import deal.DealFileWayConfitionalModify;
 import deal.impl.AllClassifyExcelDeal;
 import deal.impl.LyricExcelDealConditional;
 import old.event_classify.EventClassifyCsvDealOriginal;
-import delete.ExtractCsvValue;
 import process.ColumnProcess;
 import process.ColumnProcessCsv;
 import process.impl.ContentCsvProcess;
@@ -29,33 +28,28 @@ import java.util.Map;
  */
 public class EventClassigySupplementCsvDeal implements DealFileWay {
 
-//    @Autowired
-    private ApplicationProperties aps = new ApplicationProperties();
-
-    /**
-     * 获取的数据量
-     */
-    private final int DATA_COUNT = aps.getEventClassifyProperties().getDataCount();
-
     /**
      * 从补充数据中提取的数据量
      */
     private final int DATA_COUNT_FROM_SUMMPLEMENT = 100;
-
+    //    @Autowired
+    private ApplicationProperties aps = new ApplicationProperties();
+    /**
+     * 获取的数据量
+     */
+    private final int DATA_COUNT = aps.getEventClassifyProperties().getDataCount();
     /**
      * 提取二级事件分类数据
      */
-    private ExtractCsvValue extractSecondaryEvent = new ExtractCsvValue(new String[]{"5", "7", "8"});
+//    private ExtractCsvValue extractSecondaryEvent;// = new ExtractCsvValue(new String[]{"5", "7", "8"});
 
-//    private ColumnProcess titleCsvProcess = new TitleCsvProcess(false);
+    //    private ColumnProcess titleCsvProcess = new TitleCsvProcess(false);
     private ColumnProcess contentCsvProcess = new ContentCsvProcess();
     private ColumnProcess secondaryEventCsvProcess = new EventClassifyCsvProcess();
 
     private ColumnProcessCsv titleProcessCsv = new ColumnProcessCsv("7");
     private ColumnProcessCsv contentProcessCsv = new ColumnProcessCsv("8");
     private ColumnProcessCsv secondaryEventProcessCsv = new ColumnProcessCsv("5");
-
-
 
 
     /**
@@ -65,6 +59,7 @@ public class EventClassigySupplementCsvDeal implements DealFileWay {
 
     /**
      * 从总数据中提取数据，如果不够，则从好多列表中提取数据，
+     *
      * @param path
      * @return
      * @throws IOException
@@ -81,7 +76,7 @@ public class EventClassigySupplementCsvDeal implements DealFileWay {
             csvReader.readHeaders();
             while (csvReader.readRecord()) {
 
-                if (! isDeal(csvReader)){
+                if (!isDeal(csvReader)) {
                     continue;
                 }
 
@@ -101,7 +96,7 @@ public class EventClassigySupplementCsvDeal implements DealFileWay {
                 //加入hashMap中
                 secondaryHashMap.get(secondaryEvent).add(rowValue);
             }
-        }catch (Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
         } finally {
             if (null != csvReader) {
@@ -134,7 +129,8 @@ public class EventClassigySupplementCsvDeal implements DealFileWay {
 
     private String extractedRowValue(CsvReader csvReader) {
 
-        return extractSecondaryEvent.extracRowValue(csvReader);
+//        return extractSecondaryEvent.extracRowValue(csvReader);
+        return null;
     }
 
 
@@ -147,7 +143,7 @@ public class EventClassigySupplementCsvDeal implements DealFileWay {
         //循环判断是否包含分类
         int num = 0;
         for (String temp : classifyList) {
-            if (! temp.split("-")[0].equals(classify)) {
+            if (!temp.split("-")[0].equals(classify)) {
                 num++;
             } else {
                 break;
@@ -166,15 +162,13 @@ public class EventClassigySupplementCsvDeal implements DealFileWay {
     }
 
 
-
-
     /**
      * 填补数据
+     *
      * @param secondaryEventHashMap
      * @return
      */
     private void fillUp(Map<String, List<String>> secondaryEventHashMap) {
-
 
 
         //计算需要补充的数量
@@ -239,8 +233,10 @@ public class EventClassigySupplementCsvDeal implements DealFileWay {
         return supplementMap;
     }
 
-    /**a
+    /**
+     * a
      * 通过关键子获取映射文件名
+     *
      * @param key
      * @return
      */
@@ -255,8 +251,8 @@ public class EventClassigySupplementCsvDeal implements DealFileWay {
 
     /**
      * 从fileName文件中添加count条数据到事件分类列表中
-     * @param secondaryEventHashMap 总的result
      *
+     * @param secondaryEventHashMap 总的result
      */
     private void fillFromFile(Map<String, List<String>> secondaryEventHashMap, HashMap<String, Integer> supplementMap) {
 
@@ -266,7 +262,7 @@ public class EventClassigySupplementCsvDeal implements DealFileWay {
         DealFileWayConfitionalModify eventClassifyCsvDealOriginal = new EventClassifyCsvDealOriginal();
         List<String> secondaryEventList;
         HashMap<String, List<String>> eventListMap = eventClassifyCsvDealOriginal.extractedValue(filePath, supplementMap);
-        for (Map.Entry<String, List<String>> entry: eventListMap.entrySet()) {
+        for (Map.Entry<String, List<String>> entry : eventListMap.entrySet()) {
             if (null != entry.getValue()) {
                 secondaryEventHashMap.get(entry.getKey()).addAll(entry.getValue());
             }
@@ -275,6 +271,7 @@ public class EventClassigySupplementCsvDeal implements DealFileWay {
 
     /**
      * 获取事件分类列表
+     *
      * @return
      * @throws IOException
      */
@@ -291,7 +288,6 @@ public class EventClassigySupplementCsvDeal implements DealFileWay {
         } catch (IOException e) {
             e.printStackTrace();
         }
-
 
 
         return eventClassifyList;

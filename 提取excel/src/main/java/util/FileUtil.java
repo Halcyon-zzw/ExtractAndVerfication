@@ -168,7 +168,6 @@ public class FileUtil {
         bw.close();
     }
 
-
     /**
      * 将字符串列表保存到文件中,不存在目录自动创建
      *
@@ -180,6 +179,10 @@ public class FileUtil {
         createDir(path);
 
         Path target = Paths.get(path);
+//        BufferedWriter bw = new BufferedWriter(
+//                new OutputStreamWriter(
+//                        new FileOutputStream(target.toFile())
+//                        , StandardCharsets.UTF_8));
         BufferedWriter bw = Files.newBufferedWriter(target);
 
         for (String s : strings) {
@@ -187,6 +190,35 @@ public class FileUtil {
                 continue;
             }
             bw.append(s);
+            bw.newLine();
+        }
+        //逐层关闭
+        bw.close();
+    }
+
+
+    /**
+     * 将字符串列表保存到文件中,不存在目录自动创建
+     *
+     * @param strings 字符串列表
+     * @param path 文件路径（包含文件名）
+     * @throws IOException
+     */
+    public static void createFile(Collection<String[]> strings, String path) throws IOException {
+        createDir(path);
+
+        Path target = Paths.get(path);
+        BufferedWriter bw = Files.newBufferedWriter(target);
+
+        for (String[] ss : strings) {
+            if(ss == null) {
+                continue;
+            }
+            StringBuilder stringBuilder = new StringBuilder("");
+            for (String s: ss) {
+                stringBuilder.append(s);
+            }
+            bw.append(stringBuilder.toString());
             bw.newLine();
         }
         //逐层关闭

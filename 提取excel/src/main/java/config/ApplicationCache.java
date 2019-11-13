@@ -51,4 +51,36 @@ public class ApplicationCache {
         }
     }
 
+    /**
+     * 保存文件时文件被占用时，尝试重新保存至新文件
+     * @param collection
+     * @param path
+//     */
+//    public void saveCache(Collection<String[]> collection, String path) {
+//        path = getFileNewPath(path);
+//        try {
+//            FileUtil.createFile(collection, path);
+//            System.out.println("缓存数据保存成功！");
+//        } catch (IOException e) {
+//            System.out.println("缓存数据保存失败！");
+//            e.printStackTrace();
+//        }
+//    }
+
+    /**
+     * 获取新路径
+     * @param path
+     * @return
+     */
+    private String getFileNewPath(String path) {
+        Path targetPath = Paths.get(path);
+        String dirPath = targetPath.getParent().toString();
+        String fileName = targetPath.getFileName().toString().split("\\.")[0];
+        String suffixName = "." + targetPath.getFileName().toString().split("\\.")[1];
+        //文件名后面加入当前时间戳
+        fileName = fileName + "_" + System.currentTimeMillis() + suffixName;
+        path = dirPath + "\\" + fileName;
+        return path;
+    }
+
 }

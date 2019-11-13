@@ -5,9 +5,7 @@ import bert.deal_file.GeneralDealAdapter;
 import config.ApplicationProperties;
 import config.PropertiesFactory;
 import deal.DealFileWay;
-import demand.emotion_and_grade_improve.EmotionAndGradeDeal;
-import demand.emotion_and_grade_improve.EmotionAndGradeExcelDeal;
-import demand.emotion_and_grade_improve.EmotionAndGradeLabel7ChinaProcess;
+import demand.emotion_and_grade_improve.*;
 import demand.general.ArticleProcess;
 import demand.general.GeneralCsvDeal;
 import demand.general.process.KeywordProcess;
@@ -49,30 +47,39 @@ public class EmotionAndGradeExtract {
 //    }
 
     public List<String[]> extract() throws IOException {
-//        String path = aps.getEmotionAndGradeTestProperties().getPath();
-//        Object label = aps.getEmotionAndGradeTestProperties().getLabel();
-//        Object titleHeader = aps.getEmotionAndGradeTestProperties().getTitle();
-//        Object content = -1;
-//        DealFileWay dealFileWay = new GeneralCsvDeal(label, titleHeader, content);
-//        ((GeneralCsvDeal) dealFileWay).setSeparator('\t');
-//        aps.setPrimaryProperties(aps.getEmotionAndGradeTestProperties());
-//        ((GeneralCsvDeal) dealFileWay).setAps(aps);
-        aps.setPrimaryProperties(PropertiesFactory.getProperties("emotionAndGradeExcel"));
-        Object labelHeader_1 = aps.getEmotionAndGradeExcelProperties().getLabel_1();
-        Object labelHeader_2 = aps.getEmotionAndGradeExcelProperties().getLabel_2();
-        Object[] labelHeaders = {labelHeader_1, labelHeader_2};
-        Object titleHeader = aps.getPrimaryProperties().getTitle();
-        Object contentHeader = aps.getPrimaryProperties().getContent();
 
-        //TODO change 目前构建Excel对象
-//        dealFileWay = new EmotionAndGradeDeal(labelHeaders, titleHeader, contentHeader);
+        //从tsv获取数据
+        aps.setPrimaryProperties(PropertiesFactory.getProperties("emotionAndGradeTsv"));
+        Object label = aps.getPrimaryProperties().getLabel();
+        Object titleHeader = aps.getPrimaryProperties().getTitle();
+        Object content = aps.getPrimaryProperties().getContent();
+        DealFileWay dealFileWay = new GeneralCsvDeal(label, titleHeader, content);
+        ArticleProcess articleProcess = new EmotionAndGradeLabel7MappingProcess(new KeywordProcess());
+        ((GeneralCsvDeal) dealFileWay).setSeparator('\t');
+        ((GeneralCsvDeal) dealFileWay).setArticleProcess(articleProcess);
+        ((GeneralCsvDeal) dealFileWay).setAps(aps);
+
+
+
+//        aps.setPrimaryProperties(PropertiesFactory.getProperties("emotionAndGradeTest"));
+////        Object labelHeader_1 = aps.getEmotionAndGradeExcelProperties().getLabel_1();
+////        Object labelHeader_2 = aps.getEmotionAndGradeExcelProperties().getLabel_2();
+////        Object[] labelHeaders = {labelHeader_1, labelHeader_2};
+//        Object[] labelHeaders = aps.getPrimaryProperties().getLabels();
+//        Object titleHeader = aps.getPrimaryProperties().getTitle();
+//        Object contentHeader = aps.getPrimaryProperties().getContent();
+//
+//        ArticleProcess articleProcess = new EmotionAndGradeLabel7Process(new KeywordProcess());
+//        //TODO change 目前构建Excel对象
+//        DealFileWay dealFileWay = new EmotionAndGradeDeal(labelHeaders, titleHeader, contentHeader);
 //        ((EmotionAndGradeDeal) dealFileWay).setArticleProcess(articleProcess);
 //        ((EmotionAndGradeDeal) dealFileWay).setAps(aps);
-        DealFileWay dealFileWay = new EmotionAndGradeExcelDeal(labelHeaders, titleHeader, contentHeader);
-        ArticleProcess articleProcess = new EmotionAndGradeLabel7ChinaProcess(new KeywordProcess());
-        ((EmotionAndGradeExcelDeal) dealFileWay).setArticleProcess(articleProcess);
+//
+////        DealFileWay dealFileWay = new EmotionAndGradeExcelDeal(labelHeaders, titleHeader, contentHeader);
+////        ((EmotionAndGradeExcelDeal) dealFileWay).setArticleProcess(articleProcess);
+////        ((EmotionAndGradeExcelDeal) dealFileWay).setAps(aps);
 
-        ((EmotionAndGradeExcelDeal) dealFileWay).setAps(aps);
+
 
         String path = aps.getPrimaryProperties().getPath();
         DealFile2Strings dealFile2Strings = new GeneralDealAdapter(dealFileWay);

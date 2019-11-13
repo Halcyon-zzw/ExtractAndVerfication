@@ -2,7 +2,6 @@ package old.event_classify;
 
 import com.csvreader.CsvReader;
 import deal.DealFileWayConfitionalModify;
-import delete.ExtractCsvValue;
 import process.ColumnProcessCsv;
 import util.FileUtil;
 
@@ -24,7 +23,7 @@ public class EventClassifyCsvDealOriginal implements DealFileWayConfitionalModif
     private final ColumnProcessCsv titleProcessCsv = new ColumnProcessCsv("标题");
     private final ColumnProcessCsv contentProcessCsv = new ColumnProcessCsv("内容");
 
-    private final ExtractCsvValue extractCsvValue = new ExtractCsvValue(new String[]{"事件二级分类", "标题", "内容"});
+//    private final ExtractCsvValue extractCsvValue = new ExtractCsvValue(new String[]{"事件二级分类", "标题", "内容"});
 
 
     /**
@@ -34,7 +33,9 @@ public class EventClassifyCsvDealOriginal implements DealFileWayConfitionalModif
      * @return
      */
     private String extractedRowValue(CsvReader csvReader) {
-        return extractCsvValue.extracRowValue(csvReader);
+
+//        return extractCsvValue.extracRowValue(csvReader);
+        return null;
     }
 
     /**
@@ -52,7 +53,7 @@ public class EventClassifyCsvDealOriginal implements DealFileWayConfitionalModif
     public HashMap<String, List<String>> extractedValue(String csvPath, HashMap<String, Integer> conditionMap) {
         HashMap<String, List<String>> resultHashMap = new HashMap<>();
         //初始化
-        for(Map.Entry<String, Integer> entry : conditionMap.entrySet()) {
+        for (Map.Entry<String, Integer> entry : conditionMap.entrySet()) {
             resultHashMap.put(entry.getKey(), new ArrayList<String>());
         }
         List<String> resultList = new ArrayList<>();
@@ -74,7 +75,7 @@ public class EventClassifyCsvDealOriginal implements DealFileWayConfitionalModif
                 }
                 String key = csvReader.get("事件二级分类");
                 //TODO 考虑放在那个里面
-                if(!resultHashMap.keySet().contains(key)) {
+                if (!resultHashMap.keySet().contains(key)) {
                     continue;
                 }
                 //数量是否够

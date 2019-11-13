@@ -42,6 +42,7 @@ public class GeneralCsvDeal implements DealFileWay {
     /**
      * 行数据处理
      */
+    @Setter
     private ArticleProcess articleProcess = new ArticleProcess(processWay);
 
     /**

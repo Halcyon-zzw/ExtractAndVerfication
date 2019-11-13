@@ -9,7 +9,8 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 /**
- * TODO
+ * 生成文件适配器，数据列表 为Collection
+ * TODO 下一版本使用该版本替代上一版本
  *
  * @Author: zhuzw
  * @Date: 2019/11/7 13:22
