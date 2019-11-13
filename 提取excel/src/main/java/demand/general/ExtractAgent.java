@@ -3,6 +3,7 @@ package demand.general;
 import config.ApplicationProperties;
 import create.CreateFileWay;
 import create.adapter.CreateFileWayAdapter;
+import create.impl.CreateFileDirect;
 import create.impl.CreateFileProportion;
 import deal.DealFileWay;
 import deal.impl.EventKeywordExcelDeal;
@@ -85,8 +86,10 @@ public class ExtractAgent {
 
 
     public void createFile(Collection<String> resultList) throws IOException {
-        CreateFileWay createFileWay = new CreateFileProportion(
-                aps.getCreateFileProporttionProperties().getProportions(), aps.getCreateFileProporttionProperties().getPaths());
+//        CreateFileWay createFileWay = new CreateFileProportion(
+//                aps.getCreateFileProporttionProperties().getProportions(), aps.getCreateFileProporttionProperties().getPaths());
+
+        CreateFileWay createFileWay = new CreateFileDirect(aps.getCreateFileProporttionProperties().getPath());
 
         CreateFileWayAdapter createFileWayAdapter = new CreateFileWayAdapter(createFileWay);
         createFileWayAdapter.createFile(resultList);

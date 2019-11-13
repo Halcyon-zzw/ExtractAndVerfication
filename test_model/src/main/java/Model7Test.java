@@ -101,7 +101,7 @@ public class Model7Test {
         //初始线程数
         int num = 1;
         String[] urls = {
-                "http://10.106.0.51:8013/encode",
+                "http://10.106.0.51:8014/encode",
 //                "http://10.106.0.51:8051/encode",
 //                "http://10.106.0.51:8052/encode", "http://10.106.0.51:8053/encode",
 //                "http://10.106.0.51:8054/encode", "http://10.106.0.51:8055/encode",

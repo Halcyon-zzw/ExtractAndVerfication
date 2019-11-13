@@ -341,10 +341,16 @@ public class ApplicationProperties {
         /**
          * 输出文件路径
          */
+        private String path;
+
         private String[] paths;
 
         public String getTrainDir() {
             return trainBasePath + type;
+        }
+
+        public String getPath() {
+            return trainBasePath + type + "\\all.tsv";
         }
 
         public String[] getPaths() {
@@ -355,6 +361,5 @@ public class ApplicationProperties {
             };
             return paths;
         }
-
     }
 }

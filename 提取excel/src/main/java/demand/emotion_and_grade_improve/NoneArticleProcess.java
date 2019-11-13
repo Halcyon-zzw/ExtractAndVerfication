@@ -10,23 +10,25 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
- * 原始处理，只处理换行、括号等一些格式问题
+ * 对文章不做处理，仅映射标签
+ *
+ * TOO 开发未完成D
  *
  * @Author: zhuzw
  * @Date: 2019/11/13 9:56
  * @Version: 1.0
  */
-public class OriginalArticleProcess extends ArticleProcess {
+public class NoneArticleProcess extends ArticleProcess {
     @Setter
     private ArticleProcess articleProcess;
 
     private ApplicationProperties aps = new ApplicationProperties();
 
-    public OriginalArticleProcess(ProcessWay processWay) {
+    public NoneArticleProcess(ProcessWay processWay) {
         super(processWay);
     }
 
-    public OriginalArticleProcess(ProcessWay processWay, ArticleProcess articleProcess) {
+    public NoneArticleProcess(ProcessWay processWay, ArticleProcess articleProcess) {
         super(processWay);
         this.articleProcess = articleProcess;
     }
@@ -45,16 +47,60 @@ public class OriginalArticleProcess extends ArticleProcess {
 
         title = replaceSynbolOfTable(title);
         //处理特殊字符
-//        content = dealContent(content);
+        content = dealContent(content);
+        //TODO 放在文章级别处理报错
+//        content = deleteDate(content);
         content = processWay.process(content);
 
         String article = title + " " + content;
         //删除括号
         article = StringsUtilCustomize.substringByDeleteBrackets(article);
 
-        return article;
+        return title + "\t" + content;
     }
 
+    /**
+     * 删除日期
+     * @param article
+     * @return
+     */
+    public String deleteDate(String article) {
+
+        String pattern = "(.*){0}([0-9]{1,4}(年)?([上下]半)?年([0-9]{1,2}月)?([0-9]{1,2}日)?)";
+        Pattern p = Pattern.compile(pattern);
+
+        Matcher m = p.matcher(article);
+        StringBuffer stringBuffer = new StringBuffer("");
+        while (m.find()) {
+            String deleteStr = m.group();
+            System.out.println(m.group());
+            int index = article.indexOf(deleteStr);
+
+            stringBuffer.append(article.substring(0, index));
+            article = article.substring(index + deleteStr.length(), article.length());
+            m = p.matcher(article);
+        }
+        //关键，结束后将后半部分加上
+        stringBuffer.append(article);
+        article = stringBuffer.toString();
+        stringBuffer = new StringBuffer("");
+        char[] chars = article.toCharArray();
+
+        for (char c : chars) {
+            if (c >= 35 && c <= 38 || c >= 45 && c <= 57 || c >= 64 && c <= 126) {
+
+                int index = article.indexOf(c);
+
+                stringBuffer.append(article.substring(0, index));
+                article = article.substring(index + 1, article.length());
+            }
+        }
+
+        //关键，结束后将后半部分加上
+        stringBuffer.append(article);
+        System.out.println(stringBuffer.toString());
+        return stringBuffer.toString();
+    }
 
 
     /**
