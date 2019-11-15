@@ -1,10 +1,12 @@
 package util;
 
+import model.CharAndIndex;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.poi.util.StringUtil;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
 import java.util.regex.Pattern;
 
@@ -387,5 +389,58 @@ public class StringsUtilCustomize {
         }
 
         return sentences;
+    }
+
+    /**
+     * 找出str -> pa 剔除的数据
+     * @param str
+     * @param pa
+     * @return
+     */
+    public static String deleteStrings(String str, String pa) {
+        if (str == null || str.length() == 0 || pa == null || pa.length() == 0)
+            return "";
+        ArrayList<Character> list1 = new ArrayList();
+        ArrayList list2 = new ArrayList();
+        char strc[] = str.toCharArray();
+        char pac[] = pa.toCharArray();
+        HashSet set = new HashSet();
+        for (int i = 0; i < strc.length; i++)
+            list1.add(strc[i]);
+        for (int j = 0; j < pac.length; j++)
+            list2.add(pac[j]);
+
+        int i = 0;
+        int j = 0;
+        List<CharAndIndex> charAndIndiceList = new ArrayList<>();
+        while(i < list1.size()) {
+            if (list1.get(i).equals(list2.get(j))) {
+                i ++;
+                j ++;
+            }else {
+                charAndIndiceList.add(new CharAndIndex(list1.get(i), i));
+                i ++;
+            }
+        }
+//        for (int k = 0; k < list2.size(); k++) {
+//            if (list1.contains(list2.get(k))) {
+//                list1.remove(list2.get(k));
+//            }
+//        }
+        StringBuffer stringBuffer = new StringBuffer("");
+        if (null == charAndIndiceList) {
+            return null;
+        }
+        stringBuffer.append(charAndIndiceList.get(0).getDeleteChar());
+
+        for (int index = 1; index < charAndIndiceList.size(); index++) {
+            if (charAndIndiceList.get(index).getIndex() - charAndIndiceList.get(index - 1).getIndex() > 1) {
+                //位置不相邻
+                stringBuffer.append("|||");
+            }
+            stringBuffer.append(charAndIndiceList.get(index).getDeleteChar());
+        }
+
+        return stringBuffer.toString();
     }
 }

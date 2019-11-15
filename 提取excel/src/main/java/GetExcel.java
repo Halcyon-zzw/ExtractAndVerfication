@@ -19,8 +19,11 @@ import model.ExcelMessage;
 import old.event_classify_2.EventClassifyCsvDeal;
 import old.event_classify_2.EventClassigySupplementCsvDeal;
 import pool.DealFile;
+import util.FileUtil;
+import util.StringsUtilCustomize;
 
 import java.io.IOException;
+import java.nio.charset.Charset;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -68,10 +71,79 @@ public class GetExcel {
 
         long startTime = System.currentTimeMillis();
 
-        extractEmotionAndGarde();
+//        extractEmotionAndGarde();
+//        extractGeneralTsv();
+//        extractGeneral();
+//        extractAndEqueal();
+
+        testExtractData();
 
         System.out.println("耗时：" + (System.currentTimeMillis() - startTime));
 
+    }
+
+
+    /**
+     * 测试数据处理的效果
+     */
+    private static void testExtractData() {
+        //标准结果
+        List<String> normalResult = extractGeneralTsv();
+        //检测结果
+        List<String> detectResult = extractGeneralTsv2();
+
+        List<String> resultResult = new ArrayList<>();
+        for (int i = 0; i < normalResult.size(); i++) {
+            resultResult.add(StringsUtilCustomize.deleteStrings(normalResult.get(i), detectResult.get(i)));
+        }
+        try {
+            FileUtil.createFile(resultResult, aps.getCreateFile().getDeletePath());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * 通用处理Tsv，配置属性
+     */
+    private static List<String> extractGeneralTsv() {
+        ArticleProcess articleProcess = new ArticleProcess(new NoneProcess());
+        aps.setPrimaryProperties(PropertiesFactory.getProperties("emotionAndGradeTsv"));
+        char separator = '\t';
+        printInfo(aps, articleProcess);
+        return extractGeneral(aps, articleProcess, separator);
+    }
+
+    private static List<String> extractGeneralTsv2() {
+        ArticleProcess articleProcess = new OriginalArticleProcess(new NoneProcess());
+        aps.setPrimaryProperties(PropertiesFactory.getProperties("emotionAndGradeTsv"));
+        aps.getPrimaryProperties().setPath("E:\\文件\\工作\\AI\\bert\\训练语料\\tsv\\tsv_7_none_all_118_1113\\all.tsv");
+        char separator = '\t';
+        printInfo(aps, articleProcess);
+        return extractGeneral(aps, articleProcess, separator);
+    }
+
+
+    /**
+     * 通用处理，配置属性
+     */
+    private static void extractGeneral() {
+        ArticleProcess articleProcess = new ArticleProcess(new NoneProcess());
+        aps.setPrimaryProperties(PropertiesFactory.getProperties("emotionAndGradeTsv"));
+        printInfo(aps, articleProcess);
+        extractGeneral(aps, articleProcess, ',');
+    }
+
+    private static List<String> extractGeneral(ApplicationProperties aps, ArticleProcess articleProcess, char separator) {
+        extractAgent.setArticleProcess(articleProcess);
+        extractAgent.setAps(aps);
+        //提取grade and emotion
+        try {
+            return extractAgent.extractGeneral(aps, articleProcess, separator);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
 
@@ -85,23 +157,33 @@ public class GetExcel {
 
         //分类数量修改分类处理方式  TODO change
         aps.setPrimaryProperties(PropertiesFactory.getProperties("emotionAndGradeTest"));
-        extract(articleProcess);
+
+        printInfo(aps, articleProcess);
+        extractEmotionAndGrade(articleProcess);
     }
 
-
     /**
-     * 提取情感 and 等级 数据（通用提取方法）
+     * 输出相关属性，设置文件类型（路径）
+     * @param aps
+     * @param articleProcess
      */
-    private static void extract(ArticleProcess articleProcess) throws IOException {
+    private static void printInfo(ApplicationProperties aps, ArticleProcess articleProcess) {
         String type = getCreateType(aps, articleProcess);
         aps.getCreateFileProporttionProperties().setType(type);
         //输出配置
         printProperties(aps);
         //输出分类信息
         articleProcess.info();
-        //提取grade and emotion
+    }
+
+
+    /**
+     * 提取情感 and 等级 数据（通用提取方法）
+     */
+    private static void extractEmotionAndGrade(ArticleProcess articleProcess) throws IOException {
         extractAgent.setArticleProcess(articleProcess);
         extractAgent.setAps(aps);
+        //提取grade and emotion
         extractAgent.extractEmotionAndGrade();
     }
 

@@ -1,6 +1,7 @@
 package util;
 
 import com.csvreader.CsvReader;
+import model.CharAndIndex;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.formula.functions.T;
@@ -16,6 +17,7 @@ import java.nio.file.Paths;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
 
 /**
@@ -266,4 +268,5 @@ public class FileUtil {
         }
         return false;
     }
+
 }

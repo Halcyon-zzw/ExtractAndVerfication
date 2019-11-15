@@ -1,8 +1,10 @@
 package demand.general;
 
 import config.ApplicationProperties;
+import config.PropertiesFactory;
 import create.CreateFileWay;
 import create.adapter.CreateFileWayAdapter;
+import create.impl.CreateFileDirect;
 import create.impl.CreateFileProportion;
 import deal.DealFileWay;
 import deal.impl.EventKeywordExcelDeal;
@@ -48,9 +50,6 @@ public class ExtractAgent {
         this.articleProcess = articleProcess;
     }
 
-    public void extractGeneral() {
-
-    }
 
     public void extractEmotionAndGrade() throws IOException {
 
@@ -85,8 +84,10 @@ public class ExtractAgent {
 
 
     public void createFile(Collection<String> resultList) throws IOException {
-        CreateFileWay createFileWay = new CreateFileProportion(
-                aps.getCreateFileProporttionProperties().getProportions(), aps.getCreateFileProporttionProperties().getPaths());
+//        CreateFileWay createFileWay = new CreateFileProportion(
+//                aps.getCreateFileProporttionProperties().getProportions(), aps.getCreateFileProporttionProperties().getPaths());
+
+        CreateFileWay createFileWay = new CreateFileDirect(aps.getCreateFileProporttionProperties().getPath());
 
         CreateFileWayAdapter createFileWayAdapter = new CreateFileWayAdapter(createFileWay);
         createFileWayAdapter.createFile(resultList);
@@ -115,5 +116,32 @@ public class ExtractAgent {
                 .stream().collect(Collectors.toList());
 
         FileUtil.createFile(resultList, aps.getKeywordsPath());
+    }
+
+
+
+    /**
+     * 通用处理的配置
+     * @throws IOException
+     */
+    public List<String> extractGeneral(ApplicationProperties aps, ArticleProcess articleProcess, char separator) throws IOException {
+
+        Object labelHeader = aps.getPrimaryProperties().getLabel();
+        Object titleHeader = aps.getPrimaryProperties().getTitle();
+        Object contentHeader = aps.getPrimaryProperties().getContent();
+        DealFileWay dealFileWay = new GeneralCsvDeal(labelHeader, titleHeader, contentHeader);
+        ((GeneralCsvDeal) dealFileWay).setArticleProcess(articleProcess);
+        ((GeneralCsvDeal) dealFileWay).setSeparator(separator);
+        ((GeneralCsvDeal) dealFileWay).setAps(aps);
+        DealFile dealFile = new DealFile(dealFileWay);
+        List<String> result = dealFile.dealFile(aps.getPrimaryProperties().getPath());
+
+        //TODO 直接生成文件
+        if (aps.getPrimaryProperties().isCreateFile()) {
+            CreateFileWay createFileWay = new CreateFileDirect(aps.getCreateFileProporttionProperties().getPath());
+            createFileWay.createFile(result);
+        }
+
+        return result;
     }
 }

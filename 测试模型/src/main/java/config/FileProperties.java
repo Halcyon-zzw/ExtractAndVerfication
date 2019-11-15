@@ -4,6 +4,8 @@ import bert.extract.EmotionAndGradeExtract;
 import lombok.Data;
 import org.springframework.context.annotation.Primary;
 
+import java.time.LocalDate;
+
 /**
  * TODO
  *
@@ -27,8 +29,9 @@ public class FileProperties {
     /**
      * 统计正确率及错误数据集
      */
-    private String createPath = "E:\\文件\\工作\\AI\\bert\\测试结果\\情感and等级_13000_1112\\result_2.csv";
-    private String createPath2 = "E:\\文件\\工作\\AI\\bert\\测试结果\\情感and等级_13000_1112\\result_2.txt";
+    String date = LocalDate.now().getMonthValue() + "" + LocalDate.now().getDayOfMonth();
+    private String createPath = "E:\\文件\\工作\\AI\\bert\\测试结果\\情感and等级_13000_" + date +  "\\result.csv";
+    private String createPath2 = "E:\\文件\\工作\\AI\\bert\\测试结果\\情感and等级_13000_" + date + "\\result.txt";
 
 
     private String statisticsPath = "E:\\文件\\工作\\AI\\bert\\测试结果\\情感and等级_50000\\统计情况.txt";
