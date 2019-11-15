@@ -12,7 +12,11 @@ import java.util.regex.Pattern;
 /**
  * 对文章不做处理，仅映射标签
  *
+<<<<<<< HEAD
  * TODO 开发未完成,需求搁置
+=======
+ * TOO 开发未完成D
+>>>>>>> f3a5f76a346ab516592180b911483953d6b69ff1
  *
  * @Author: zhuzw
  * @Date: 2019/11/13 9:56

@@ -374,10 +374,13 @@ public class ApplicationProperties {
             };
             return paths;
         }
+<<<<<<< HEAD
     }
 
     @Data
     public class CreateFile {
         private String deletePath = baseProperties.getBasePath() + "delete\\result.tsv";
+=======
+>>>>>>> f3a5f76a346ab516592180b911483953d6b69ff1
     }
 }

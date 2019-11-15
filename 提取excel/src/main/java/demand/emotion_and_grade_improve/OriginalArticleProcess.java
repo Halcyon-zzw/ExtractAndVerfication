@@ -37,9 +37,15 @@ public class OriginalArticleProcess extends ArticleProcess {
      * @param labels
      * @return
      */
+<<<<<<< HEAD
 //    public String getLabel(String... labels) {
 //        return articleProcess.getLabel(labels);
 //    }
+=======
+    public String getLabel(String... labels) {
+        return articleProcess.getLabel(labels);
+    }
+>>>>>>> f3a5f76a346ab516592180b911483953d6b69ff1
 
     public String getArticle(String title, String content) {
 
