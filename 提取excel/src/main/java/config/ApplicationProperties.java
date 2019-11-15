@@ -39,6 +39,7 @@ public class ApplicationProperties {
     private final EmotionAndGradeTestProperties emotionAndGradeTestProperties = new EmotionAndGradeTestProperties();
     private final String keywordsPath = baseProperties.basePath + "情感关键词_所有.txt";
     private final String sentenceSeparator = "[。？?！!；;]";
+    private final CreateFile createFile = new CreateFile();
     /**
      * 待汇总路径
      */
@@ -86,6 +87,8 @@ public class ApplicationProperties {
         protected Object title = "标题";
         protected Object content = "内容";
         protected boolean haveHeader = true;
+
+        protected boolean createFile = true;
 
         protected String type = "";
 
@@ -178,7 +181,7 @@ public class ApplicationProperties {
         public EmotionAndGradeProperties() {
 
             super.path = baseProperties.getOriginalPath() + "舆情语料.csv";
-            super.dataCount = 14000;
+            super.dataCount = 4000;
             super.labelNumber = 7;
             label_1 = "舆情情感";
             label_2 = "舆情情感等级";
@@ -199,17 +202,20 @@ public class ApplicationProperties {
     public class EmotionAndGradeExcelProperties extends EmotionAndGradeProperties {
 
         public EmotionAndGradeExcelProperties() {
-            super.path = baseProperties.getOriginalPath() + "\\舆情语料\\舆情情感\\语料\\舆情情感语料.xlsx";
+//            super.path = baseProperties.getOriginalPath() + "\\舆情语料\\舆情情感\\语料\\舆情情感语料.xlsx";
+            super.path = baseProperties.getBasePath() + "情感识别\\未来标准集合\\";
             super.dataCount = -1;
-            super.lessCount = 10000;
+            super.lessCount = 100;
             super.labelNumber = 10;
-            label_1 = 3;
-            label_2 = 4;
+            label_1 = 1;
+            label_2 = 2;
             Object[] labelss = {label_1, label_2};
             super.labels = labelss;
 
-            super.title = 2;
-            super.content = 5;
+            super.title = 3;
+            super.content = 4;
+
+            super.haveHeader = false;
         }
     }
 
@@ -227,15 +233,20 @@ public class ApplicationProperties {
 
     public class EmotionAndGradeTestProperties extends PrimaryProperties {
         public EmotionAndGradeTestProperties() {
-//            super.path = baseProperties.getTrainPath() + "情感and等级_删无效\\test.tsv";
+//            super.path = baseProperties.getTrainPath() + "";
             super.path = baseProperties.getTestResultPath() + "\\情感7类测试集.csv";
+//            super.path = baseProperties.getBasePath() + "\\情感识别\\未来标准集合";
             super.dataCount = -1;
             super.labelNumber = 7;
             super.label = 2;
             Object[] labelss = {2, 3};
-            super.labels = labelss;
             super.title = 7;
             super.content = 8;
+//            Object[] labelss = {1, 2};
+//            super.title = 3;
+//            super.content = 4;
+
+            super.labels = labelss;
             super.haveHeader = false;
 
             super.type = "情感and等级_test";
@@ -245,13 +256,19 @@ public class ApplicationProperties {
 
     public class EmotionAndGradeTsvProperties extends PrimaryProperties {
         public EmotionAndGradeTsvProperties() {
-            super.path = baseProperties.getTrainPath() + "情感and等级\\情感and等级_keyword_delete_13000_118_1105\\test.tsv";
+//            super.path = baseProperties.getTrainPath() + "情感and等级\\情感and等级_7_none_4000_118_1114\\test.tsv";
+            super.path = baseProperties.getTrainPath() + "tsv\\tsv_7_delete_all_118_1114\\all.tsv";
             super.dataCount = -1;
             super.labelNumber = 7;
             super.label = 0;
             super.title = 1;
-            super.content = -1;
+            super.content = 2;
             super.haveHeader = false;
+            super.createFile = false;
+
+            super.type = "tsv";
+
+
         }
 
         public String toString() {
@@ -341,10 +358,16 @@ public class ApplicationProperties {
         /**
          * 输出文件路径
          */
+        private String path = "";
+
         private String[] paths;
 
         public String getTrainDir() {
             return trainBasePath + type;
+        }
+
+        public String getPath() {
+            return trainBasePath + type + "\\all.tsv";
         }
 
         public String[] getPaths() {
@@ -355,6 +378,10 @@ public class ApplicationProperties {
             };
             return paths;
         }
+    }
 
+    @Data
+    public class CreateFile {
+        private String deletePath = baseProperties.getBasePath() + "delete\\result.tsv";
     }
 }
