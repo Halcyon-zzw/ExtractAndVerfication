@@ -70,7 +70,7 @@ public class DealFile {
      * @param prefixPath
      * @return 处理文件后返回的数据集
      */
-    public List<String> dealFile(String prefixPath) throws IOException {
+    public List<String> dealFile(String prefixPath) {
         List<String> resultList = new ArrayList<>();
         File prefixFile = new File(prefixPath);
 

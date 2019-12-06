@@ -35,7 +35,20 @@ public interface DealFileWay {
      * @return
      * @throws IOException
      */
-    List<String> extractedValue(String path) throws IOException;
+    List<String> extractedValue(String path) ;
+
+    /**
+     * 剔除标题
+     * @param rawRecordList
+     * @param haveHeader
+     * @return
+     */
+    default List<String[]> excludeHeader(List<String[]> rawRecordList, boolean haveHeader) {
+        if (haveHeader) {
+            rawRecordList.remove(0);
+        }
+        return rawRecordList;
+    }
 
 
     /**

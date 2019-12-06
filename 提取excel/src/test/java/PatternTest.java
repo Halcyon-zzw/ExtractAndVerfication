@@ -1,7 +1,10 @@
-import demand.general.ArticleProcess;
-import demand.general.process.InvalidProcess;
+import config.ApplicationProperties;
+import demand.general.process.ArticleProcess;
+import demand.general.process.process_way.InvalidProcess;
 import org.junit.Test;
+import util.FileUtil;
 
+import java.io.IOException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -13,7 +16,7 @@ import java.util.regex.Pattern;
  * @Version: 1.0
  */
 public class PatternTest {
-
+    ApplicationProperties aps = new ApplicationProperties();
     @Test
     public void dateTest() {
         String pattern = "(.*){0}([0-9]{1,4}(年)?([上下]半)?年([0-9]{1,2}月)?([0-9]{1,2}日)?)";
@@ -96,4 +99,64 @@ public class PatternTest {
         content = articleProcess.getArticle("祝志伟", content);
         System.out.println(content);
     }
+
+    @Test
+    public void testXun() throws IOException {
+        String regex = ".*[\\.。？\\?\\！](.*?(虚假记载、误导性陈述|敬请投资者).*?[\\.。？\\?\\！])";
+//        String regex = "^.*[\\.。？\\?\\！](.*?(虚假记载、误导性陈述|敬请投资者).*?[\\.。？\\?\\！])";
+//        String regex = "[。？\\?\\！](.*?虚假记载、误导性陈述|敬请投资者.*?[\\.。？\\?\\！])";
+      String testPath = aps.getBaseProperties().getBasePath() + "\\test\\test.txt";
+        String str = FileUtil.readAll(testPath).get(0);
+        Matcher matcher = Pattern.compile(regex).matcher(str);
+
+        if (matcher.find()) {
+            System.out.println(matcher.groupCount());
+            System.out.println();
+            System.out.println();
+            System.out.println(matcher.group(1));
+            System.out.println();
+            System.out.println(matcher.group(2));
+//            System.out.println(str.replaceFirst(matcher.group(), ""));
+        }
+    }
+
+    @Test
+    public void testTitle() {
+//        String pattern = "(资质|你好).*?((暂停|终止|无))";
+//        String pattern = "(资质).*?((无))";
+//        String pattern = "(资质|你好).*?((暂停|终止|无))";
+//        String pattern = "((澄清|复牌))";
+//        String str = "多氟多(002407)澄清称无新能源汽车生产资质 31日无复牌";
+
+        String pattern = "(没有).*?(回购).*?((计划))";
+        String str = "深天健(000090):目前公司没有股票回购计划";
+        Matcher matcher = Pattern.compile(pattern).matcher(str);
+
+
+        if (matcher.find()) {
+            for (int i = 0; i < matcher.groupCount(); i++) {
+                System.out.println(matcher.group(i));
+            }
+//            System.out.println(str.replaceFirst(matcher.group(), ""));
+        }
+    }
+
+
+    @Test
+    public void testBaseRegex() {
+
+        String regex = "(([0-9]{6})).*";
+        String str = "深109834.0天健(000090):目前公司没有股票回购计划";
+        Matcher matcher = Pattern.compile(regex).matcher(str);
+
+
+        if (matcher.find()) {
+            System.out.println("123");
+            for (int i = 0; i < matcher.groupCount(); i++) {
+                System.out.println(matcher.group(i));
+            }
+//            System.out.println(str.replaceFirst(matcher.group(), ""));
+        }
+    }
+
 }

@@ -1,23 +1,21 @@
 package util;
 
 import com.csvreader.CsvReader;
-import model.CharAndIndex;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
-import org.apache.poi.ss.formula.functions.T;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 import java.io.*;
 import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashSet;
 import java.util.List;
 
 /**
@@ -141,6 +139,9 @@ public class FileUtil {
     }
 
 
+    public static void createFile(List<String> strings, String path) throws IOException {
+        createFile(strings, path, false);
+    }
 
     /**
      * 将字符串列表保存到文件中,不存在目录自动创建
@@ -149,15 +150,15 @@ public class FileUtil {
      * @param path 文件路径（包含文件名）
      * @throws IOException
      */
-    public static void createFile(List<String> strings, String path) throws IOException {
+    public static void createFile(List<String> strings, String path, boolean append) throws IOException {
         createDir(path);
 
         Path target = Paths.get(path);
-//        BufferedWriter bw = new BufferedWriter(
-//                new OutputStreamWriter(
-//                        new FileOutputStream(target.toFile())
-//                        , StandardCharsets.UTF_8));
-        BufferedWriter bw = Files.newBufferedWriter(target);
+        BufferedWriter bw = new BufferedWriter(
+                new OutputStreamWriter(
+                        new FileOutputStream(target.toFile(), append)
+                        , StandardCharsets.UTF_8));
+//        BufferedWriter bw = Files.newBufferedWriter(target);
 
         for (String s : strings) {
             if(s == null) {
@@ -168,6 +169,7 @@ public class FileUtil {
         }
         //逐层关闭
         bw.close();
+        System.out.println("文件保存成功 -> " + path);
     }
 
     /**
@@ -196,6 +198,7 @@ public class FileUtil {
         }
         //逐层关闭
         bw.close();
+        System.out.println("文件保存成功 -> " + path);
     }
 
 
@@ -233,8 +236,16 @@ public class FileUtil {
      * @return
      * @throws IOException
      */
-    public static List<String> readAll(String path) throws IOException {
-        return readAll(path, (line) -> {return line;});
+    public static List<String> readAll(String path) {
+        List<String> resultLList = null;
+        try {
+            resultLList = readAll(path, (line) -> {return line;});
+        } catch (IOException e) {
+            e.printStackTrace();
+            System.out.println("读取文件" + path + "出错！");
+            return null;
+        }
+        return resultLList;
     }
 
     public static List<String> readAll(String path, DataProcess<String> dataProcess) throws IOException {
@@ -250,7 +261,9 @@ public class FileUtil {
             while ((line = bReader.readLine()) != null) {
                 if (!StringUtils.isEmpty(line)) {
                     tempLine = dataProcess.process(line);
-                    resultList.add(tempLine);
+                    if (! StringUtils.isEmpty(tempLine)) {
+                        resultList.add(tempLine);
+                    }
                 }
             }
         }
@@ -258,8 +271,8 @@ public class FileUtil {
     }
 
     public static boolean createDir(String path) {
-        Path target = Paths.get(path);
-        File dir = target.getParent().toFile();
+        Path targetPath = Paths.get(path);
+        File dir = targetPath.getParent().toFile();
         if (! dir.exists()) {
             //不存在，生成目录
             dir.mkdir();
@@ -269,4 +282,99 @@ public class FileUtil {
         return false;
     }
 
+    /**
+     * 获取当前路径的父路径
+     * @param path
+     * @return
+     */
+    public static String getParentPath(String path) {
+        Path targetPath = Paths.get(path);
+        checkFile(targetPath.toFile());
+        return targetPath.getParent().toString();
+    }
+
+    /**
+     * 获取文件名(包含后缀)
+     * @param path
+     * @return
+     */
+    public static String getFileFullName(String path) {
+        Path targetPath = Paths.get(path);
+        checkFile(targetPath.toFile());
+        return targetPath.getFileName().toString();
+    }
+
+    /**
+     * 获取文件名
+     * @param path
+     * @return
+     */
+    public static String getFileName(String path) {
+        Path targetPath = Paths.get(path);
+        checkFile(targetPath.toFile());
+        return targetPath.getFileName().toString().split("\\.")[0];
+    }
+
+    /**
+     * 获取文件类型（后缀）
+     * @return
+     */
+    public static String getFileSuffix(String filePath) {
+        Path path = Paths.get(filePath);
+        File file = path.toFile();
+        checkFile(file);
+
+        String[] filePathArr = filePath.split("\\.");
+        return filePathArr[filePathArr.length - 1];
+    }
+
+    public static void checkFile(File file) {
+        if (!file.exists()) {
+            handException(new FileNotFoundException(), "文件不存在：" + file.getPath(), true);
+        }
+        if (! file.isFile()) {
+            handException(new FileNotFoundException(), "路径不是文件：" + file.getPath(), true);
+        }
+    }
+
+    public static void handException(Exception e, String info, boolean exit) {
+        try {
+            throw e;
+        } catch (Exception e1) {
+            e1.printStackTrace();
+            System.out.println(info);
+            if (exit) {
+                System.exit(-1);
+            }
+        }
+    }
+
+    /**
+     * csv工具类
+     */
+    public static class CsvUtil{
+        static CsvReader csvReader;
+        /**
+         * 获取1000条数据
+         * @param path
+         * @return
+         */
+        public static List<String[]> getRawRecords(String path) {
+            return getRawRecords(path, 1000);
+        }
+
+        /**
+         * 获取一定数量的数据
+         * TODO 待完成
+         * @param path
+         * @param count 数据量
+         * @return
+         */
+        public static List<String[]> getRawRecords(String path, int count) {
+            if (null ==csvReader) {
+                csvReader = getCsvReader(path);
+            }
+            return null;
+        }
+    }
 }

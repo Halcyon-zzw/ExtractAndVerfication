@@ -37,6 +37,7 @@ public class ApplicationProperties {
     private final EventExcelProperties eventExcelProperties = new EventExcelProperties();
     private final EmotionAndGradeTsvProperties emotionAndGradeTsvProperties = new EmotionAndGradeTsvProperties();
     private final EmotionAndGradeTestProperties emotionAndGradeTestProperties = new EmotionAndGradeTestProperties();
+    private final SpliceProperties spliceProperties = new SpliceProperties();
     private final String keywordsPath = baseProperties.basePath + "情感关键词_所有.txt";
     private final String sentenceSeparator = "[。？?！!；;]";
     private final CreateFile createFile = new CreateFile();
@@ -77,7 +78,7 @@ public class ApplicationProperties {
     public class PrimaryProperties {
 
         protected int dataCount = 10000;
-        protected int lessCount = 200;
+        protected int lessCount = 0;
         protected int labelNumber;
 
         protected String path;
@@ -86,9 +87,26 @@ public class ApplicationProperties {
         protected Object[] labels = {};
         protected Object title = "标题";
         protected Object content = "内容";
+
+        protected int[] extractIndexs = {1, 2, 3};
+
+        /**
+         * 可选的Index，如果存在则提取
+         */
+        protected int[] optionalExtractIndexs = null;
         protected boolean haveHeader = true;
 
         protected boolean createFile = true;
+
+        /**
+         * 是否去重，默认为false
+         */
+        protected boolean removeRepeat = false;
+
+        /**
+         * 是否过滤数据量少的数据
+         */
+        protected boolean filterLessCountData = false;
 
         protected String type = "";
 
@@ -98,6 +116,26 @@ public class ApplicationProperties {
                     + "数据量：" + dataCount + "\n"
                     + "过滤数据量：" + lessCount + "\n"
                     + "标签数量：" + labelNumber;
+        }
+    }
+
+    @Data
+    public class SpliceProperties extends PrimaryProperties{
+        public SpliceProperties() {
+            path = baseProperties.getOriginalPath() + "\\舆情语料\\事件分类\\语料\\舆情事件分类语料提供-20180910\\";
+//            path = "E:\\temp\\\\事件分类测试结果.csv";
+            dataCount = -1;
+            int[] extractIndexss = {0, 1, 2};
+            extractIndexs = extractIndexss;
+            int[] optionalExtractIndexss = {3, 4};
+            optionalExtractIndexs = optionalExtractIndexss;
+            type = "splice";
+            removeRepeat = true;
+        }
+        public String info() {
+            return "处理类型：" + type + "\n"
+                    + "路径：" + path + "\n"
+                    + "数据量：" + dataCount + "\n";
         }
     }
 
@@ -181,7 +219,7 @@ public class ApplicationProperties {
         public EmotionAndGradeProperties() {
 
             super.path = baseProperties.getOriginalPath() + "舆情语料.csv";
-            super.dataCount = 14000;
+            super.dataCount = -1;
             super.labelNumber = 7;
             label_1 = "舆情情感";
             label_2 = "舆情情感等级";
@@ -202,17 +240,22 @@ public class ApplicationProperties {
     public class EmotionAndGradeExcelProperties extends EmotionAndGradeProperties {
 
         public EmotionAndGradeExcelProperties() {
-            super.path = baseProperties.getOriginalPath() + "\\舆情语料\\舆情情感\\语料\\舆情情感语料.xlsx";
+//            super.path = baseProperties.getOriginalPath() + "舆情语料\\事件分类\\语料\\舆情事件分类语料提供-20180910";
+            super.path = baseProperties.getOriginalPath() + "2019舆情稽核语料（7000）.xlsx";
+//            super.path = baseProperties.getBasePath() + "情感识别\\未来标准集合\\";
             super.dataCount = -1;
-            super.lessCount = 10000;
+            super.lessCount = 100;
             super.labelNumber = 10;
-            label_1 = 3;
-            label_2 = 4;
+            label_1 = 1;
+            label_2 = 2;
             Object[] labelss = {label_1, label_2};
             super.labels = labelss;
 
-            super.title = 2;
-            super.content = 5;
+            super.title = 3;
+//            super.content = 4;
+            super.content = 6;
+
+            super.haveHeader = false;
         }
     }
 
@@ -233,7 +276,7 @@ public class ApplicationProperties {
 //            super.path = baseProperties.getTrainPath() + "";
             super.path = baseProperties.getTestResultPath() + "\\情感7类测试集.csv";
 //            super.path = baseProperties.getBasePath() + "\\情感识别\\未来标准集合";
-            super.dataCount = -1;
+            super.dataCount = 5;
             super.labelNumber = 7;
             super.label = 2;
             Object[] labelss = {2, 3};
@@ -253,12 +296,13 @@ public class ApplicationProperties {
 
     public class EmotionAndGradeTsvProperties extends PrimaryProperties {
         public EmotionAndGradeTsvProperties() {
-            super.path = baseProperties.getTrainPath() + "\\情感and等级_test\\情感and等级_test_7_none_all_118_1113\\all.tsv";
+//            super.path = baseProperties.getTrainPath() + "情感and等级\\情感and等级_7_none_4000_118_1114\\test.tsv";
+            super.path = baseProperties.getTrainPath() + "tsv\\tsv_7_delete_all_118_1114\\all.tsv";
             super.dataCount = -1;
             super.labelNumber = 7;
             super.label = 0;
-            super.title = -1;
-            super.content = 1;
+            super.title = 1;
+            super.content = 2;
             super.haveHeader = false;
             super.createFile = false;
 
@@ -354,7 +398,7 @@ public class ApplicationProperties {
         /**
          * 输出文件路径
          */
-        private String path;
+        private String path = "";
 
         private String[] paths;
 
@@ -374,13 +418,17 @@ public class ApplicationProperties {
             };
             return paths;
         }
-<<<<<<< HEAD
     }
 
     @Data
     public class CreateFile {
         private String deletePath = baseProperties.getBasePath() + "delete\\result.tsv";
-=======
->>>>>>> f3a5f76a346ab516592180b911483953d6b69ff1
+
+        /**
+         * 直接生成的文件路径
+         */
+        private String directPath = baseProperties.getBasePath() + "direct\\result.tsv";
+//        private String directPath = baseProperties.getBasePath() + "article\\result.tsv";
+//        private String directPath = "E:\\temp\\labelAndPerdiction.tsv";
     }
 }

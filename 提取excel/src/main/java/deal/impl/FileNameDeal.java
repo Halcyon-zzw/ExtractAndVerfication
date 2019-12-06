@@ -21,10 +21,9 @@ public class FileNameDeal implements DealFileWay {
      * 文件名样式:   109010-事件分类-证券戴帽.xlsx
      * @param path 文件路径
      * @return 109010\t证券戴帽 样式数据集的列表
-     * @throws IOException
      */
     @Override
-    public List<String> extractedValue(String path) throws IOException {
+    public List<String> extractedValue(String path)  {
         List<String> resultList = new ArrayList<>();
 
         File file = new File(path);

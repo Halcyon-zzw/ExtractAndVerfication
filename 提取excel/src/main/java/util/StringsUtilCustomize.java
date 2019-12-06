@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
@@ -63,11 +64,11 @@ public class StringsUtilCustomize {
      * @return
      */
     public static String substringByDeleteBrackets(String str) {
-        //存在左右括号不一致问题，同意中英文括号
+        //存在左右括号不一致问题，统一中英文括号
         str = str.replaceAll("\\（", "(");
         str = str.replaceAll("\\）", ")");
 
-        str = str.replaceAll("\\（[^\\（^\\）]*\\）", "");
+//        str = str.replaceAll("\\（[^\\（^\\）]*\\）", "");
         str = str.replaceAll("\\([^\\(^\\)]*\\)", "");
 
         return str;
@@ -392,9 +393,62 @@ public class StringsUtilCustomize {
     }
 
     /**
-     * 找出str -> pa 剔除的数据
+     * 删除日期
      * @param str
-     * @param pa
+     * @return
+     */
+    public static String deleteDate(String str) {
+        String pattern = "(.*){0}([0-9]{1,4}(年)?([上下]半)?年([0-9]{1,2}月)?([0-9]{1,2}日)?)";
+        Pattern p = Pattern.compile(pattern);
+
+        Matcher m = p.matcher(str);
+        StringBuffer stringBuffer = new StringBuffer("");
+        while (m.find()) {
+            String deleteStr = m.group();
+//            System.out.println(m.group());
+            int index = str.indexOf(deleteStr);
+
+            stringBuffer.append(str.substring(0, index));
+            str = str.substring(index + deleteStr.length(), str.length());
+            m = p.matcher(str);
+        }
+        //关键，结束后将后半部分加上
+        stringBuffer.append(str);
+
+//        System.out.println(stringBuffer.toString());
+        return stringBuffer.toString();
+    }
+
+
+    /**
+     * 删除数字和特殊字符
+     * @param str
+     * @return
+     */
+    public static String deleteNumberAndSpecialCharacter(String str) {
+        StringBuffer stringBuffer = new StringBuffer("");
+        char[] chars = str.toCharArray();
+
+        for (char c : chars) {
+            //42:*  35:#
+            if (c >= 35 && c <= 38 || c >= 45 && c <= 57 || c >= 64 && c <= 126 || c == 42) {
+
+                int index = str.indexOf(c);
+
+                stringBuffer.append(str.substring(0, index));
+                str = str.substring(index + 1, str.length());
+            }
+        }
+
+        //关键，结束后将后半部分加上
+        stringBuffer.append(str);
+        return stringBuffer.toString();
+    }
+
+    /**
+     * 找出str -> pa 剔除的数据,不连续的字符之间用|||分隔开
+     * @param str 原字符串
+     * @param pa 删除后字符串
      * @return
      */
     public static String deleteStrings(String str, String pa) {
@@ -413,7 +467,8 @@ public class StringsUtilCustomize {
         int i = 0;
         int j = 0;
         List<CharAndIndex> charAndIndiceList = new ArrayList<>();
-        while(i < list1.size()) {
+        //添加新条件，j + size != i，相等情况下，代表还是被删除的字
+        while(i < list1.size() && j < list2.size() && j + charAndIndiceList.size() != i) {
             if (list1.get(i).equals(list2.get(j))) {
                 i ++;
                 j ++;
@@ -422,13 +477,15 @@ public class StringsUtilCustomize {
                 i ++;
             }
         }
-//        for (int k = 0; k < list2.size(); k++) {
-//            if (list1.contains(list2.get(k))) {
-//                list1.remove(list2.get(k));
-//            }
-//        }
+        //字串结束情况，将主串后面的所有内容加到结果中
+        if (j == list2.size()) {
+            while (i < list1.size()) {
+                charAndIndiceList.add(new CharAndIndex(list1.get(i), i));
+                i ++;
+            }
+        }
         StringBuffer stringBuffer = new StringBuffer("");
-        if (null == charAndIndiceList) {
+        if (0 == charAndIndiceList.size()) {
             return null;
         }
         stringBuffer.append(charAndIndiceList.get(0).getDeleteChar());
@@ -442,5 +499,14 @@ public class StringsUtilCustomize {
         }
 
         return stringBuffer.toString();
+    }
+
+    public static String replaceSynbolOfTable(String str) {
+        return str
+                .replaceAll("\b", "")
+                .replaceAll("\f", "")
+                .replaceAll("\n", "")
+                .replaceAll("\r", "")
+                .replaceAll("\t", "");
     }
 }

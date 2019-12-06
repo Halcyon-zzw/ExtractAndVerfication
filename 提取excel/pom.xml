@@ -10,29 +10,52 @@
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>extract-excel</artifactId>
-    <packaging>pom</packaging>
-    <modules>
-        <module>../../通过sql获取数据</module>
-    </modules>
+    <!--<packaging>pom</packaging>-->
+    <!--<modules>-->
+        <!--<module>../../通过sql获取数据</module>-->
+    <!--</modules>-->
     <dependencies>
+
+        <!--excel文件支持-->
         <dependency>
             <groupId>org.apache.poi</groupId>
             <artifactId>poi</artifactId>
             <version>4.0.1</version>
             <scope>compile</scope>
         </dependency>
+
+        <!--csv文件支持-->
         <dependency>
             <groupId>com.opencsv</groupId>
             <artifactId>opencsv</artifactId>
             <version>4.4</version>
         </dependency>
-
         <dependency>
             <groupId>net.sourceforge.javacsv</groupId>
             <artifactId>javacsv</artifactId>
             <version>2.0</version>
         </dependency>
-    </dependencies>
 
+        <dependency>
+            <groupId>com.microsoft.sqlserver</groupId>
+            <artifactId>mssql-jdbc</artifactId>
+            <version>7.2.1.jre8</version>
+        </dependency>
+
+        <!--hanLP支持-->
+        <dependency>
+            <groupId>com.hankcs</groupId>
+            <artifactId>hanlp</artifactId>
+            <version>1.7.2</version>
+        </dependency>
+
+
+        <dependency>
+            <groupId>commons-cli</groupId>
+            <artifactId>commons-cli</artifactId>
+            <version>1.4</version>
+            <optional>true</optional>
+        </dependency>
+    </dependencies>
 
 </project>

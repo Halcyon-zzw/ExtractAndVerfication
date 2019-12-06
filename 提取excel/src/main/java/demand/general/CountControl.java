@@ -126,9 +126,9 @@ public class CountControl {
      */
     public List<String> getCategoriesStatestics() {
         //controlMap转成List<LabelAndCount>对象后对label排序，后转成List<String>对象
-        List<String> resultList = controlMap.entrySet().stream().map(temp -> {
-            return new LabelAndCount(Integer.valueOf(temp.getKey()), temp.getValue());
-        }).sorted(Comparator.comparing(LabelAndCount::getLabel))
+        List<String> resultList = controlMap.entrySet().stream()
+                .map(temp -> new LabelAndCount(Integer.valueOf(temp.getKey()), temp.getValue()))
+                .sorted(Comparator.comparing(LabelAndCount::getLabel))
                 .map(LabelAndCount::toString)
                 .collect(Collectors.toList());
 
@@ -141,9 +141,9 @@ public class CountControl {
      * @return
      */
     public List<String> getRangeStatestics() {
-        List<String> resultList = rangeMap.entrySet().stream().map(temp -> {
-            return temp.getKey() + "：" + temp.getValue();
-        }).sorted().collect(Collectors.toList());
+        List<String> resultList = rangeMap.entrySet().stream()
+                .map(temp -> temp.getKey() + "：" + temp.getValue())
+                .sorted().collect(Collectors.toList());
         return resultList;
     }
 

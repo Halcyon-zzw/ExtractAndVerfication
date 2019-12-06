@@ -1,14 +1,10 @@
 package config;
 
-import org.apache.poi.ss.formula.functions.T;
 import util.FileUtil;
-import util.StringsUtilCustomize;
 
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
@@ -32,16 +28,8 @@ public class ApplicationCache {
      * @param collection
      * @param path
      */
-    public void saveCache(Collection<String> collection, String path) {
-        Path targetPath = Paths.get(path);
-        String dirPath = targetPath.getParent().toString();
-        String fileName = targetPath.getFileName().toString().split("\\.")[0];
-        String suffixName = "." + targetPath.getFileName().toString().split("\\.")[1];
-
-
-        //文件名后面加入当前时间戳
-        fileName = fileName + "_" + System.currentTimeMillis() + suffixName;
-        path = dirPath + "\\" + fileName;
+    public static void saveCache(Collection<String> collection, String path) {
+        path = getFileNewPath(path);
         try {
             FileUtil.createFile2(collection, path);
             System.out.println("缓存数据保存成功！");
@@ -72,7 +60,7 @@ public class ApplicationCache {
      * @param path
      * @return
      */
-    private String getFileNewPath(String path) {
+    private static String getFileNewPath(String path) {
         Path targetPath = Paths.get(path);
         String dirPath = targetPath.getParent().toString();
         String fileName = targetPath.getFileName().toString().split("\\.")[0];
@@ -82,5 +70,4 @@ public class ApplicationCache {
         path = dirPath + "\\" + fileName;
         return path;
     }
-
 }
