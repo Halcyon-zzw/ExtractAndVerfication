@@ -42,12 +42,12 @@
             <version>7.2.1.jre8</version>
         </dependency>
 
-        <!--hanLP支持-->
-        <dependency>
-            <groupId>com.hankcs</groupId>
-            <artifactId>hanlp</artifactId>
-            <version>1.7.2</version>
-        </dependency>
+<!--        &lt;!&ndash;hanLP支持&ndash;&gt;-->
+<!--        <dependency>-->
+<!--            <groupId>com.hankcs</groupId>-->
+<!--            <artifactId>hanlp</artifactId>-->
+<!--            <version>1.7.2</version>-->
+<!--        </dependency>-->
 
 
         <dependency>

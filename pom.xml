@@ -8,6 +8,7 @@
         <module>测试模型</module>
         <module>通过sql提取数据</module>
         <module>通过sql提取数据</module>
+        <module>reptile</module>
     </modules>
     <parent>
         <groupId>org.springframework.boot</groupId>
